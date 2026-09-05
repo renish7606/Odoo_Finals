@@ -1,0 +1,105 @@
+/**
+ * DealFlow360 Top Navigation Component
+ * Matches the claymorphism design system in the wireframe.
+ */
+import { auth } from '../auth.js';
+
+export function renderNavbar(activeRoute = 'dashboard') {
+  const user = auth.getUser() || { full_name: 'Eleanor Vance', role: 'Sales Director' };
+
+  const navItems = [
+    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' },
+    { key: 'quotations', label: 'Quotations', icon: 'request_quote', href: '#/quotations' },
+    { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
+    { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
+    { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
+    { key: 'customers', label: 'Customers', icon: 'corporate_fare', href: '#/customers' },
+    { key: 'products', label: 'Products', icon: 'inventory_2', href: '#/products' },
+    { key: 'pricing', label: 'Pricing', icon: 'sell', href: '#/pricing' },
+    { key: 'subscriptions', label: 'Subscriptions', icon: 'sync', href: '#/subscriptions' },
+    { key: 'reports', label: 'Reports', icon: 'bar_chart', href: '#/reports' },
+    { key: 'portal', label: 'Portal', icon: 'open_in_browser', href: '#/portal' },
+  ];
+
+  const navLinksHtml = navItems
+    .map((item) => {
+      const isActive = activeRoute === item.key || (activeRoute === 'quotation-detail' && item.key === 'quotations');
+      const activeClass = isActive ? 'nav-item-active' : 'nav-item-inactive';
+      return `
+        <a href="${item.href}" class="nav-item ${activeClass}" data-route="${item.key}">
+          <span class="material-symbols-outlined text-lg">${item.icon}</span>
+          <span>${item.label}</span>
+        </a>
+      `;
+    })
+    .join('');
+
+  return `
+    <header class="navbar-header">
+      <div class="navbar-inner">
+        <!-- Logo & Branding -->
+        <div class="navbar-brand">
+          <a href="#/dashboard" class="flex items-center gap-3 text-inherit no-underline">
+            <div class="logo-box">
+              <svg class="w-6 h-6 text-primary" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="10" stroke="currentColor" stroke-dasharray="48" stroke-dashoffset="12" stroke-linecap="round" stroke-width="2.5"></circle>
+                <circle cx="16" cy="16" fill="currentColor" r="4.5"></circle>
+                <circle cx="23" cy="9" fill="currentColor" r="2.2"></circle>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-lg tracking-tight text-on-surface leading-none">DealFlow360</span>
+              <span class="text-[10px] text-primary uppercase tracking-widest font-semibold mt-0.5">Enterprise M&amp;A</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Scrollable Navigation Tabs -->
+        <nav class="navbar-nav">
+          ${navLinksHtml}
+        </nav>
+
+        <!-- Right User Actions & Live Pipeline Status -->
+        <div class="navbar-actions">
+          <div class="status-pill hidden sm:flex items-center gap-2">
+            <span class="pulse-dot"></span>
+            <span class="text-xs text-on-surface-variant font-medium">Q3 Pipeline</span>
+            <span class="text-xs font-mono font-bold text-primary">99.4%</span>
+          </div>
+
+          <button type="button" class="icon-btn relative" title="Notifications" id="btn-notifications">
+            <span class="material-symbols-outlined text-lg text-on-surface-variant">notifications</span>
+            <span class="notification-badge"></span>
+          </button>
+
+          <div class="h-6 w-px bg-outline-variant/50 hidden md:block"></div>
+
+          <!-- User Profile & Logout Menu -->
+          <div class="user-profile-menu flex items-center gap-3">
+            <div class="hidden lg:flex flex-col text-right">
+              <span class="text-xs font-bold text-on-surface leading-tight">${user.full_name || 'Eleanor Vance'}</span>
+              <span class="text-[11px] text-on-surface-variant leading-tight">${user.role || 'Sales Director'}</span>
+            </div>
+            <div class="avatar-box" title="${user.full_name || 'User'}">
+              <span class="font-bold text-sm text-primary">EV</span>
+            </div>
+            <button type="button" id="btn-logout" class="icon-btn text-error hover:bg-error-container/40" title="Sign Out">
+              <span class="material-symbols-outlined text-base">logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+export function setupNavbarEvents() {
+  const logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to sign out?')) {
+        auth.logout();
+      }
+    });
+  }
+}

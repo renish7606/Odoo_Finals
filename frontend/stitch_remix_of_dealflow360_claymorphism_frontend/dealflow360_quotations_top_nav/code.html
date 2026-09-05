@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}.clay-debossed{box-shadow:inset 3px 3px 6px rgba(168,181,160,0.22),inset -2px -2px 5px rgba(255,255,255,0.85);}.clay-extruded-sm{box-shadow:4px 4px 10px rgba(168,181,160,0.20),-3px -3px 8px rgba(255,255,255,0.90),inset 1px 1px 2px rgba(255,255,255,0.70);}.clay-extruded-card{box-shadow:6px 6px 14px rgba(168,181,160,0.20),-5px -5px 12px rgba(255,255,255,0.90),inset 1px 1px 2px rgba(255,255,255,0.70);}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-container":"#3b4737","primary":"#566250","primary-fixed":"#d9e7d0","inverse-on-surface":"#e5f6dd","on-error":"#ffffff","surface-variant":"#d7e7d0","error-container":"#ffdad6","on-secondary-container":"#5b6657","secondary-container":"#d7e3d1","on-background":"#121f10","secondary-fixed-dim":"#becab8","on-tertiary":"#ffffff","on-tertiary-fixed-variant":"#5f4110","on-surface-variant":"#444841","surface-container-low":"#e8f9e0","surface-container":"#e2f3db","surface-container-high":"#dcedd5","on-secondary-fixed-variant":"#3f4a3c","on-secondary":"#ffffff","surface-dim":"#cedfc7","surface-bright":"#eefee6","on-error-container":"#93000a","on-secondary-fixed":"#141e13","primary-fixed-dim":"#bdcbb5","on-tertiary-container":"#5c3e0d","on-primary-fixed-variant":"#3e4a39","surface-container-lowest":"#ffffff","inverse-surface":"#263424","surface":"#eefee6","on-tertiary-fixed":"#291800","tertiary-fixed-dim":"#ecbf83","surface-container-highest":"#d7e7d0","outline-variant":"#c5c8bf","tertiary-container":"#d4aa6f","on-primary":"#ffffff","tertiary-fixed":"#ffddb2","secondary":"#566153","secondary-fixed":"#dae6d4","on-primary-fixed":"#141e10","outline":"#757871","on-surface":"#121f10","surface-tint":"#566250","background":"#eefee6","error":"#ba1a1a","inverse-primary":"#bdcbb5","tertiary":"#7a5826","primary-container":"#a8b5a0"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"max-content-width":"96rem","space-md":"1rem","space-2xs":"0.25rem","space-lg":"1.5rem","space-sm":"0.75rem","gutter-desktop":"1.5rem","space-3xl":"3.5rem","space-xl":"2rem","space-xs":"0.5rem","space-4xl":"5rem","space-2xl":"2.5rem","gutter-mobile":"1rem","sidebar-width":"17.5rem","space-3xs":"0.125rem"},"fontFamily":{"display-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"mono-data":["JetBrains Mono"],"label-sm":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"display-lg-mobile":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"]},"fontSize":{"display-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["22px",{"lineHeight":"30px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"600"}],"mono-data":["13px",{"lineHeight":"18px","letterSpacing":"-0.02em","fontWeight":"500"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"display-lg-mobile":["30px",{"lineHeight":"38px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"headline-xl":["28px",{"lineHeight":"36px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen"><div class="flex flex-col min-h-screen"><header class="fixed top-0 left-0 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 px-gutter-desktop flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)] select-none"><div class="flex items-center gap-space-xl"><div class="flex items-center gap-space-sm"><img alt="DealFlow360 Logo" class="h-9 w-9 rounded-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VHBsbGVQl_Wd51eHpdF0V9a9Bq2UrB4g4wuhGO2-XZxeIR_pXGKIW1QsstsNh5paL16YdC94-MeHL_m-8ZXmn3FN1bqWiQy7wGM2Hh8hqbLVPg3nPmoYCmnYhbgwXZ_Hrkej34-i1-FAjjig7ZgQNAaQCjkPMuSy8t6FMf8mN0U3-LTuQhKcDunZUrdKXkyVoNsWLYLyUa4P2ne8y5CqYPOuGP6EE0W8Dk6ywX_WUZtTO_2FklEGhBrMY"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-none">DealFlow360</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-space-3xs">Enterprise M&amp;A</span></div></div><nav class="hidden lg:flex items-center gap-space-xs"><a class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md transition-all hover:bg-surface-container hover:text-on-surface" href="#"><span class="material-symbols-outlined text-primary text-lg">dashboard</span><span>Dashboard</span></a><a aria-current="page" class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full transition-all bg-surface-container-lowest text-on-primary-container font-label-md text-label-md shadow-[6px_6px_14px_rgba(168,181,160,0.20),-5px_-5px_12px_rgba(255,255,255,0.90),inset_1px_1px_2px_rgba(255,255,255,0.70)]" href="#"><span class="material-symbols-outlined text-primary text-lg">request_quote</span><span>Quotations</span></a><a class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md transition-all hover:bg-surface-container hover:text-on-surface" href="#"><span class="material-symbols-outlined text-primary text-lg">verified</span><span>Approvals</span></a><a class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md transition-all hover:bg-surface-container hover:text-on-surface" href="#"><span class="material-symbols-outlined text-primary text-lg">assignment_turned_in</span><span>Fulfillment</span></a><a class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md transition-all hover:bg-surface-container hover:text-on-surface" href="#"><span class="material-symbols-outlined text-primary text-lg">receipt_long</span><span>Invoices</span></a><a class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md transition-all hover:bg-surface-container hover:text-on-surface" href="#"><span class="material-symbols-outlined text-primary text-lg">corporate_fare</span><span>Customers</span></a></nav></div><div class="flex items-center gap-space-md"><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-low/80 clay-extruded-sm"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant">Q3 Pipeline</span><span class="font-mono-data text-mono-data text-on-surface font-bold">99.4%</span></div><button aria-label="Notifications" class="relative w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center clay-extruded-sm hover:translate-y-[-1px] transition-transform" type="button"><span class="material-symbols-outlined text-primary text-xl">notifications</span><span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-tertiary shadow-[0_0_4px_rgba(122,88,38,0.5)]"></span></button><div class="h-6 w-[1px] bg-outline-variant/40 hidden sm:block"></div><div class="flex items-center gap-space-sm"><div class="hidden md:flex flex-col text-right"><span class="font-label-lg text-label-lg text-on-surface leading-tight">Eleanor Vance</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Sales Director</span></div><div class="relative p-0.5 rounded-full bg-surface-container-lowest clay-extruded-sm"><img alt="Eleanor Vance Profile Headshot" class="w-9 h-9 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Ubmu1lPhsoFSA8Q4RX_E2SqWKJDExPD_NsosHspCZs-HK8mw_PaKeqa5D_1UEzHaXgRNkE34CL-PFjxnyS5sV4nXqJMWJExiCkP6sBmAENWKwnZZ-NrvnAQegNbiEkugzaJEoMai2txsG_igMDZjLstVoaXJn8SoW2lq70maf21tEhQCZNmXWTYLvHcI1uuGZ_VYSyaneelJf5DJ5CRrSSbbjz5QNAwxgFYMNLBqLmOirFJINCdjZ4ZtE"/></div></div></div></header><main class="w-full pt-16 bg-background flex-1"><div class="flex flex-col w-full">
+<div class="max-w-max-content-width w-full mx-auto px-gutter-desktop py-space-xl flex flex-col gap-space-xl">
+<!-- Top Overview & Control Bar -->
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-lg bg-surface-container-low/80 p-space-lg rounded-xl clay-extruded-card">
+<div class="flex flex-col gap-space-3xs">
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Quotations &amp; Contracts</h1>
+<span class="px-space-sm py-space-3xs rounded-full bg-surface-container-highest text-on-primary-container font-mono-data text-mono-data clay-debossed">38 Active Quotations</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Multi-entity revenue schedules, deal underwriting &amp; legal clearance</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-md">
+<!-- Live Velocity Widget -->
+<div class="hidden xl:flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container clay-debossed">
+<span class="material-symbols-outlined text-primary text-base">insights</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Avg Close Cycle:</span>
+<span class="font-mono-data text-mono-data text-on-surface font-bold">14.2 Days</span>
+</div>
+<!-- Create Action -->
+<button class="group relative flex items-center gap-space-xs px-space-lg py-space-sm rounded-full bg-primary-container text-on-primary-container font-label-lg text-label-lg clay-extruded-card hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-on-primary-container text-lg font-bold">add</span>
+<span>New Quotation</span>
+</button>
+</div>
+</div>
+<!-- Filter & Precision Search Bar -->
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-md p-space-sm rounded-lg bg-surface-container-lowest clay-extruded-sm">
+<!-- Search Input Well -->
+<div class="relative flex-1 flex items-center h-11 px-space-md rounded-full bg-surface-container-low clay-debossed">
+<span class="material-symbols-outlined text-primary text-xl mr-space-xs">search</span>
+<input class="w-full bg-transparent border-none outline-none font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant/60" id="quote-search" placeholder="Filter by quotation ID, buyer account, rep, or product lines..." type="text"/>
+<span class="font-mono-data text-label-sm text-on-surface-variant/50 hidden sm:inline-block">⌘K</span>
+</div>
+<!-- State Chips -->
+<div class="flex items-center gap-space-2xs overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="status-pill-filter">
+<button class="status-tab px-space-md py-space-xs rounded-full font-label-md text-label-md transition-all clay-debossed bg-surface-container text-on-surface font-bold shadow-none" data-filter="all" type="button">
+          All
+        </button>
+<button class="status-tab px-space-md py-space-xs rounded-full font-label-md text-label-md transition-all clay-extruded-sm bg-surface-container-lowest text-on-surface-variant hover:text-on-surface" data-filter="Draft" type="button">
+          Draft
+        </button>
+<button class="status-tab px-space-md py-space-xs rounded-full font-label-md text-label-md transition-all clay-extruded-sm bg-surface-container-lowest text-on-surface-variant hover:text-on-surface" data-filter="Under Review" type="button">
+          Under Review
+        </button>
+<button class="status-tab px-space-md py-space-xs rounded-full font-label-md text-label-md transition-all clay-extruded-sm bg-surface-container-lowest text-on-surface-variant hover:text-on-surface" data-filter="Approved" type="button">
+          Approved
+        </button>
+<button class="status-tab px-space-md py-space-xs rounded-full font-label-md text-label-md transition-all clay-extruded-sm bg-surface-container-lowest text-on-surface-variant hover:text-on-surface" data-filter="Contract Signed" type="button">
+          Contract Signed
+        </button>
+</div>
+</div>
+<!-- Visual Quotations List / Cards -->
+<div class="flex flex-col gap-space-md" id="cards-container">
+<!-- Card 1 -->
+<article class="quote-card group flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg p-space-lg rounded-lg bg-surface-container-lowest clay-extruded-card hover:-translate-y-0.5 transition-all" data-status="Under Review">
+<div class="flex items-start gap-space-md flex-1 min-w-0">
+<div class="relative w-14 h-14 rounded-xl bg-surface-container-high flex-shrink-0 flex items-center justify-center clay-extruded-sm overflow-hidden">
+<span class="material-symbols-outlined text-primary text-2xl">receipt_long</span>
+<div class="absolute bottom-0 w-full h-1 bg-tertiary-container"></div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-mono-data text-mono-data text-on-surface-variant font-bold">QT-2024-0891</span>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sep 28, 2024</span>
+<span class="px-space-sm py-space-3xs rounded-full text-on-tertiary-container bg-tertiary-fixed text-label-sm font-label-sm clay-extruded-sm flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                Under Review
+              </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface truncate mt-space-3xs">Starlight Dynamics Inc.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Enterprise Cloud Tier x 120, Integration Suite</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-end justify-between xl:justify-center gap-space-sm border-t sm:border-t-0 pt-space-sm sm:pt-0">
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-mono-data text-headline-xl font-bold text-on-surface">$245,000</span>
+<span class="font-mono-data text-label-sm text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<img class="w-5 h-5 rounded-full object-cover clay-debossed" data-alt="Corporate headshot portrait of senior sales rep Marcus Vance wearing a tailored sage blazer in a bright Scandinavian office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYUwfhn6MAgnRpRczL4Tve8SBRFQtDjSykEFduEMVe6TKgwgoddrbYqvxqkN0VfO38rXIYMcW_oE6AXyKYRKDUMamF_eus6ihm7NGIbFs1NACjS7sSwWg6EBQic57Zqeoew9yTymbIawLvH6pa-QC1wZs7SYdE7P4r6LQ3cT0qarZ8-cdxOCHMIjRvev8HohpGqpxvdnUPAR3ZsVww-EJ7yrIb3CTq78Scoc0g8ZxGInRxOTN_HJJB"/>
+<span>Rep: <strong class="text-on-surface font-label-sm">Marcus Vance</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs justify-end xl:w-72 flex-shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+            History
+          </button>
+<button class="px-space-md py-space-xs rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-space-3xs" type="button">
+<span>View Builder</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="quote-card group flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg p-space-lg rounded-lg bg-surface-container-lowest clay-extruded-card hover:-translate-y-0.5 transition-all" data-status="Approved">
+<div class="flex items-start gap-space-md flex-1 min-w-0">
+<div class="relative w-14 h-14 rounded-xl bg-surface-container-high flex-shrink-0 flex items-center justify-center clay-extruded-sm overflow-hidden">
+<span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+<div class="absolute bottom-0 w-full h-1 bg-primary"></div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-mono-data text-mono-data text-on-surface-variant font-bold">QT-2024-0888</span>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sep 27, 2024</span>
+<span class="px-space-sm py-space-3xs rounded-full text-on-primary-container bg-primary-fixed text-label-sm font-label-sm clay-extruded-sm flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Approved
+              </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface truncate mt-space-3xs">Nexus Health Systems</h2>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">HIPAA Data Engine, Custom Connector</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-end justify-between xl:justify-center gap-space-sm border-t sm:border-t-0 pt-space-sm sm:pt-0">
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-mono-data text-headline-xl font-bold text-on-surface">$520,000</span>
+<span class="font-mono-data text-label-sm text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<img class="w-5 h-5 rounded-full object-cover clay-debossed" data-alt="Professional enterprise sales leader Eleanor Vance in front of frosted glass conference room with natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlIYDMguXo_EXIjJATb9CN0JdKOPjSpIZgqHrv4-E5GpGc95U8VEddHkNFaVM2R-R8iMDcQMnghV-9ioExUuww2Msin2Phj6z7ZEep35fdJ6c4Z0-pHa6ZhEPlEUk60cin3s18MujMNjWuKGkm8t0juqq7o0kWR2cXNhzm9EveTmAvDGdZdUDLUjQYQLKqiVJxA4So2WUJ0y8TuLWsEvIDGNv1rOgyNkheeUCwJCAPvKU5K8B4puPg"/>
+<span>Rep: <strong class="text-on-surface font-label-sm">Eleanor Vance</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs justify-end xl:w-72 flex-shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+            Preview PDF
+          </button>
+<button class="px-space-md py-space-xs rounded-full bg-primary text-on-primary font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-space-3xs" type="button">
+<span>Proceed to Fulfillment</span>
+<span class="material-symbols-outlined text-sm">task_alt</span>
+</button>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="quote-card group flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg p-space-lg rounded-lg bg-surface-container-lowest clay-extruded-card hover:-translate-y-0.5 transition-all" data-status="Contract Signed">
+<div class="flex items-start gap-space-md flex-1 min-w-0">
+<div class="relative w-14 h-14 rounded-xl bg-surface-container-high flex-shrink-0 flex items-center justify-center clay-extruded-sm overflow-hidden">
+<span class="material-symbols-outlined text-primary text-2xl">draw</span>
+<div class="absolute bottom-0 w-full h-1 bg-secondary"></div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-mono-data text-mono-data text-on-surface-variant font-bold">QT-2024-0885</span>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sep 25, 2024</span>
+<span class="px-space-sm py-space-3xs rounded-full text-on-secondary-fixed-variant bg-secondary-fixed text-label-sm font-label-sm clay-extruded-sm flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                Contract Signed
+              </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface truncate mt-space-3xs">Vanguard Logistics</h2>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Fleet Tracker API &amp; Telematics</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-end justify-between xl:justify-center gap-space-sm border-t sm:border-t-0 pt-space-sm sm:pt-0">
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-mono-data text-headline-xl font-bold text-on-surface">$180,000</span>
+<span class="font-mono-data text-label-sm text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<img class="w-5 h-5 rounded-full object-cover clay-debossed" data-alt="Portrait of Chloe Chen, enterprise accounts director, looking confident in an architecturally designed modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCOQbmEUqbkzIMLo2KAfr9F1jrcUQdRLLX4tqFJ4TsjUAaqUpMo1UhSF364Dy88kB7vhuVI4oqprPF1UYA-i3ziPY56z8rJo_O1LKN3SJq8psdjxtXrUZgSQqZN_MzMRSmwlBm0fOR3al5lNOCkOKQeCcRSIfpifud4ENmd4LT5nQ2UvdnfDOFhPWv3dtBzglKMtZxEKaziGjE_TqGL8yXt6TWsWy0NU52jViEDEYgjGo143kfcMKs"/>
+<span>Rep: <strong class="text-on-surface font-label-sm">Chloe Chen</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs justify-end xl:w-72 flex-shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+            Audit Trail
+          </button>
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-space-3xs" type="button">
+<span>Signed PDF</span>
+<span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="quote-card group flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg p-space-lg rounded-lg bg-surface-container-lowest clay-extruded-card hover:-translate-y-0.5 transition-all" data-status="Draft">
+<div class="flex items-start gap-space-md flex-1 min-w-0">
+<div class="relative w-14 h-14 rounded-xl bg-surface-container-high flex-shrink-0 flex items-center justify-center clay-extruded-sm overflow-hidden">
+<span class="material-symbols-outlined text-primary text-2xl">edit_note</span>
+<div class="absolute bottom-0 w-full h-1 bg-outline"></div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-mono-data text-mono-data text-on-surface-variant font-bold">QT-2024-0879</span>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sep 24, 2024</span>
+<span class="px-space-sm py-space-3xs rounded-full text-on-surface-variant bg-surface-container-high text-label-sm font-label-sm clay-extruded-sm flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                Draft
+              </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface truncate mt-space-3xs">AeroSphere Aerospace</h2>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Turbine Analytics Suite, Mission Control Module</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-end justify-between xl:justify-center gap-space-sm border-t sm:border-t-0 pt-space-sm sm:pt-0">
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-mono-data text-headline-xl font-bold text-on-surface">$890,000</span>
+<span class="font-mono-data text-label-sm text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<img class="w-5 h-5 rounded-full object-cover clay-debossed" data-alt="David Ross, industrial sales manager, posing in a bright modern tech boardroom with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy63UHsTAOgwwAKqfPe9uzj6hC5wUaMUl_ld24yGfznYDI193_UegPJkfOjar3JwP43YpWpK2WNyynUIzmMPROJG-n0NaZkCjja1od47iIUqremVdi3TRmszs7V1XzTWAHV8uVaGkIBqr6qciY0I-ZgGiUDF9Au2xWGMMDf5QHpfNfZeGwfY86GfHpwdLpiaP9ytZmx2XzdT5lYkHXAnTmQeLn4A_GN8WFrDA4dr422UaSNI6ER3RT"/>
+<span>Rep: <strong class="text-on-surface font-label-sm">David Ross</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs justify-end xl:w-72 flex-shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+            Discard
+          </button>
+<button class="px-space-md py-space-xs rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-space-3xs" type="button">
+<span>Continue Edit</span>
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="quote-card group flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg p-space-lg rounded-lg bg-surface-container-lowest clay-extruded-card hover:-translate-y-0.5 transition-all" data-status="Needs Revision">
+<div class="flex items-start gap-space-md flex-1 min-w-0">
+<div class="relative w-14 h-14 rounded-xl bg-surface-container-high flex-shrink-0 flex items-center justify-center clay-extruded-sm overflow-hidden">
+<span class="material-symbols-outlined text-tertiary text-2xl">sync_problem</span>
+<div class="absolute bottom-0 w-full h-1 bg-tertiary"></div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="font-mono-data text-mono-data text-on-surface-variant font-bold">QT-2024-0872</span>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sep 22, 2024</span>
+<span class="px-space-sm py-space-3xs rounded-full text-on-tertiary-fixed-variant bg-tertiary-fixed text-label-sm font-label-sm clay-extruded-sm flex items-center gap-space-3xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                Needs Revision
+              </span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface truncate mt-space-3xs">BioGenix Research</h2>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Genomic Sequence Pipeline v4</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row xl:flex-col sm:items-center xl:items-end justify-between xl:justify-center gap-space-sm border-t sm:border-t-0 pt-space-sm sm:pt-0">
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-mono-data text-headline-xl font-bold text-on-surface">$315,000</span>
+<span class="font-mono-data text-label-sm text-on-surface-variant">USD</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<img class="w-5 h-5 rounded-full object-cover clay-debossed" data-alt="Marcus Vance smiling in a relaxed executive session setup with natural earth tone interior design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdfLPUhuju2CVT2IFLx_rrnq8umCI5wCtTKelj7tl8edxb-Gkvt6ewBKC-IhVqsqiRFtrfKLKke7ZVS7e918BnYwsDOb-QiQE8QCXoiANJ8NcNsrsfurKOkBHjjfZ2zb3jVmyQcTHHNtCfzIKPcTKnzvccL1bjs_JiU1ysX4IDOfE1nLi3d6fYbqFbhz5trTbY69HYAawEfr7AVFY42sHFeCL9W8n6TwpdLrx1m40FcFF1nsas6AO0"/>
+<span>Rep: <strong class="text-on-surface font-label-sm">Marcus Vance</strong></span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs justify-end xl:w-72 flex-shrink-0">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+            Review Notes
+          </button>
+<button class="px-space-md py-space-xs rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md clay-extruded-sm hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-space-3xs" type="button">
+<span>Re-configure</span>
+<span class="material-symbols-outlined text-sm">tune</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Quick Summary Footer Ribbon -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-low clay-extruded-card">
+<!-- Aggregates Metrics -->
+<div class="flex flex-wrap items-center gap-space-xl w-full md:w-auto justify-between md:justify-start">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Filtered Value</span>
+<div class="flex items-baseline gap-space-3xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface font-mono-data" id="total-val-display">$2,150,000</span>
+<span class="font-mono-data text-label-sm text-primary font-bold">5 Deals</span>
+</div>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/40 hidden sm:block"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Average Deal Margin</span>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-lg text-headline-lg font-bold text-on-surface font-mono-data">42.8%</span>
+<span class="px-space-2xs py-0.5 rounded bg-primary-fixed text-on-primary-container font-mono-data text-label-sm">+3.4% YoY</span>
+</div>
+</div>
+</div>
+<!-- Tactile Pagination Pills -->
+<div class="flex items-center gap-space-xs">
+<button aria-label="Previous Page" class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center clay-extruded-sm text-on-surface-variant hover:text-on-surface hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-base">chevron_left</span>
+</button>
+<button class="w-9 h-9 rounded-full bg-surface-container font-label-sm text-label-sm font-bold text-on-surface clay-debossed flex items-center justify-center" type="button">
+          1
+        </button>
+<button class="w-9 h-9 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-on-surface-variant clay-extruded-sm flex items-center justify-center hover:text-on-surface hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+          2
+        </button>
+<button class="w-9 h-9 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-on-surface-variant clay-extruded-sm flex items-center justify-center hover:text-on-surface hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+          3
+        </button>
+<button class="w-9 h-9 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-on-surface-variant clay-extruded-sm flex items-center justify-center hover:text-on-surface hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+          4
+        </button>
+<button aria-label="Next Page" class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center clay-extruded-sm text-on-surface-variant hover:text-on-surface hover:-translate-y-0.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const searchInput = document.getElementById('quote-search');
+    const statusTabs = document.querySelectorAll('.status-tab');
+    const cards = document.querySelectorAll('.quote-card');
+    const totalDisplay = document.getElementById('total-val-display');
+
+    let currentFilter = 'all';
+
+    function filterCards() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      let visibleTotal = 0;
+      let count = 0;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const status = card.getAttribute('data-status');
+        
+        const matchesQuery = !query || text.includes(query);
+        const matchesStatus = (currentFilter === 'all') || (status === currentFilter);
+
+        if (matchesQuery && matchesStatus) {
+          card.classList.remove('hidden');
+          count++;
+          // extract amount for calculation
+          const priceText = card.querySelector('.font-headline-xl')?.textContent?.replace(/[^0-9]/g, '');
+          if (priceText) {
+            visibleTotal += parseInt(priceText, 10);
+          }
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (totalDisplay) {
+        totalDisplay.textContent = '$' + visibleTotal.toLocaleString();
+      }
+    }
+
+    statusTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        statusTabs.forEach(t => {
+          t.classList.remove('clay-debossed', 'bg-surface-container', 'text-on-surface', 'font-bold', 'shadow-none');
+          t.classList.add('clay-extruded-sm', 'bg-surface-container-lowest', 'text-on-surface-variant');
+        });
+
+        tab.classList.add('clay-debossed', 'bg-surface-container', 'text-on-surface', 'font-bold', 'shadow-none');
+        tab.classList.remove('clay-extruded-sm', 'bg-surface-container-lowest', 'text-on-surface-variant');
+
+        currentFilter = tab.getAttribute('data-filter');
+        filterCards();
+      });
+    });
+
+    searchInput?.addEventListener('input', filterCards);
+  })();
+</script></main></div></body></html>
