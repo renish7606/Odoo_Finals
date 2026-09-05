@@ -1,7 +1,8 @@
-"""Offer internal and restricted customer-portal authentication routes."""
+from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -42,9 +43,9 @@ class MagicLinkRequest(BaseModel):
 class PortalLoginRequest(BaseModel):
     """Accept either a magic link token or customer password login."""
 
-    magic_token: str | None = None
-    email: EmailStr | None = None
-    password: str | None = None
+    magic_token: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
 
 
 def user_profile(user: User) -> dict:
@@ -53,7 +54,7 @@ def user_profile(user: User) -> dict:
 
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
-def signup(payload: SignupRequest, db: Session = Depends(get_db), requester: User | None = Depends(get_optional_current_user)) -> dict:
+def signup(payload: SignupRequest, db: Session = Depends(get_db), requester: Optional[User] = Depends(get_optional_current_user)) -> dict:
     """Create an internal account; only an Admin can create another Admin."""
     if payload.role is Role.ADMIN and (requester is None or requester.role is not Role.ADMIN):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only an Admin can create an Admin user")
@@ -100,7 +101,7 @@ def create_magic_link(payload: MagicLinkRequest, db: Session = Depends(get_db)) 
 @router.post("/portal/login")
 def portal_login(payload: PortalLoginRequest, db: Session = Depends(get_db)) -> dict:
     """Exchange a magic token or customer password for a portal-only token."""
-    customer: Customer | None = None
+    customer: Optional[Customer] = None
     if payload.magic_token:
         try:
             token_data = decode_token(payload.magic_token)

@@ -1,5 +1,8 @@
 """Store products and optional product variants."""
+from __future__ import annotations
+
 from datetime import datetime
+from typing import Optional
 from decimal import Decimal
 from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -14,7 +17,7 @@ class Product(Base):
     base_price: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     unit: Mapped[str] = mapped_column(String(50))
     tax_rate: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
