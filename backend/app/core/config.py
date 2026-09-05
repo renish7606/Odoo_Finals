@@ -1,14 +1,23 @@
+"""Read application settings from the environment."""
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "DealFlow API"
+    """Keep deployment settings in one simple place."""
+
+    app_name: str = "DealFlow360 API"
     environment: str = "development"
-    database_url: str = "postgresql+psycopg://dealflow:dealflow@localhost:5432/dealflow"
-    secret_key: str = "change-me-in-development"
+    database_url: str
+    secret_key: str
+    jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    portal_token_expire_minutes: int = 15
+    redis_url: str = "redis://localhost:6379/0"
+    portal_magic_link_base_url: str = "http://localhost:8000"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
+# Other modules import this shared settings object.
 settings = Settings()
