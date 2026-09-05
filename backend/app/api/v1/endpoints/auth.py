@@ -1,7 +1,10 @@
-"""Offer internal and restricted customer-portal authentication routes."""
+from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
+import json
+from urllib.parse import parse_qs
+
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from pydantic import BaseModel, EmailStr, Field, ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -67,8 +70,20 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db), requester: Use
 
 
 @router.post("/login")
-def login(payload: LoginRequest, db: Session = Depends(get_db)) -> dict:
+async def login(request: Request, db: Session = Depends(get_db)) -> dict:
     """Return an internal token after a password check."""
+    raw_body = await request.body()
+    try:
+        if request.headers.get("content-type", "").startswith("application/json"):
+            payload = LoginRequest.model_validate(json.loads(raw_body))
+        else:
+            form_data = parse_qs(raw_body.decode("utf-8"))
+            form_payload = {key: values[0] for key, values in form_data.items()}
+            if "username" in form_payload and "email" not in form_payload:
+                form_payload["email"] = form_payload["username"]
+            payload = LoginRequest.model_validate(form_payload)
+    except (UnicodeDecodeError, json.JSONDecodeError, ValidationError) as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email and password are required") from exc
     user = db.scalar(select(User).where(User.email == payload.email))
     if user is None or not user.is_active or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     app_name: str = "DealFlow360 API"
     environment: str = "development"
-    database_url: str
+    database_url: str = "sqlite:///./dealflow.db"
     secret_key: str
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30

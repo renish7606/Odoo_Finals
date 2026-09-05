@@ -8,6 +8,7 @@ from app.core.security import hash_password
 from app.db.session import SessionLocal
 from app.models.customer import Customer, CustomerTier
 from app.models.product import Product
+from app.models.quotation import Quotation, QuotationLine, QuotationStatus
 from app.models.role import Role
 from app.models.user import User
 
@@ -43,6 +44,41 @@ def seed_data() -> None:
         for name, category, price, unit, tax_rate in sample_products:
             if session.scalar(select(Product).where(Product.name == name)) is None:
                 session.add(Product(name=name, category=category, base_price=price, unit=unit, tax_rate=tax_rate))
+
+        session.flush()
+
+        sample_quotations = [
+            ("bronze@dealflow360.com", "rep@dealflow360.com", QuotationStatus.DRAFT, [("Starter Service", Decimal("2.00")), ("Onboarding", Decimal("1.00"))]),
+            ("gold@dealflow360.com", "manager@dealflow360.com", QuotationStatus.CONFIRMED, [("Business Service", Decimal("3.00"))]),
+        ]
+        for customer_email, rep_email, status, line_items in sample_quotations:
+            customer = session.scalar(select(Customer).where(Customer.email == customer_email))
+            rep = session.scalar(select(User).where(User.email == rep_email))
+            quotation = session.scalar(
+                select(Quotation).where(
+                    Quotation.customer_id == customer.id,
+                    Quotation.rep_id == rep.id,
+                    Quotation.status == status,
+                )
+            )
+            if quotation is None:
+                quotation = Quotation(customer_id=customer.id, rep_id=rep.id, status=status)
+                session.add(quotation)
+                session.flush()
+                for product_name, quantity in line_items:
+                    product = session.scalar(select(Product).where(Product.name == product_name))
+                    line_total = product.base_price * quantity
+                    session.add(
+                        QuotationLine(
+                            quotation_id=quotation.id,
+                            product_id=product.id,
+                            quantity=quantity,
+                            unit_price=product.base_price,
+                            discount_percent=Decimal("0.00"),
+                            line_total=line_total,
+                            category_snapshot=product.category,
+                        )
+                    )
         session.commit()
     finally:
         session.close()

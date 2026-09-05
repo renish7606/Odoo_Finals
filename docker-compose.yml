@@ -17,5 +17,33 @@ services:
       timeout: 5s
       retries: 5
 
+  # Group B addition: Redis for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: dealflow-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Group B addition: Celery worker for async backorder consolidation
+  celery-worker:
+    build: ./backend
+    container_name: dealflow-celery-worker
+    restart: unless-stopped
+    command: celery -A app.core.celery_app worker --loglevel=info
+    working_dir: /app
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
