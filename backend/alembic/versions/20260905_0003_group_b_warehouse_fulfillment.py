@@ -1,14 +1,14 @@
 """Group B: warehouse and fulfillment tables.
 
-Revision ID: 20260905_0003
-Revises: 20260905_0002
+Revision ID: 20260905_0004
+Revises: 20260905_0003
 """
 
 from alembic import op
 import sqlalchemy as sa
 
-revision = "20260905_0003"
-down_revision = "20260905_0002"
+revision = "20260905_0004"
+down_revision = "20260905_0003"
 branch_labels = None
 depends_on = None
 

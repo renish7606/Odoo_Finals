@@ -8,3 +8,4 @@ venv/
 htmlcov/
 .vscode/
 postgres_data/
+*.db

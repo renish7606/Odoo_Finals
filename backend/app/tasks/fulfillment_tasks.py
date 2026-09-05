@@ -15,7 +15,7 @@ from app.models.fulfillment import (
 from app.models.warehouse_stock import WarehouseStock
 from app.models.audit_log import AuditLog
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 
 
 @celery_app.task(name="check_backorder_consolidation")
@@ -54,7 +54,10 @@ def check_backorder_consolidation(warehouse_id: int, product_id: int) -> dict:
             .join(FulfillmentSplitLine)
             .where(
                 Backorder.status == BackorderStatus.OPEN,
-                FulfillmentSplitLine.warehouse_id.in_([warehouse_id, 0]),
+                or_(
+                    FulfillmentSplitLine.warehouse_id == warehouse_id,
+                    FulfillmentSplitLine.warehouse_id.is_(None),
+                ),
             )
         ).all()
 

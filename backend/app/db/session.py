@@ -7,8 +7,10 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 
-# Pool checks help recover cleanly after a database restart.
-engine = create_engine(settings.database_url, pool_pre_ping=True)
+connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+pool_kwargs = {"pool_pre_ping": True} if not settings.database_url.startswith("sqlite") else {}
+
+engine = create_engine(settings.database_url, connect_args=connect_args, **pool_kwargs)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 

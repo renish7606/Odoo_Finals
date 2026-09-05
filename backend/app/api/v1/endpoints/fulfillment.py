@@ -170,12 +170,12 @@ def accept_split(
     db.flush()  # get split.id
 
     for alloc in result.allocations:
-        if alloc.warehouse_id == 0:
+        if alloc.warehouse_id is None:
             # Backorder line — no stock to lock
             split_line = FulfillmentSplitLine(
                 fulfillment_split_id=split.id,
                 quotation_line_id=alloc.quotation_line_id,
-                warehouse_id=0,
+                warehouse_id=None,
                 quantity_fulfilled=0,
                 quantity_backordered=alloc.quantity_backordered,
             )
@@ -399,7 +399,7 @@ def consolidate_backorder(
     # Update the split line
     split_line.quantity_fulfilled += bo.quantity_remaining
     split_line.quantity_backordered -= bo.quantity_remaining
-    if split_line.warehouse_id == 0:
+    if split_line.warehouse_id is None:
         split_line.warehouse_id = locked_stock.warehouse_id
 
     # Mark backorder as consolidated

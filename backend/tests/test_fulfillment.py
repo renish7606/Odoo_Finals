@@ -49,9 +49,31 @@ def _cleanup(db):
     db.query(Warehouse).delete()
     db.query(QuotationLine).delete()
     db.query(Quotation).delete()
-    db.query(Product).delete()
-    db.query(Customer).delete()
-    db.query(User).delete()
+    db.query(Product).filter(Product.name.like("FFProduct_%")).delete(synchronize_session=False)
+    db.query(Customer).filter(Customer.email == "ff_customer@test.com").delete(synchronize_session=False)
+    db.query(User).filter(User.email.like("ff_%@test.com")).delete(synchronize_session=False)
+    db.commit()
+
+
+def _cleanup_concurrency_data(db):
+    """Remove only records created by the concurrency scenario."""
+    db.query(Backorder).delete()
+    db.query(FulfillmentSplitLine).delete()
+    db.query(FulfillmentSplit).delete()
+    db.query(WarehouseStock).filter(WarehouseStock.product_id.in_(
+        db.query(Product.id).filter(Product.name == "ConcProduct")
+    )).delete(synchronize_session=False)
+    db.query(Warehouse).filter(Warehouse.name == "ConcWH").delete(synchronize_session=False)
+    db.query(QuotationLine).delete(synchronize_session=False)
+    db.query(Quotation).filter(Quotation.rep_id.in_(
+        db.query(User.id).filter(User.email == "conc_admin@test.com")
+    )).delete(synchronize_session=False)
+    db.query(AuditLog).filter(AuditLog.user_id.in_(
+        db.query(User.id).filter(User.email == "conc_admin@test.com")
+    )).delete(synchronize_session=False)
+    db.query(Product).filter(Product.name == "ConcProduct").delete(synchronize_session=False)
+    db.query(Customer).filter(Customer.email == "conc_cust@test.com").delete(synchronize_session=False)
+    db.query(User).filter(User.email == "conc_admin@test.com").delete(synchronize_session=False)
     db.commit()
 
 
@@ -259,7 +281,7 @@ class TestFulfillmentEndpoints:
             json={"quotation_id": self.data["quotation_id"]},
             headers=_auth(token),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, resp.text
         body = resp.json()
         assert body["quotation_id"] == self.data["quotation_id"]
         assert body["status"] in ("accepted", "partially_fulfilled")
@@ -375,7 +397,7 @@ class TestBackorderConsolidation:
             json={"quotation_id": self.data["quotation_id"]},
             headers=_auth(token),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, resp.text
 
         # Check backorders exist
         db = SessionLocal()
@@ -479,7 +501,7 @@ class TestConcurrencySafety:
 
     def setup_method(self):
         db = SessionLocal()
-        _cleanup(db)
+        _cleanup_concurrency_data(db)
 
         admin = User(email="conc_admin@test.com", full_name="Conc Admin", role=Role.ADMIN,
                      hashed_password=hash_password("TestPass1!"))
@@ -521,7 +543,7 @@ class TestConcurrencySafety:
 
     def teardown_method(self):
         db = SessionLocal()
-        _cleanup(db)
+        _cleanup_concurrency_data(db)
         db.close()
 
     def test_concurrent_accepts_dont_oversell(self):

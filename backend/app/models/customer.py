@@ -1,4 +1,6 @@
-"""Store the customer record used by quotations and portal access."""
+from __future__ import annotations
+
+from typing import Optional
 
 from datetime import datetime
 from enum import Enum
@@ -28,7 +30,7 @@ class Customer(Base):
     tier: Mapped[CustomerTier] = mapped_column(
         SqlEnum(CustomerTier, name="customer_tier_enum", values_callable=lambda tiers: [tier.value for tier in tiers])
     )
-    portal_password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    portal_password_hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     quotations = relationship("Quotation", back_populates="customer")

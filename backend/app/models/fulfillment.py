@@ -77,7 +77,7 @@ class FulfillmentSplitLine(Base):
         Integer, ForeignKey("quotation_lines.id"), index=True, nullable=False
     )
     warehouse_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("warehouses.id"), index=True, nullable=False
+        Integer, ForeignKey("warehouses.id"), index=True, nullable=True
     )
     quantity_fulfilled: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     quantity_backordered: Mapped[int] = mapped_column(

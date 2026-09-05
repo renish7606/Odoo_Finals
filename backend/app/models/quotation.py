@@ -1,4 +1,6 @@
-"""Provide quotation headers and lines for future sales workflows."""
+from __future__ import annotations
+
+from typing import Optional
 
 from datetime import datetime
 from decimal import Decimal
@@ -41,6 +43,7 @@ class Quotation(Base):
     customer = relationship("Customer", back_populates="quotations")
     rep = relationship("User", back_populates="quotations")
     lines = relationship("QuotationLine", back_populates="quotation", cascade="all, delete-orphan")
+    invoices = relationship("Invoice", back_populates="quotation", cascade="all, delete-orphan")
 
 
 class QuotationLine(Base):
@@ -51,11 +54,14 @@ class QuotationLine(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     quotation_id: Mapped[int] = mapped_column(ForeignKey("quotations.id"), index=True)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), index=True)
+    plan_id: Mapped[Optional[int]] = mapped_column(ForeignKey("subscription_plans.id"), nullable=True, index=True)
     quantity: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     unit_price: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     discount_percent: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=0)
     line_total: Mapped[Decimal] = mapped_column(Numeric(12, 2))
-    category_snapshot: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    category_snapshot: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
 
     quotation = relationship("Quotation", back_populates="lines")
     product = relationship("Product", back_populates="quotation_lines")
+    plan = relationship("SubscriptionPlan")
+    billing_schedules = relationship("BillingSchedule", back_populates="quotation_line", cascade="all, delete-orphan")

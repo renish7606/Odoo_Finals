@@ -1,4 +1,4 @@
-"""Offer internal and restricted customer-portal authentication routes."""
+from __future__ import annotations
 
 import json
 from urllib.parse import parse_qs

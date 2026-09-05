@@ -41,7 +41,7 @@ class SplitAllocation:
 
     quotation_line_id: int
     product_id: int
-    warehouse_id: int
+    warehouse_id: int | None
     warehouse_name: str
     quantity_fulfilled: int
     quantity_backordered: int = 0
@@ -111,7 +111,7 @@ def compute_suggested_split(
                 SplitAllocation(
                     quotation_line_id=ol.quotation_line_id,
                     product_id=ol.product_id,
-                    warehouse_id=0,
+                    warehouse_id=None,
                     warehouse_name="(none)",
                     quantity_fulfilled=0,
                     quantity_backordered=ol.quantity_required,
@@ -199,12 +199,12 @@ def compute_suggested_split(
 
         if still_needed > 0:
             has_backorders = True
-            # Record the backorder portion — warehouse_id=0 signals backorder
+            # Record the backorder portion without assigning a warehouse yet.
             allocations.append(
                 SplitAllocation(
                     quotation_line_id=ol.quotation_line_id,
                     product_id=ol.product_id,
-                    warehouse_id=0,
+                    warehouse_id=None,
                     warehouse_name="(backorder)",
                     quantity_fulfilled=0,
                     quantity_backordered=still_needed,
