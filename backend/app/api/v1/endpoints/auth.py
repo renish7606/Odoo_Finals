@@ -1,6 +1,6 @@
 """Offer internal and restricted customer-portal authentication routes."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -67,10 +67,16 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db), requester: Use
 
 
 @router.post("/login")
-def login(payload: LoginRequest, db: Session = Depends(get_db)) -> dict:
-    """Return an internal token after a password check."""
-    user = db.scalar(select(User).where(User.email == payload.email))
-    if user is None or not user.is_active or not verify_password(payload.password, user.hashed_password):
+async def login(request: Request, db: Session = Depends(get_db)) -> dict:
+    """Accept JSON or Swagger form login and return an internal token."""
+    if request.headers.get("content-type", "").startswith("application/x-www-form-urlencoded"):
+        form = await request.form()
+        email, password = form.get("username"), form.get("password")
+    else:
+        payload = LoginRequest.model_validate(await request.json())
+        email, password = payload.email, payload.password
+    user = db.scalar(select(User).where(User.email == email))
+    if user is None or not user.is_active or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
     return {"access_token": create_access_token(str(user.id)), "token_type": "bearer"}
 
