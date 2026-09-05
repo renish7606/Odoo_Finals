@@ -1,0 +1,1 @@
+"""Warehouse repository placeholder."""

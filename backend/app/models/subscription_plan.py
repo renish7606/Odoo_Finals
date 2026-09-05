@@ -1,0 +1,1 @@
+"""Subscription plan model placeholder."""

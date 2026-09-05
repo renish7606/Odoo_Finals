@@ -1,0 +1,1 @@
+"""Quotation item model placeholder."""

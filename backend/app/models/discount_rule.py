@@ -1,0 +1,1 @@
+"""Discount rule model placeholder."""

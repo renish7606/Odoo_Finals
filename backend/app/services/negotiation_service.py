@@ -1,0 +1,1 @@
+"""Negotiation service placeholder."""

@@ -1,0 +1,1 @@
+"""Fulfillment model placeholder."""

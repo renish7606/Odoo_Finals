@@ -1,0 +1,1 @@
+"""Warehouse stock model placeholder."""

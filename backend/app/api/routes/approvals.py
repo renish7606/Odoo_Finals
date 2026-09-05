@@ -1,0 +1,1 @@
+"""Approval routes placeholder."""
