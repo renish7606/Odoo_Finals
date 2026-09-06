@@ -5,7 +5,8 @@ from decimal import Decimal
 from sqlalchemy import select
 
 from app.core.security import hash_password
-from app.db.session import SessionLocal
+from app.db.base_class import Base
+from app.db.session import SessionLocal, engine
 from app.models.customer import Customer, CustomerTier
 from app.models.product import Product
 from app.models.quotation import Quotation, QuotationLine, QuotationStatus
@@ -15,6 +16,7 @@ from app.models.user import User
 
 def seed_data() -> None:
     """Add missing sample users, customers, and products without duplicates."""
+    Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     try:
         sample_users = [

@@ -6,17 +6,29 @@ import { auth } from '../auth.js';
 
 export function renderNavbar(activeRoute = 'quotations') {
   const user = auth.getUser() || { full_name: 'User', role: 'SalesRep' };
-  const userRole = user.selected_role || user.role || '';
+  const userRole = (user.selected_role || user.role || '').toLowerCase();
+  const isCustomer = userRole === 'customer';
 
-  const navItems = [
-    { key: 'quotations', label: 'My Quotations', icon: 'request_quote', href: '#/quotations' },
-    { key: 'messages', label: 'Messages', icon: 'chat_bubble', href: '#/messages' },
-    { key: 'profile', label: 'Profile', icon: 'account_circle', href: '#/profile' },
-  ];
-
-  if (userRole === 'Admin') {
-    navItems.unshift({ key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' });
-  }
+  const navItems = isCustomer
+    ? [
+        { key: 'quotations', label: 'My Quotations', icon: 'request_quote', href: '#/quotations' },
+        { key: 'messages', label: 'Messages', icon: 'chat_bubble', href: '#/messages' },
+        { key: 'profile', label: 'Profile', icon: 'account_circle', href: '#/profile' },
+      ]
+    : [
+        { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' },
+        { key: 'quotations', label: 'Quotations', icon: 'request_quote', href: '#/quotations' },
+        { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
+        { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
+        { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
+        { key: 'customers', label: 'Customers', icon: 'corporate_fare', href: '#/customers' },
+        { key: 'products', label: 'Products', icon: 'inventory_2', href: '#/products' },
+        { key: 'pricing', label: 'Pricing', icon: 'sell', href: '#/pricing' },
+        { key: 'subscriptions', label: 'Subscriptions', icon: 'sync', href: '#/subscriptions' },
+        { key: 'reports', label: 'Reports', icon: 'bar_chart', href: '#/reports' },
+        { key: 'messages', label: 'Messages', icon: 'chat_bubble', href: '#/messages' },
+        { key: 'profile', label: 'Profile', icon: 'account_circle', href: '#/profile' },
+      ];
 
   const navLinksHtml = navItems
     .map((item) => {

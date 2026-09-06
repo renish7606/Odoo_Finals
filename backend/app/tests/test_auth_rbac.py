@@ -1,17 +1,23 @@
 """Test the shared login, role, and portal token boundaries."""
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.db.init_db import seed_data
 
-# These tests use the local seed records created by app.db.init_db.
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def ensure_seeded_data():
+    seed_data()
 
 
 def login(email: str, password: str = "ChangeMe123!") -> str:
     """Get one internal token for a seeded local user."""
     response = client.post("/api/v1/auth/login", json={"email": email, "password": password})
-    assert response.status_code == 200
+    assert response.status_code == 200, f"Login failed for {email}: {response.text}"
     return response.json()["access_token"]
 
 

@@ -93,8 +93,8 @@ export class Router {
 
       case 'dashboard': {
         const user = auth.getUser();
-        const userRole = user ? (user.selected_role || user.role) : '';
-        if (userRole !== 'Admin') {
+        const userRole = (user?.selected_role || user?.role || '').toLowerCase();
+        if (userRole === 'customer') {
           window.location.hash = '#/quotations';
           break;
         }

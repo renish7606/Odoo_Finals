@@ -20,7 +20,11 @@ def override_require_portal_scope():
     return mock_customer
 
 
-app.dependency_overrides[deps.require_portal_scope] = override_require_portal_scope
+@pytest.fixture(autouse=True)
+def setup_and_teardown_overrides():
+    app.dependency_overrides[deps.require_portal_scope] = override_require_portal_scope
+    yield
+    app.dependency_overrides.clear()
 
 
 class MockQuery:
