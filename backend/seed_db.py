@@ -29,6 +29,8 @@ from app.models.user import User
 from app.models.customer import Customer, CustomerTier
 from app.models.product import Product
 from app.models.quotation import Quotation, QuotationLine, QuotationStatus
+from app.models.warehouse import Warehouse
+from app.models.warehouse_stock import WarehouseStock
 
 
 def seed():
@@ -119,6 +121,23 @@ def seed():
         mock_products = [p1, p2, p3, p4, p5]
         for prod in mock_products:
             db.add(prod)
+        db.flush()
+
+        # Warehouse fixtures make the fulfillment split flow immediately testable.
+        wh_ny = Warehouse(name="Equinix NY4 North America Hub", location="Secaucus, NJ", shipping_cost_weight=1.0)
+        wh_fra = Warehouse(name="Frankfurt FRA1 European Gateway", location="Frankfurt, DE", shipping_cost_weight=1.15)
+        db.add_all([wh_ny, wh_fra])
+        db.flush()
+        for warehouse in (wh_ny, wh_fra):
+            for product in mock_products:
+                db.add(WarehouseStock(
+                    warehouse_id=warehouse.id,
+                    product_id=product.id,
+                    quantity_on_hand=500,
+                    reserved_quantity=0,
+                    replenishment_threshold=50,
+                    replenishment_lead_time_days=7,
+                ))
         db.flush()
 
         # Create Mock Quotations for Multiple Users
