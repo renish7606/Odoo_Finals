@@ -154,6 +154,22 @@ class OverrideSplitRequest(BaseModel):
     reason: str | None = None
 
 
+class ManualOverrideRequest(BaseModel):
+    """Commercial override request routed for approval."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    quotation_id: int = Field(..., gt=0)
+    override_type: str = Field(..., min_length=1)
+    current_value: str = Field(..., min_length=1)
+    allowed_maximum: str = Field(..., min_length=1)
+    new_value: str = Field(..., min_length=1)
+    reason: str = Field(..., min_length=10)
+    business_justification: str = Field(..., min_length=10)
+    supporting_information: str | None = None
+    approver: str = Field(..., min_length=1)
+
+
 class FulfillmentSplitRead(BaseModel):
     """Return a fulfillment split to the client."""
 

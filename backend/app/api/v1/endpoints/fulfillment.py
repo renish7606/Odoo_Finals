@@ -19,7 +19,7 @@ from app.models.fulfillment import (
     FulfillmentSplitLine,
     FulfillmentStatus,
 )
-from app.models.quotation import Quotation, QuotationLine
+from app.models.quotation import Quotation, QuotationLine, QuotationStatus
 from app.models.role import Role
 from app.models.user import User
 from app.models.warehouse import Warehouse
@@ -28,6 +28,7 @@ from app.schemas.fulfillment import (
     AcceptSplitRequest,
     BackorderRead,
     FulfillmentSplitRead,
+    ManualOverrideRequest,
     OverrideSplitRequest,
     SplitLineDetail,
     SuggestedSplitResponse,
@@ -321,6 +322,35 @@ def override_split(
     db.commit()
     db.refresh(split)
     return FulfillmentSplitRead.model_validate(split)
+
+
+@router.post("/manual-override")
+def submit_manual_override(
+    payload: ManualOverrideRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role(*_ALL_INTERNAL)),
+) -> dict:
+    """Route a commercial override to approval and preserve its submitted details."""
+    quotation = db.get(Quotation, payload.quotation_id)
+    if quotation is None:
+        raise HTTPException(status_code=404, detail="Quotation not found")
+
+    quotation.status = QuotationStatus.PENDING_APPROVAL
+    reason = (
+        f"{payload.override_type}: {payload.current_value} -> {payload.new_value}; "
+        f"maximum {payload.allowed_maximum}; approver {payload.approver}; "
+        f"reason: {payload.reason}; justification: {payload.business_justification}; "
+        f"supporting information: {payload.supporting_information or 'None'}"
+    )
+    db.add(AuditLog(
+        entity_type="manual_override",
+        entity_id=quotation.id,
+        user_id=user.id,
+        action="override_submitted",
+        reason=reason,
+    ))
+    db.commit()
+    return {"status": "Pending Approval", "quotation_id": quotation.id, "approver": payload.approver}
 
 
 # ── Backorders ─────────────────────────────────────────────────────────────

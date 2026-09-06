@@ -1,6 +1,8 @@
 """CRUD and workflow endpoints for subscription plans, proration, and cancellation."""
 from __future__ import annotations
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -11,6 +13,7 @@ from app.models.subscription import (
     BillingSchedule,
     CancellationRule,
     ProrationRule,
+    ScheduleStatus,
     SubscriptionPlan,
 )
 from app.models.quotation import QuotationLine
@@ -68,6 +71,86 @@ def get_plan(plan_id: int, db: DbSession) -> SubscriptionPlanOut:
     return plan
 
 
+@router.get("/plans/{plan_id}/billing-detail")
+def get_plan_billing_detail(plan_id: int, db: DbSession) -> dict:
+    """Return a plan with its billing schedule and related customer context."""
+    plan = db.get(SubscriptionPlan, plan_id)
+    if not plan:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found")
+
+    schedules = (
+        db.query(BillingSchedule)
+        .filter(BillingSchedule.plan_id == plan_id)
+        .order_by(BillingSchedule.billing_date)
+        .all()
+    )
+    schedule_rows = []
+    customers = set()
+    for schedule in schedules:
+        line = schedule.quotation_line
+        quotation = line.quotation if line else None
+        customer = quotation.customer if quotation else None
+        customer_name = customer.name if customer else None
+        if customer_name:
+            customers.add(customer_name)
+        schedule_rows.append({
+            "id": schedule.id,
+            "quotation_line_id": schedule.quotation_line_id,
+            "billing_date": schedule.billing_date,
+            "amount": schedule.amount,
+            "status": schedule.status,
+            "customer_name": customer_name,
+            "quotation_id": quotation.id if quotation else None,
+            "projected": False,
+        })
+
+    if not schedule_rows:
+        cycle_count = {"monthly": 12, "quarterly": 4, "yearly": 1}[plan.cadence.value]
+        cycle_step = {"monthly": relativedelta(months=1), "quarterly": relativedelta(months=3), "yearly": relativedelta(years=1)}[plan.cadence.value]
+        start_date = date.today()
+        for cycle_index in range(cycle_count):
+            schedule_rows.append({
+                "id": f"projected-{plan.id}-{cycle_index + 1}",
+                "quotation_line_id": None,
+                "billing_date": start_date + cycle_step * cycle_index,
+                "amount": plan.price,
+                "status": ScheduleStatus.SCHEDULED if plan.is_active else ScheduleStatus.FAILED,
+                "customer_name": None,
+                "quotation_id": None,
+                "projected": True,
+            })
+
+    return {
+        "id": plan.id,
+        "name": plan.name,
+        "cadence": plan.cadence,
+        "product_id": plan.product_id,
+        "price": plan.price,
+        "is_active": plan.is_active,
+        "created_at": plan.created_at,
+        "customers": sorted(customers),
+        "schedules": schedule_rows,
+    }
+
+
+@router.post("/plans/{plan_id}/cancel")
+def cancel_plan(plan_id: int, db: DbSession, _: User = Depends(require_role("Admin", "SalesManager"))) -> dict:
+    """Deactivate a plan and cancel its future attached billing schedules."""
+    plan = db.get(SubscriptionPlan, plan_id)
+    if not plan:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found")
+    plan.is_active = False
+    schedules = db.query(BillingSchedule).filter(
+        BillingSchedule.plan_id == plan_id,
+        BillingSchedule.status == ScheduleStatus.SCHEDULED,
+        BillingSchedule.billing_date >= date.today(),
+    ).all()
+    for schedule in schedules:
+        schedule.status = "Failed"
+    db.commit()
+    return {"id": plan.id, "is_active": plan.is_active, "cancelled_schedules": len(schedules)}
+
+
 @router.patch("/plans/{plan_id}", response_model=SubscriptionPlanOut)
 def update_plan(
     plan_id: int,
@@ -81,6 +164,10 @@ def update_plan(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found")
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(plan, field, value)
+    for schedule in plan.billing_schedules:
+        if schedule.status == ScheduleStatus.SCHEDULED:
+            quantity = schedule.quotation_line.quantity if schedule.quotation_line else 1
+            schedule.amount = plan.price * quantity
     db.commit()
     db.refresh(plan)
     return plan

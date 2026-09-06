@@ -15,8 +15,12 @@ import { renderPricingPage, loadPricing, setupPricingEvents } from './pages/pric
 import { renderCustomersPage, loadCustomers, setupCustomersEvents } from './pages/customers.js';
 import { renderCustomerPortalPage, loadCustomerPortal, setupCustomerPortalEvents } from './pages/customer-portal.js';
 import { renderFulfillmentPage, loadFulfillment, setupFulfillmentEvents } from './pages/fulfillment.js';
+import { renderFulfillmentDetailPage, loadFulfillmentDetail, setupFulfillmentDetailEvents } from './pages/fulfillment-detail.js';
+import { renderManualOverridePage, loadManualOverride, setupManualOverrideEvents } from './pages/fulfillment-override.js';
 import { renderInvoicesPage, loadInvoices, setupInvoicesEvents } from './pages/invoices.js';
+import { renderInvoiceDetailPage, loadInvoiceDetail, setupInvoiceDetailEvents } from './pages/invoice-detail.js';
 import { renderSubscriptionsPage, loadSubscriptions, setupSubscriptionsEvents } from './pages/subscriptions.js';
+import { renderSubscriptionDetailPage, loadSubscriptionDetail, setupSubscriptionDetailEvents } from './pages/subscription-detail.js';
 import { renderReportsPage, loadReports, setupReportsEvents } from './pages/reports.js';
 
 export class Router {
@@ -195,37 +199,67 @@ export class Router {
 
       case 'fulfillment': {
         this.showLoading();
-        const data = await loadFulfillment();
-        this.appEl.innerHTML = `
-          ${renderNavbar('fulfillment')}
-          <main class="main-content">${renderFulfillmentPage(data)}</main>
-        `;
+        if (param) {
+          const data = await loadFulfillmentDetail(param);
+          this.appEl.innerHTML = `${renderNavbar('fulfillment')}<main class="main-content">${renderFulfillmentDetailPage(data)}</main>`;
+          setupNavbarEvents();
+          setupFulfillmentDetailEvents(param);
+        } else {
+          const data = await loadFulfillment();
+          this.appEl.innerHTML = `${renderNavbar('fulfillment')}<main class="main-content">${renderFulfillmentPage(data)}</main>`;
+          setupNavbarEvents();
+          setupFulfillmentEvents();
+        }
+        break;
+      }
+
+      case 'fulfillment-override': {
+        this.showLoading();
+        const quote = await loadManualOverride(param);
+        this.appEl.innerHTML = `${renderNavbar('fulfillment')}<main class="main-content">${renderManualOverridePage(quote)}</main>`;
         setupNavbarEvents();
-        setupFulfillmentEvents();
+        setupManualOverrideEvents(param);
         break;
       }
 
       case 'invoices': {
-        this.showLoading();
-        const invoices = await loadInvoices();
-        this.appEl.innerHTML = `
-          ${renderNavbar('invoices')}
-          <main class="main-content">${renderInvoicesPage(invoices)}</main>
-        `;
-        setupNavbarEvents();
-        setupInvoicesEvents();
+        if (param) {
+          // Invoice detail page: #/invoices/:id
+          this.showLoading();
+          const inv = await loadInvoiceDetail(param);
+          this.appEl.innerHTML = `
+            ${renderNavbar('invoices')}
+            <main class="main-content">${renderInvoiceDetailPage(inv)}</main>
+          `;
+          setupNavbarEvents();
+          setupInvoiceDetailEvents(inv);
+        } else {
+          // Invoice list page: #/invoices
+          this.showLoading();
+          const invoices = await loadInvoices();
+          this.appEl.innerHTML = `
+            ${renderNavbar('invoices')}
+            <main class="main-content">${renderInvoicesPage(invoices)}</main>
+          `;
+          setupNavbarEvents();
+          setupInvoicesEvents();
+        }
         break;
       }
 
       case 'subscriptions': {
         this.showLoading();
-        const plans = await loadSubscriptions();
-        this.appEl.innerHTML = `
-          ${renderNavbar('subscriptions')}
-          <main class="main-content">${renderSubscriptionsPage(plans)}</main>
-        `;
-        setupNavbarEvents();
-        setupSubscriptionsEvents();
+        if (param) {
+          const detail = await loadSubscriptionDetail(param);
+          this.appEl.innerHTML = `${renderNavbar('subscriptions')}<main class="main-content">${renderSubscriptionDetailPage(detail)}</main>`;
+          setupNavbarEvents();
+          setupSubscriptionDetailEvents(detail);
+        } else {
+          const plans = await loadSubscriptions();
+          this.appEl.innerHTML = `${renderNavbar('subscriptions')}<main class="main-content">${renderSubscriptionsPage(plans)}</main>`;
+          setupNavbarEvents();
+          setupSubscriptionsEvents();
+        }
         break;
       }
 

@@ -33,6 +33,7 @@ class SubscriptionPlanOut(BaseModel):
     cadence: SubscriptionCadence
     product_id: int
     price: Decimal
+    is_active: bool
     created_at: datetime
 
     model_config = {"from_attributes": True}
