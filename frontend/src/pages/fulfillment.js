@@ -18,4 +18,23 @@ export function renderFulfillmentPage(data = {}) {
 
 export async function loadFulfillment() { try { const [warehouses, quotations] = await Promise.all([api.get('/warehouses').catch(() => []), api.get('/quotations').catch(() => [])]); return { warehouses, quotations }; } catch { return { warehouses: [], quotations: [] }; } }
 
-export function setupFulfillmentEvents() { document.getElementById('btn-suggest-split')?.addEventListener('click', () => alert('Open an awaiting order to calculate its live warehouse split.')); }
+export function setupFulfillmentEvents() {
+  document.getElementById('btn-suggest-split')?.addEventListener('click', async () => {
+    const button = document.getElementById('btn-suggest-split');
+    const originalLabel = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<span class="loading-spinner w-4 h-4 border-2 border-primary border-t-transparent"></span><span>Calculating Split...</span>';
+    try {
+      const quotations = await api.get('/quotations');
+      const order = quotations.find((quote) => quote.line_count > 0 && !['Fulfilled', 'Rejected'].includes(quote.status));
+      if (!order) throw new Error('No quotation with line items is awaiting fulfillment.');
+      await api.get(`/fulfillment/suggested-split?quotation_id=${order.id}`);
+      window.location.hash = `#/fulfillment/${order.id}`;
+    } catch (error) {
+      alert(`Could not calculate fulfillment split: ${error.message}`);
+    } finally {
+      button.disabled = false;
+      button.innerHTML = originalLabel;
+    }
+  });
+}
