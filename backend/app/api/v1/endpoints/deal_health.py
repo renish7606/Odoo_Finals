@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from app.api import deps
 from app.models.deal_health import StalledDealFlag, DiscountAnomalyFlag
@@ -9,6 +10,9 @@ from app.models.user import User
 from app.services import deal_health_service
 
 router = APIRouter(prefix="/deal_health", tags=["deal_health"])
+
+class ResolvePayload(BaseModel):
+    issue_type: Optional[str] = None
 
 
 @router.get("/stalled")
@@ -56,3 +60,47 @@ def nudge_deal(quotation_id: int, db: Session = Depends(deps.get_db), current_us
     db.commit()
     
     return {"status": "success", "message": f"Nudge sent for quotation {quotation_id}"}
+
+
+@router.post("/{quotation_id}/escalate")
+def escalate_deal(quotation_id: int, db: Session = Depends(deps.get_db), current_user: User = Depends(deps.get_current_user)) -> Any:
+    """Log an escalation for a specific quotation."""
+    audit = AuditLog(
+        entity_type="Quotation",
+        entity_id=quotation_id,
+        user_id=current_user.id,
+        action="escalate",
+        reason="Escalated to Manager for Deal Health risk resolution"
+    )
+    db.add(audit)
+    db.commit()
+    
+    return {"status": "success", "message": f"Deal {quotation_id} escalated to Manager"}
+
+
+@router.post("/{quotation_id}/resolve")
+def resolve_deal(quotation_id: int, payload: ResolvePayload, db: Session = Depends(deps.get_db), current_user: User = Depends(deps.get_current_user)) -> Any:
+    """Log risk resolution for a specific quotation and clear flags."""
+    audit = AuditLog(
+        entity_type="Quotation",
+        entity_id=quotation_id,
+        user_id=current_user.id,
+        action="resolve",
+        reason=f"Deal Health risk resolved: {payload.issue_type}" if payload.issue_type else "Deal Health risk resolved"
+    )
+    db.add(audit)
+    
+    # Remove from flags so it no longer appears in at-risk queries
+    if not payload.issue_type or payload.issue_type == "stalled":
+        stalled = db.query(StalledDealFlag).filter(StalledDealFlag.quotation_id == quotation_id).first()
+        if stalled:
+            db.delete(stalled)
+            
+    if not payload.issue_type or payload.issue_type == "discount_anomaly":
+        anomaly = db.query(DiscountAnomalyFlag).filter(DiscountAnomalyFlag.quotation_id == quotation_id).first()
+        if anomaly:
+            db.delete(anomaly)
+            
+    db.commit()
+    
+    return {"status": "success", "message": f"Deal {quotation_id} risks resolved"}

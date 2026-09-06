@@ -11,6 +11,7 @@ export function renderNavbar(activeRoute = 'dashboard') {
     { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' },
     { key: 'quotations', label: 'Quotations', icon: 'request_quote', href: '#/quotations' },
     { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
+    { key: 'deal-health', label: 'Deal Health', icon: 'crisis_alert', href: '#/deal-health' },
     { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
     { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
     { key: 'customers', label: 'Customers', icon: 'corporate_fare', href: '#/customers' },

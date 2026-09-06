@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -14,7 +14,7 @@ ANOMALY_DISCOUNT_THRESHOLD_MULTIPLIER = Decimal("1.5") # e.g. 1.5x their histori
 
 def detect_stalled_deals(db: Session) -> int:
     """Find and flag deals inactive for > N days."""
-    cutoff = datetime.utcnow() - timedelta(days=STALLED_DAYS_THRESHOLD)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=STALLED_DAYS_THRESHOLD)
     
     # Active negotiation or draft statuses
     active_statuses = [
@@ -31,7 +31,7 @@ def detect_stalled_deals(db: Session) -> int:
 
     flagged_count = 0
     for q in stalled_quotations:
-        days_inactive = (datetime.utcnow() - q.updated_at).days
+        days_inactive = (datetime.now(timezone.utc) - q.updated_at).days
         
         # Check if already flagged
         existing = db.query(StalledDealFlag).filter(StalledDealFlag.quotation_id == q.id).first()

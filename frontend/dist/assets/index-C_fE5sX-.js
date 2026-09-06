@@ -1,4 +1,4 @@
-(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))n(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const r of t.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&n(r)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function n(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const A="/api/v1";class h extends Error{constructor(s,i,n){super(s),this.name="ApiError",this.status=i,this.data=n}}const c={getToken(){return localStorage.getItem("dealflow_token")},setToken(a){a?localStorage.setItem("dealflow_token",a):localStorage.removeItem("dealflow_token")},getHeaders(a={}){const s={"Content-Type":"application/json",...a},i=this.getToken();return i&&(s.Authorization=`Bearer ${i}`),s},async request(a,s={}){const i=`${A}${a}`,n=this.getHeaders(s.headers),e={...s,headers:n};e.body&&typeof e.body=="object"&&!(e.body instanceof FormData)&&(e.body=JSON.stringify(e.body));try{const t=await fetch(i,e);if(t.status===401&&!a.includes("/auth/login"))throw this.setToken(null),localStorage.removeItem("dealflow_user"),window.location.hash="#/login",new h("Session expired. Please sign in again.",401,null);if(t.status===204)return null;const r=t.headers.get("content-type")||"";let o=null;if(r.includes("application/json")?o=await t.json():o=await t.text(),!t.ok){const l=(o==null?void 0:o.detail)||(o==null?void 0:o.message)||`Request failed with status ${t.status}`;throw new h(l,t.status,o)}return o}catch(t){throw t instanceof h?t:new h(t.message||"Network connection failed",0,null)}},get(a,s){let i=a;if(s){const n=new URLSearchParams(s).toString();n&&(i+=`?${n}`)}return this.request(i,{method:"GET"})},post(a,s){return this.request(a,{method:"POST",body:s})},put(a,s){return this.request(a,{method:"PUT",body:s})},delete(a){return this.request(a,{method:"DELETE"})}},y={getUser(){try{const a=localStorage.getItem("dealflow_user");return a?JSON.parse(a):null}catch{return null}},setUser(a){a?localStorage.setItem("dealflow_user",JSON.stringify(a)):localStorage.removeItem("dealflow_user")},isAuthenticated(){return!!c.getToken()},async login(a,s){const i=await c.post("/auth/login",{email:a,password:s});if(i.access_token){c.setToken(i.access_token);try{const n=await c.get("/auth/me");return this.setUser(n),{success:!0,user:n}}catch{const n={email:a,full_name:"Eleanor Vance",role:"Sales Director"};return this.setUser(n),{success:!0,user:n}}}throw new Error("Authentication failed: No access token received")},logout(){c.setToken(null),this.setUser(null),window.location.hash="#/login"}};function f(a="dashboard"){const s=y.getUser()||{full_name:"Eleanor Vance",role:"Sales Director"};return`
+(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))n(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const r of t.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&n(r)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function n(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();const V="/api/v1";class D extends Error{constructor(s,i,n){super(s),this.name="ApiError",this.status=i,this.data=n}}const c={getToken(){return localStorage.getItem("dealflow_token")},setToken(a){a?localStorage.setItem("dealflow_token",a):localStorage.removeItem("dealflow_token")},getHeaders(a={}){const s={"Content-Type":"application/json",...a},i=this.getToken();return i&&(s.Authorization=`Bearer ${i}`),s},async request(a,s={}){const i=`${V}${a}`,n=this.getHeaders(s.headers),e={...s,headers:n};e.body&&typeof e.body=="object"&&!(e.body instanceof FormData)&&(e.body=JSON.stringify(e.body));try{const t=await fetch(i,e);if(t.status===401&&!a.includes("/auth/login"))throw this.setToken(null),localStorage.removeItem("dealflow_user"),window.location.hash="#/login",new D("Session expired. Please sign in again.",401,null);if(t.status===204)return null;const r=t.headers.get("content-type")||"";let o=null;if(r.includes("application/json")?o=await t.json():o=await t.text(),!t.ok){const m=(o==null?void 0:o.detail)||(o==null?void 0:o.message)||`Request failed with status ${t.status}`;throw new D(m,t.status,o)}return o}catch(t){throw t instanceof D?t:new D(t.message||"Network connection failed",0,null)}},get(a,s){let i=a;if(s){const n=new URLSearchParams(s).toString();n&&(i+=`?${n}`)}return this.request(i,{method:"GET"})},post(a,s){return this.request(a,{method:"POST",body:s})},put(a,s){return this.request(a,{method:"PUT",body:s})},delete(a){return this.request(a,{method:"DELETE"})}},L={getUser(){try{const a=localStorage.getItem("dealflow_user");return a?JSON.parse(a):null}catch{return null}},setUser(a){a?localStorage.setItem("dealflow_user",JSON.stringify(a)):localStorage.removeItem("dealflow_user")},isAuthenticated(){return!!c.getToken()},async login(a,s){const i=await c.post("/auth/login",{email:a,password:s});if(i.access_token){c.setToken(i.access_token);try{const n=await c.get("/auth/me");return this.setUser(n),{success:!0,user:n}}catch{const n={email:a,full_name:"Eleanor Vance",role:"Sales Director"};return this.setUser(n),{success:!0,user:n}}}throw new Error("Authentication failed: No access token received")},logout(){c.setToken(null),this.setUser(null),window.location.hash="#/login"}};function g(a="dashboard"){const s=L.getUser()||{full_name:"Eleanor Vance",role:"Sales Director"};return`
     <header class="navbar-header">
       <div class="navbar-inner">
         <!-- Logo & Branding -->
@@ -59,7 +59,7 @@
         </div>
       </div>
     </header>
-  `}function b(){const a=document.getElementById("btn-logout");a&&a.addEventListener("click",()=>{confirm("Are you sure you want to sign out?")&&y.logout()})}function C(){return`
+  `}function y(){const a=document.getElementById("btn-logout");a&&a.addEventListener("click",()=>{confirm("Are you sure you want to sign out?")&&L.logout()})}function O(){return`
     <div class="login-wrapper">
       <!-- Ambient clay orbs -->
       <div class="ambient-orb orb-1"></div>
@@ -189,52 +189,34 @@
         </div>
       </div>
     </div>
-  `}function L(){const a=document.getElementById("login-form"),s=document.getElementById("login-error"),i=document.getElementById("btn-submit-login"),n=document.getElementById("toggle-pw"),e=document.getElementById("login-password"),t=document.getElementById("pw-icon");n&&e&&t&&n.addEventListener("click",()=>{e.type==="password"?(e.type="text",t.textContent="visibility_off"):(e.type="password",t.textContent="visibility")}),document.querySelectorAll(".sso-btn").forEach(r=>{r.addEventListener("click",()=>{const o=r.getAttribute("data-provider");alert(`Initiating SAML 2.0 / OIDC handshake with ${o}...`)})}),a&&a.addEventListener("submit",async r=>{r.preventDefault(),s.classList.add("hidden"),s.textContent="",i.disabled=!0,i.innerHTML='<span class="loading-spinner"></span> Authenticating...';const o=document.getElementById("login-email").value.trim(),l=e.value.trim();try{await y.login(o,l),window.location.hash="#/dashboard"}catch(d){s.textContent=d.message||"Login failed. Check your credentials.",s.classList.remove("hidden")}finally{i.disabled=!1,i.innerHTML='<span>Sign In to DealFlow360</span><span class="material-symbols-outlined text-base">arrow_forward</span>'}})}const g={show({title:a,content:s,onConfirm:i,confirmText:n="Confirm",cancelText:e="Cancel",showConfirm:t=!0}){const r=document.getElementById("df-modal-backdrop");r&&r.remove();const o=`
-      <div id="df-modal-backdrop" class="modal-backdrop">
-        <div class="modal-card">
-          <div class="modal-header">
-            <h3 class="modal-title">${a}</h3>
-            <button type="button" class="modal-close-btn" id="df-modal-close">
-              <span class="material-symbols-outlined text-lg">close</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            ${s}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="df-modal-cancel">${e}</button>
-            ${t?`<button type="button" class="btn btn-primary" id="df-modal-confirm">${n}</button>`:""}
-          </div>
-        </div>
-      </div>
-    `;document.body.insertAdjacentHTML("beforeend",o);const l=document.getElementById("df-modal-backdrop"),d=document.getElementById("df-modal-close"),x=document.getElementById("df-modal-cancel"),p=document.getElementById("df-modal-confirm"),u=()=>{l.classList.add("fade-out"),setTimeout(()=>l.remove(),200)};return d.addEventListener("click",u),x.addEventListener("click",u),l.addEventListener("click",v=>{v.target===l&&u()}),p&&i&&p.addEventListener("click",async()=>{p.disabled=!0,p.innerHTML='<span class="loading-spinner"></span> Processing...';try{await i()!==!1&&u()}catch(v){alert(v.message||"Action failed")}finally{p.disabled=!1,p.innerHTML=n}}),{close:u}}};function _(a={}){const{summary:s={},quotations:i=[]}=a,n=s.total_revenue?`$${Number(s.total_revenue).toLocaleString()}`:"$4,820,500",e=s.pending_approvals??12,t=(s.total_quotations||s.draft_count)&&s.total_quotations||38,r=s.win_rate?`${s.win_rate}%`:"68.5%",o=(i.length>0?i.slice(0,6):[{id:8492,deal_reference:"DEAL-8492",rep_name:"Marcus Hayes",customer_name:"Acme Corp Global ERP",total_amount:34e4,status:"Approved",time:"Today, 09:42 AM"},{id:8488,deal_reference:"DEAL-8488",rep_name:"Sarah Lin",customer_name:"Starlight Pharma Logistics",total_amount:115e4,status:"Under Negotiation",time:"Today, 08:15 AM"},{id:8475,deal_reference:"DEAL-8475",rep_name:"Eleanor Vance",customer_name:"Helios Solar Microgrid Infra",total_amount:89e4,status:"Fulfilled",time:"Yesterday, 17:30 PM"},{id:8461,deal_reference:"DEAL-8461",rep_name:"David Kim",customer_name:"Apex Financial Cloud Vault",total_amount:475e3,status:"Draft",time:"Yesterday, 14:10 PM"}]).map(l=>{let d="badge-primary";const x=(l.status||"").toLowerCase();return x.includes("approve")?d="badge-success":x.includes("negotiat")||x.includes("review")||x.includes("pending")?d="badge-warning":x.includes("fulfill")?d="badge-info":x.includes("draft")&&(d="badge-neutral"),`
-      <tr class="table-row hover:bg-surface-container/50 transition-colors">
+  `}function W(){const a=document.getElementById("login-form"),s=document.getElementById("login-error"),i=document.getElementById("btn-submit-login"),n=document.getElementById("toggle-pw"),e=document.getElementById("login-password"),t=document.getElementById("pw-icon");n&&e&&t&&n.addEventListener("click",()=>{e.type==="password"?(e.type="text",t.textContent="visibility_off"):(e.type="password",t.textContent="visibility")}),document.querySelectorAll(".sso-btn").forEach(r=>{r.addEventListener("click",()=>{const o=r.getAttribute("data-provider");alert(`Initiating SAML 2.0 / OIDC handshake with ${o}...`)})}),a&&a.addEventListener("submit",async r=>{r.preventDefault(),s.classList.add("hidden"),s.textContent="",i.disabled=!0,i.innerHTML='<span class="loading-spinner"></span> Authenticating...';const o=document.getElementById("login-email").value.trim(),m=e.value.trim();try{await L.login(o,m),window.location.hash="#/dashboard"}catch(l){s.textContent=l.message||"Login failed. Check your credentials.",s.classList.remove("hidden")}finally{i.disabled=!1,i.innerHTML='<span>Sign In to DealFlow360</span><span class="material-symbols-outlined text-base">arrow_forward</span>'}})}function z(a={}){const{summary:s={},quotations:i=[]}=a,n=s.total_revenue?`₹${Number(s.total_revenue).toLocaleString("en-IN")}`:"₹4,82,05,000",e=s.pending_approvals??1,t=(s.total_quotations||s.draft_count)&&s.total_quotations||5,r=s.win_rate?`${s.win_rate}%`:"40%",m=(i.length>0?i.slice(0,6):[{id:8492,deal_reference:"DEAL-0005",rep_name:"Marcus Vance",customer_name:"Terra Motors OEM",total_amount:0,status:"Approved",time:"Recent"},{id:8488,deal_reference:"DEAL-0004",rep_name:"Eleanor Vance",customer_name:"Zenith Retail AI",total_amount:0,status:"Pending Approval",time:"Recent"},{id:8475,deal_reference:"DEAL-0003",rep_name:"Marcus Vance",customer_name:"Starlight Dynamics Inc.",total_amount:0,status:"Under Negotiation",time:"Recent"},{id:8461,deal_reference:"DEAL-0001",rep_name:"Local Sales Rep",customer_name:"Bronze Buyer",total_amount:1300,status:"Draft",time:"Recent"},{id:8462,deal_reference:"DEAL-0002",rep_name:"Local Sales Manager",customer_name:"Gold Buyer",total_amount:1500,status:"Confirmed",time:"Recent"}]).map(l=>{let x="badge-primary";const d=(l.status||"").toLowerCase(),u=d.includes("approve")||d.includes("pending")||d.includes("negotiat");d.includes("approve")?x="badge-success":d.includes("negotiat")||d.includes("review")||d.includes("pending")?x="badge-warning":d.includes("fulfill")||d.includes("confirm")?x="badge-info":d.includes("draft")&&(x="badge-neutral");const v=l.rep_name||l.rep&&l.rep.full_name||"Sales Rep",f=v.split(" ").map(P=>P[0]).join("").substring(0,2).toUpperCase()||"SR",h=l.customer_name||l.customer&&l.customer.name||"Client Organization",w=l.deal_reference||(l.id?`DEAL-${String(l.id).padStart(4,"0")}`:"DEAL-0001");return`
+      <tr class="table-row hover:bg-surface-container/50 transition-colors activity-row" data-status="${l.status||"Draft"}" data-is-approval="${u?"true":"false"}" data-deal-id="${l.id}">
         <td class="py-3 px-4 text-xs font-mono text-on-surface-variant">${l.time||"Recent"}</td>
         <td class="py-3 px-4">
           <div class="flex items-center gap-2.5">
             <div class="avatar-sm">
-              <span>${(l.rep_name||"US").split(" ").map(p=>p[0]).join("").substring(0,2)}</span>
+              <span>${f}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-xs font-bold text-on-surface">${l.rep_name||"Sales Rep"}</span>
+              <span class="text-xs font-bold text-on-surface">${v}</span>
               <span class="text-[10px] text-on-surface-variant">Account Exec</span>
             </div>
           </div>
         </td>
         <td class="py-3 px-4">
           <div class="flex flex-col">
-            <span class="text-xs font-semibold text-on-surface">${l.customer_name||"Enterprise Client"}</span>
-            <span class="text-[10px] font-mono text-primary">${l.deal_reference||`DEAL-${l.id}`}</span>
+            <span class="text-xs font-semibold text-on-surface">${h}</span>
+            <span class="text-[10px] font-mono text-primary">${w}</span>
           </div>
         </td>
         <td class="py-3 px-4 text-xs font-mono font-bold text-on-surface">
-          $${Number(l.total_amount||0).toLocaleString()}
+          ₹${Number(l.total_amount||0).toLocaleString("en-IN")}
         </td>
         <td class="py-3 px-4">
-          <span class="badge ${d}">${l.status||"Draft"}</span>
+          <span class="badge ${x}">● ${l.status||"Draft"}</span>
         </td>
         <td class="py-3 px-4 text-right">
-          <a href="#/quotations/${l.id}" class="btn btn-secondary text-xs py-1 px-3">Review Deal</a>
+          <a href="#/quotations/${l.id}" class="btn btn-secondary text-xs py-1 px-3 btn-review-deal" data-id="${l.id}">Review Deal</a>
         </td>
       </tr>
     `}).join("");return`
@@ -251,16 +233,23 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
-          <div class="pill-badge flex items-center gap-2 text-xs">
-            <span class="material-symbols-outlined text-base text-primary">calendar_today</span>
-            <span>This Quarter: Jul 1 – Sep 30</span>
-            <span class="material-symbols-outlined text-sm text-outline">expand_more</span>
+          <!-- Quarter Date Selector -->
+          <div class="quarter-dropdown-wrapper" id="quarter-selector-wrapper">
+            <div class="pill-badge flex items-center gap-2 text-xs select-none" id="btn-quarter-toggle" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
+              <span class="material-symbols-outlined text-base text-primary select-none">calendar_today</span>
+              <span id="current-quarter-label">This Quarter: Jul 1 – Sep 30</span>
+              <span class="material-symbols-outlined text-sm text-outline transition-transform duration-200 select-none" id="quarter-chevron">expand_more</span>
+            </div>
+            <div class="quarter-menu" id="quarter-dropdown-menu">
+              <div class="quarter-menu-item selected" data-label="This Quarter: Jul 1 – Sep 30">This Quarter: Jul 1 – Sep 30</div>
+              <div class="quarter-menu-item" data-label="Q2: Apr 1 – Jun 30">Q2: Apr 1 – Jun 30</div>
+              <div class="quarter-menu-item" data-label="Q1: Jan 1 – Mar 31">Q1: Jan 1 – Mar 31</div>
+              <div class="quarter-menu-item" data-label="Q4: Oct 1 – Dec 31">Q4: Oct 1 – Dec 31</div>
+            </div>
           </div>
-          <button type="button" class="btn btn-secondary text-xs" id="btn-export-dash">
-            <span class="material-symbols-outlined text-base">ios_share</span>
-            <span>Export Report</span>
-          </button>
-          <button type="button" class="btn btn-primary text-xs" id="btn-new-deal-dash">
+
+          <!-- New Deal + Button -->
+          <button type="button" class="btn btn-primary text-xs flex items-center gap-1.5" id="btn-new-deal-dash">
             <span class="material-symbols-outlined text-base">add_circle</span>
             <span>New Deal +</span>
           </button>
@@ -280,7 +269,7 @@
           <div class="mt-4">
             <div class="text-2xl font-bold tracking-tight text-on-surface">${n}</div>
             <div class="flex items-center gap-1.5 mt-1">
-              <span class="badge badge-success text-[10px]">
+              <span class="badge badge-success text-[10px] flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">trending_up</span> +18.4%
               </span>
               <span class="text-[11px] text-on-surface-variant">vs last Q</span>
@@ -289,7 +278,7 @@
         </div>
 
         <!-- Metric 2: Pending Approvals -->
-        <div class="card card-extruded flex flex-col justify-between">
+        <div class="card card-extruded flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onclick="window.location.hash='#/approvals'">
           <div class="flex items-start justify-between">
             <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pending Approvals</span>
             <div class="icon-circle bg-tertiary-container/40">
@@ -302,7 +291,7 @@
             </div>
             <div class="flex items-center gap-1.5 mt-1">
               <span class="badge badge-warning text-[10px]">
-                <span class="material-symbols-outlined text-xs">priority_high</span> 4 High Priority
+                ● 4 High Priority
               </span>
               <span class="text-[11px] text-on-surface-variant">requires VP sign-off</span>
             </div>
@@ -310,7 +299,7 @@
         </div>
 
         <!-- Metric 3: Active Quotations -->
-        <div class="card card-extruded flex flex-col justify-between">
+        <div class="card card-extruded flex flex-col justify-between cursor-pointer hover:shadow-md transition-shadow" onclick="window.location.hash='#/quotations'">
           <div class="flex items-start justify-between">
             <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Active Quotations</span>
             <div class="icon-circle bg-surface-container-high/60">
@@ -339,7 +328,7 @@
           <div class="mt-4">
             <div class="text-2xl font-bold tracking-tight text-on-surface">${r}</div>
             <div class="flex items-center gap-1.5 mt-1">
-              <span class="badge badge-success text-[10px]">
+              <span class="badge badge-success text-[10px] flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">arrow_upward</span> +4.2% YoY
               </span>
               <span class="text-[11px] text-on-surface-variant">target 65%</span>
@@ -402,15 +391,15 @@
             <div class="grid grid-cols-3 text-center pt-2">
               <div>
                 <span class="text-xs font-semibold text-on-surface">July</span>
-                <p class="text-[11px] font-mono text-on-surface-variant">$1,220,000</p>
+                <p class="text-[11px] font-mono text-on-surface-variant">₹12,20,000</p>
               </div>
               <div>
                 <span class="text-xs font-semibold text-on-surface">August</span>
-                <p class="text-[11px] font-mono text-on-surface-variant">$1,685,500</p>
+                <p class="text-[11px] font-mono text-on-surface-variant">₹16,85,500</p>
               </div>
               <div>
                 <span class="text-xs font-semibold text-on-surface text-primary">September (Current)</span>
-                <p class="text-[11px] font-mono font-bold text-primary">$1,915,000</p>
+                <p class="text-[11px] font-mono font-bold text-primary">₹19,15,000</p>
               </div>
             </div>
           </div>
@@ -424,46 +413,139 @@
           </div>
         </div>
 
-        <!-- Right 1/3: Deals by Stage -->
+        <!-- Right 1/3: Interactive Deals by Stage Donut -->
         <div class="lg:col-span-4 card card-extruded flex flex-col justify-between">
           <div>
             <h2 class="text-base font-bold text-on-surface">Deals by Stage</h2>
             <p class="text-xs text-on-surface-variant">Current pipeline volume distribution</p>
           </div>
 
-          <!-- Donut Graphic -->
-          <div class="flex items-center justify-center my-4 relative">
-            <div class="w-36 h-36 rounded-full relative flex items-center justify-center border-8 border-primary-container/40" style="background: conic-gradient(#566250 0% 25%, #7a5826 25% 60%, #a8b5a0 60% 85%, #d7e7d0 85% 100%);">
-              <div class="w-24 h-24 rounded-full bg-surface-container-lowest flex flex-col items-center justify-center shadow-inner">
-                <span class="text-xl font-bold font-mono text-on-surface">50</span>
-                <span class="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold">Total Deals</span>
+          <!-- Interactive SVG Donut Graphic with hoverable slices & clean center text -->
+          <div class="flex items-center justify-center my-4 relative" id="deals-donut-container">
+            <!-- Tooltip formatted exactly as requested -->
+            <div id="donut-tooltip" class="donut-tooltip">
+              <div class="font-bold text-xs" id="tt-stage">Executive Approved</div>
+              <div class="text-[11px] text-on-surface-variant" id="tt-deals">18 deals</div>
+              <div class="font-bold text-[11px] text-primary" id="tt-percent">35%</div>
+            </div>
+
+            <div class="relative w-[140px] h-[140px] flex items-center justify-center">
+              <svg class="w-[140px] h-[140px]" viewBox="0 0 160 160">
+                <defs>
+                  <filter id="center-cutout-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="#a8b5a0" flood-opacity="0.3" />
+                  </filter>
+                </defs>
+
+                <!-- Base Track -->
+                <circle cx="80" cy="80" r="56" fill="none" stroke="#eefee6" stroke-width="24" />
+
+                <!-- Group rotated so slices start at 12 o'clock -->
+                <g transform="rotate(-90 80 80)">
+                  <!-- 1. Draft Phase: 15% (7 deals) - #a8b5a0 -->
+                  <circle
+                    class="donut-slice"
+                    id="slice-draft"
+                    cx="80" cy="80" r="56"
+                    fill="none"
+                    stroke="#a8b5a0"
+                    stroke-width="24"
+                    stroke-dasharray="52.78 299.08"
+                    stroke-dashoffset="0"
+                    data-stage="Draft Phase"
+                    data-deals="7 deals"
+                    data-percent="15%"
+                    data-count="7"
+                    data-color="#a8b5a0"
+                  />
+
+                  <!-- 2. In Legal Review: 25% (13 deals) - #7a5826 -->
+                  <circle
+                    class="donut-slice"
+                    id="slice-review"
+                    cx="80" cy="80" r="56"
+                    fill="none"
+                    stroke="#7a5826"
+                    stroke-width="24"
+                    stroke-dasharray="87.96 263.9"
+                    stroke-dashoffset="-52.78"
+                    data-stage="In Legal Review"
+                    data-deals="13 deals"
+                    data-percent="25%"
+                    data-count="13"
+                    data-color="#7a5826"
+                  />
+
+                  <!-- 3. Executive Approved: 35% (18 deals) - #566250 -->
+                  <circle
+                    class="donut-slice"
+                    id="slice-approved"
+                    cx="80" cy="80" r="56"
+                    fill="none"
+                    stroke="#566250"
+                    stroke-width="24"
+                    stroke-dasharray="123.15 228.71"
+                    stroke-dashoffset="-140.74"
+                    data-stage="Executive Approved"
+                    data-deals="18 deals"
+                    data-percent="35%"
+                    data-count="18"
+                    data-color="#566250"
+                  />
+
+                  <!-- 4. Fulfillment / Active: 25% (12 deals) - #8c9a84 -->
+                  <circle
+                    class="donut-slice"
+                    id="slice-fulfillment"
+                    cx="80" cy="80" r="56"
+                    fill="none"
+                    stroke="#8c9a84"
+                    stroke-width="24"
+                    stroke-dasharray="87.96 263.9"
+                    stroke-dashoffset="-263.89"
+                    data-stage="Fulfillment / Active"
+                    data-deals="12 deals"
+                    data-percent="25%"
+                    data-count="12"
+                    data-color="#8c9a84"
+                  />
+                </g>
+
+                <!-- Center Hole Cutout -->
+                <circle cx="80" cy="80" r="44" fill="#ffffff" filter="url(#center-cutout-shadow)" />
+              </svg>
+
+              <!-- Center Text: Clean, balanced 2-line hierarchy -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-2">
+                <span id="donut-center-val" class="text-2xl font-bold font-mono text-on-surface leading-none transition-all">50</span>
+                <span id="donut-center-lbl" class="text-xs font-semibold text-on-surface-variant transition-colors mt-1">Total Deals</span>
               </div>
             </div>
           </div>
 
-          <!-- Stage Breakdown -->
+          <!-- Existing Stage Breakdown List -->
           <div class="space-y-2 text-xs">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Draft Phase">
               <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-surface-variant"></span> Draft Phase
+                <span class="w-2.5 h-2.5 rounded-full bg-surface-variant" style="background-color: #a8b5a0;"></span> Draft Phase
               </span>
               <span class="font-mono font-semibold text-on-surface-variant">15% (7)</span>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="In Legal Review">
               <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span> In Legal Review
+                <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container" style="background-color: #7a5826;"></span> In Legal Review
               </span>
               <span class="font-mono font-semibold text-on-surface-variant">25% (13)</span>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Executive Approved">
               <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-primary"></span> Executive Approved
+                <span class="w-2.5 h-2.5 rounded-full bg-primary" style="background-color: #566250;"></span> Executive Approved
               </span>
               <span class="font-mono font-semibold text-on-surface-variant">35% (18)</span>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Fulfillment / Active">
               <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> Fulfillment / Active
+                <span class="w-2.5 h-2.5 rounded-full bg-secondary" style="background-color: #8c9a84;"></span> Fulfillment / Active
               </span>
               <span class="font-mono font-semibold text-on-surface-variant">25% (12)</span>
             </div>
@@ -481,14 +563,16 @@
               <p class="text-xs text-on-surface-variant">Real-time audit log of approvals, transactions, and milestone changes</p>
             </div>
           </div>
+
+          <!-- Existing Event Filter Buttons -->
           <div class="flex items-center gap-2">
-            <button type="button" class="btn btn-secondary text-xs py-1 px-3 active">All Events</button>
-            <button type="button" class="btn btn-secondary text-xs py-1 px-3">Approvals Only</button>
+            <button type="button" id="btn-filter-all" class="btn btn-secondary text-xs py-1 px-3 active">All Events</button>
+            <button type="button" id="btn-filter-approvals" class="btn btn-secondary text-xs py-1 px-3">Approvals Only</button>
           </div>
         </div>
 
         <div class="overflow-x-auto rounded-xl bg-surface-container-lowest border border-surface-container-high/60">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left border-collapse" id="activity-table">
             <thead>
               <tr class="border-b border-surface-container-high/60 bg-surface-container-low/50 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
                 <th class="py-2.5 px-4">Timestamp</th>
@@ -499,8 +583,13 @@
                 <th class="py-2.5 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody>
-              ${o}
+            <tbody id="activity-tbody">
+              ${m}
+              <tr id="activity-empty-row" class="hidden">
+                <td colspan="6" class="py-6 text-center text-xs text-on-surface-variant">
+                  No approval-related activity found.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -510,13 +599,15 @@
             <span class="material-symbols-outlined text-primary text-base">sensors</span>
             <span>Continuous sync active: 18 compliance hooks monitored in real time</span>
           </div>
+          <!-- Download Full Audit Trail (.CSV) -->
           <button type="button" class="text-primary hover:underline text-xs font-semibold" id="btn-dl-audit">
             Download Full Audit Trail (.CSV)
           </button>
         </div>
       </div>
     </div>
-  `}async function P(){try{const[a,s]=await Promise.all([c.get("/dashboard/summary").catch(()=>({})),c.get("/quotations").catch(()=>[])]);return{summary:a,quotations:s}}catch{return{summary:{},quotations:[]}}}function D(){const a=document.getElementById("btn-export-dash");a&&a.addEventListener("click",()=>{window.location.hash="#/reports"});const s=document.getElementById("btn-new-deal-dash");s&&s.addEventListener("click",()=>{window.location.hash="#/quotation-detail"});const i=document.getElementById("btn-dl-audit");i&&i.addEventListener("click",()=>{alert("Downloading audit trail CSV...")})}function I(a=[]){const s=a.reduce((e,t)=>e+(t.total_amount||0),0),i=a.filter(e=>(e.status||"").toLowerCase().includes("pending")).length,n=a.length===0?`
+  `}async function K(){try{const[a,s]=await Promise.all([c.get("/dashboard/summary").catch(()=>({})),c.get("/quotations").catch(()=>[])]);return{summary:a,quotations:s}}catch{return{summary:{},quotations:[]}}}function J(){const a=document.getElementById("btn-new-deal-dash");a&&a.addEventListener("click",()=>{window.location.hash="#/quotation-detail"});const s=document.getElementById("btn-quarter-toggle"),i=document.getElementById("quarter-dropdown-menu"),n=document.getElementById("current-quarter-label"),e=document.getElementById("quarter-chevron");s&&i&&(s.addEventListener("click",p=>{p.stopPropagation(),i.classList.contains("show")?(i.classList.remove("show"),e.style.transform="rotate(0deg)"):(i.classList.add("show"),e.style.transform="rotate(180deg)")}),document.querySelectorAll(".quarter-menu-item").forEach(p=>{p.addEventListener("click",()=>{document.querySelectorAll(".quarter-menu-item").forEach(b=>b.classList.remove("selected")),p.classList.add("selected"),n&&(n.textContent=p.getAttribute("data-label")),i.classList.remove("show"),e&&(e.style.transform="rotate(0deg)")})}),document.addEventListener("click",p=>{p.target.closest("#quarter-selector-wrapper")||(i.classList.remove("show"),e&&(e.style.transform="rotate(0deg)"))}));const t=document.getElementById("donut-center-val"),r=document.getElementById("donut-center-lbl"),o=document.getElementById("donut-tooltip"),m=document.getElementById("tt-stage"),l=document.getElementById("tt-deals"),x=document.getElementById("tt-percent"),d=document.querySelectorAll(".donut-slice"),u=document.querySelectorAll(".legend-item");function v(p){d.forEach(b=>{if(b.getAttribute("data-stage")===p){b.classList.add("active-slice"),b.style.opacity="1";const $=b.getAttribute("data-deals"),_=b.getAttribute("data-count"),A=b.getAttribute("data-percent"),S=b.getAttribute("data-color");t&&(t.textContent=_,t.style.color=S),r&&(r.textContent=p,r.style.color=S),o&&m&&l&&x&&(m.textContent=p,l.textContent=$,x.textContent=A,o.classList.add("visible"))}else b.classList.remove("active-slice"),b.style.opacity="0.4"})}function f(){d.forEach(p=>{p.classList.remove("active-slice"),p.style.opacity="1"}),t&&(t.textContent="50",t.style.color="var(--color-on-surface)"),r&&(r.textContent="Total Deals",r.style.color="var(--color-on-surface-variant)"),o&&o.classList.remove("visible")}d.forEach(p=>{p.addEventListener("mouseenter",()=>{v(p.getAttribute("data-stage"))}),p.addEventListener("mouseleave",f)}),u.forEach(p=>{p.addEventListener("mouseenter",()=>{v(p.getAttribute("data-stage"))}),p.addEventListener("mouseleave",f)});const h=document.getElementById("btn-filter-all"),w=document.getElementById("btn-filter-approvals"),P=document.querySelectorAll(".activity-row"),I=document.getElementById("activity-empty-row");function q(p){let b=0;P.forEach(E=>{const $=E.getAttribute("data-is-approval")==="true";p==="all"||p==="approvals"&&$?(E.classList.remove("hidden"),b++):E.classList.add("hidden")}),I&&(b===0?I.classList.remove("hidden"):I.classList.add("hidden"))}h&&w&&(h.addEventListener("click",()=>{h.classList.add("active"),w.classList.remove("active"),q("all")}),w.addEventListener("click",()=>{w.classList.add("active"),h.classList.remove("active"),q("approvals")})),document.querySelectorAll(".btn-review-deal").forEach(p=>{p.addEventListener("click",b=>{const E=p.getAttribute("data-id");E&&(window.location.hash=`#/quotations/${E}`)})});const T=document.getElementById("btn-dl-audit");T&&T.addEventListener("click",()=>{const p=document.querySelectorAll(".activity-row"),b=[["Timestamp","Actor","Role","Customer / Organization","Deal Reference","Valuation","Status"]];p.forEach(S=>{const k=S.querySelectorAll("td");if(k.length>=5){const Q=k[0].innerText.trim(),B=k[1].querySelector(".font-bold"),j=k[1].querySelector(".text-on-surface-variant"),R=k[2].querySelector(".font-semibold"),N=k[2].querySelector(".font-mono"),U=k[3].innerText.trim(),G=k[4].innerText.replace("●","").trim();b.push([`"${Q}"`,`"${B?B.innerText.trim():""}"`,`"${j?j.innerText.trim():""}"`,`"${R?R.innerText.trim():""}"`,`"${N?N.innerText.trim():""}"`,`"${U}"`,`"${G}"`])}});const E=b.map(S=>S.join(",")).join(`
+`),$=new Blob([E],{type:"text/csv;charset=utf-8;"}),_=URL.createObjectURL($),A=document.createElement("a");A.setAttribute("href",_),A.setAttribute("download",`dealflow360_audit_trail_${new Date().toISOString().slice(0,10)}.csv`),document.body.appendChild(A),A.click(),document.body.removeChild(A),URL.revokeObjectURL(_)})}function Y(a=[]){const s=a.reduce((e,t)=>e+(t.total_amount||0),0),i=a.filter(e=>(e.status||"").toLowerCase().includes("pending")).length,n=a.length===0?`
       <tr>
         <td colspan="8" class="text-center py-8 text-on-surface-variant text-sm">
           No commercial quotations found. Click <strong>New Quotation +</strong> to generate your first deal.
@@ -537,7 +628,7 @@
               <span class="badge badge-neutral text-[10px]">${e.customer_tier||"Bronze"}</span>
             </td>
             <td class="py-3 px-4 font-mono font-bold text-xs text-on-surface">
-              $${Number(e.total_amount||0).toLocaleString()}
+              ₹${Number(e.total_amount||0).toLocaleString("en-IN")}
             </td>
             <td class="py-3 px-4 text-xs text-on-surface-variant">
               ${e.line_count||(e.lines?e.lines.length:0)} items
@@ -586,7 +677,7 @@
         <div class="card card-extruded flex items-center justify-between">
           <div>
             <span class="text-xs font-bold text-on-surface-variant uppercase">Active Pipeline Value</span>
-            <div class="text-xl font-bold text-on-surface mt-1">$${Number(s).toLocaleString()}</div>
+            <div class="text-xl font-bold text-on-surface mt-1">₹${Number(s).toLocaleString("en-IN")}</div>
           </div>
           <div class="icon-circle bg-surface-container-high/60">
             <span class="material-symbols-outlined text-primary text-lg">monetization_on</span>
@@ -659,34 +750,52 @@
         </div>
       </div>
     </div>
-  `}async function j(){try{return await c.get("/quotations")}catch{return[]}}function q(){const a=document.getElementById("quote-search-input"),s=document.getElementById("quotations-table");a&&s&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{const o=r.textContent.toLowerCase();r.style.display=o.includes(e)?"":"none"})});const i=document.querySelectorAll("#quote-filter-tabs button");i.forEach(n=>{n.addEventListener("click",()=>{i.forEach(r=>r.classList.remove("active")),n.classList.add("active");const e=n.getAttribute("data-filter");s.querySelectorAll("tbody tr").forEach(r=>{if(e==="all")r.style.display="";else{const o=r.textContent;r.style.display=o.includes(e)?"":"none"}})})})}function E(a={}){var p,u,v;const{quotation:s=null,products:i=[],customers:n=[]}=a,e=!s||!s.id,t=s||{id:0,deal_reference:"DEAL-NEW",customer_name:((p=n[0])==null?void 0:p.name)||"Acme Corp Global ERP",customer_email:((u=n[0])==null?void 0:u.email)||"procurement@acme.corp",customer_tier:((v=n[0])==null?void 0:v.tier)||"Gold",status:"Draft",lines:[]},r=!t.lines||t.lines.length===0?`
+  `}async function Z(){try{return await c.get("/quotations")}catch{return[]}}function X(){const a=document.getElementById("quote-search-input"),s=document.getElementById("quotations-table");a&&s&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{const o=r.textContent.toLowerCase();r.style.display=o.includes(e)?"":"none"})});const i=document.querySelectorAll("#quote-filter-tabs button");i.forEach(n=>{n.addEventListener("click",()=>{i.forEach(r=>r.classList.remove("active")),n.classList.add("active");const e=n.getAttribute("data-filter");s.querySelectorAll("tbody tr").forEach(r=>{if(e==="all")r.style.display="";else{const o=r.textContent;r.style.display=o.includes(e)?"":"none"}})})})}const C={show({title:a,content:s,onConfirm:i,confirmText:n="Confirm",cancelText:e="Cancel",showConfirm:t=!0}){const r=document.getElementById("df-modal-backdrop");r&&r.remove();const o=`
+      <div id="df-modal-backdrop" class="modal-backdrop">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title">${a}</h3>
+            <button type="button" class="modal-close-btn" id="df-modal-close">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ${s}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="df-modal-cancel">${e}</button>
+            ${t?`<button type="button" class="btn btn-primary" id="df-modal-confirm">${n}</button>`:""}
+          </div>
+        </div>
+      </div>
+    `;document.body.insertAdjacentHTML("beforeend",o);const m=document.getElementById("df-modal-backdrop"),l=document.getElementById("df-modal-close"),x=document.getElementById("df-modal-cancel"),d=document.getElementById("df-modal-confirm"),u=()=>{m.classList.add("fade-out"),setTimeout(()=>m.remove(),200)};return l.addEventListener("click",u),x.addEventListener("click",u),m.addEventListener("click",v=>{v.target===m&&u()}),d&&i&&d.addEventListener("click",async()=>{d.disabled=!0,d.innerHTML='<span class="loading-spinner"></span> Processing...';try{await i()!==!1&&u()}catch(v){alert(v.message||"Action failed")}finally{d.disabled=!1,d.innerHTML=n}}),{close:u}}};function M(a={}){var d,u,v;const{quotation:s=null,products:i=[],customers:n=[]}=a,e=!s||!s.id,t=s||{id:0,deal_reference:"DEAL-NEW",customer_name:((d=n[0])==null?void 0:d.name)||"Acme Corp Global ERP",customer_email:((u=n[0])==null?void 0:u.email)||"procurement@acme.corp",customer_tier:((v=n[0])==null?void 0:v.tier)||"Gold",status:"Draft",lines:[]},r=!t.lines||t.lines.length===0?`
       <tr>
         <td colspan="7" class="text-center py-6 text-on-surface-variant text-xs">
           No line items added yet. Click <strong>Add Product Line +</strong> to populate this deal.
         </td>
       </tr>
-    `:t.lines.map(m=>`
+    `:t.lines.map(f=>`
         <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40">
           <td class="py-2.5 px-4 font-bold text-xs text-on-surface">
-            ${m.product_name||`Product #${m.product_id}`}
+            ${f.product_name||`Product #${f.product_id}`}
           </td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface-variant">${m.sku||"SKU-STD"}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface-variant">${f.sku||"SKU-STD"}</td>
           <td class="py-2.5 px-4">
-            <span class="badge badge-neutral text-[10px]">${m.category_snapshot||"Hardware"}</span>
+            <span class="badge badge-neutral text-[10px]">${f.category_snapshot||"Hardware"}</span>
           </td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">${m.quantity}</td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">$${Number(m.unit_price).toLocaleString()}</td>
-          <td class="py-2.5 px-4 font-mono text-xs text-tertiary">${m.discount_percent||0}%</td>
-          <td class="py-2.5 px-4 font-mono font-bold text-xs text-primary">$${Number(m.line_total).toLocaleString()}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">${f.quantity}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">₹${Number(f.unit_price).toLocaleString("en-IN")}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-tertiary">${f.discount_percent||0}%</td>
+          <td class="py-2.5 px-4 font-mono font-bold text-xs text-primary">₹${Number(f.line_total).toLocaleString("en-IN")}</td>
           <td class="py-2.5 px-4 text-right">
             ${e?"":`
-              <button type="button" class="icon-btn text-error hover:bg-error-container/30 delete-line-btn" data-line-id="${m.id}" title="Remove Line">
+              <button type="button" class="icon-btn text-error hover:bg-error-container/30 delete-line-btn" data-line-id="${f.id}" title="Remove Line">
                 <span class="material-symbols-outlined text-sm">delete</span>
               </button>
             `}
           </td>
         </tr>
-      `).join(""),o=t.lines?t.lines.reduce((m,w)=>m+(w.line_total||0),0):0,l=o;let d="badge-neutral";const x=(t.status||"").toLowerCase();return x.includes("approved")?d="badge-success":x.includes("pending")?d="badge-warning":x.includes("negotiat")?d="badge-info":(x.includes("fulfilled")||x.includes("confirmed"))&&(d="badge-success"),`
+      `).join(""),o=t.lines?t.lines.reduce((f,h)=>f+(h.line_total||0),0):0,m=o;let l="badge-neutral";const x=(t.status||"").toLowerCase();return x.includes("approved")?l="badge-success":x.includes("pending")?l="badge-warning":x.includes("negotiat")?l="badge-info":(x.includes("fulfilled")||x.includes("confirmed"))&&(l="badge-success"),`
     <div class="page-container space-y-6">
       <!-- Breadcrumb & Back -->
       <div class="flex items-center justify-between">
@@ -718,7 +827,7 @@
         <div>
           <div class="flex items-center gap-3">
             <h1 class="text-2xl font-bold tracking-tight text-on-surface">${t.deal_reference||"New Commercial Deal"}</h1>
-            <span class="badge ${d} text-xs">${t.status||"Draft"}</span>
+            <span class="badge ${l} text-xs">${t.status||"Draft"}</span>
           </div>
           <p class="text-xs text-on-surface-variant mt-1">
             Enterprise Client: <strong class="text-on-surface">${t.customer_name}</strong> • Account Rep: Eleanor Vance
@@ -846,14 +955,14 @@
                 <div>
                   <span class="text-on-surface-variant block mb-1">Currency</span>
                   <div class="font-semibold text-on-surface p-2 rounded-lg bg-surface-container">
-                    USD ($)
+                    INR (₹)
                   </div>
                 </div>
               </div>
               <div>
                 <span class="text-on-surface-variant block mb-1">Payment Terms</span>
                 <div class="font-semibold text-on-surface p-2 rounded-lg bg-surface-container">
-                  Net 30 Days (Direct Wire)
+                  Net 30 Days (Direct Wire / NEFT)
                 </div>
               </div>
             </div>
@@ -865,33 +974,33 @@
             <div class="space-y-2 text-xs border-b border-surface-container-high/60 pb-3">
               <div class="flex justify-between text-on-surface-variant">
                 <span>Gross Subtotal</span>
-                <span class="font-mono font-semibold text-on-surface">$${Number(o).toLocaleString()}</span>
+                <span class="font-mono font-semibold text-on-surface">₹${Number(o).toLocaleString("en-IN")}</span>
               </div>
               <div class="flex justify-between text-tertiary">
                 <span>Discounts Applied</span>
-                <span class="font-mono font-semibold">-$0.00</span>
+                <span class="font-mono font-semibold">-₹0.00</span>
               </div>
               <div class="flex justify-between text-on-surface-variant">
-                <span>Taxes &amp; Tariff</span>
-                <span class="font-mono font-semibold">$0.00</span>
+                <span>GST / Taxes</span>
+                <span class="font-mono font-semibold">₹0.00</span>
               </div>
             </div>
             <div class="flex justify-between items-baseline pt-3">
               <span class="text-sm font-bold text-on-surface">Contract Value</span>
-              <span class="text-xl font-bold font-mono text-primary">$${Number(l).toLocaleString()}</span>
+              <span class="text-xl font-bold font-mono text-primary">₹${Number(m).toLocaleString("en-IN")}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  `}async function k(a){try{const[s,i,n]=await Promise.all([a?c.get(`/quotations/${a}`).catch(()=>null):null,c.get("/products").catch(()=>[]),c.get("/customers").catch(()=>[])]);return{quotation:s,products:i,customers:n}}catch{return{quotation:null,products:[],customers:[]}}}function S(a,s=[],i=[]){const n=document.getElementById("btn-add-line-modal");n&&n.addEventListener("click",()=>{const p=s.map(u=>`
+  `}async function H(a){try{const[s,i,n]=await Promise.all([a?c.get(`/quotations/${a}`).catch(()=>null):null,c.get("/products").catch(()=>[]),c.get("/customers").catch(()=>[])]);return{quotation:s,products:i,customers:n}}catch{return{quotation:null,products:[],customers:[]}}}function F(a,s=[],i=[]){const n=document.getElementById("btn-add-line-modal");n&&n.addEventListener("click",()=>{const d=s.map(u=>`
         <option value="${u.id}">${u.name} — $${Number(u.base_price).toLocaleString()} (${u.category})</option>
-      `).join("");g.show({title:"Add Product Line Item",content:`
+      `).join("");C.show({title:"Add Product Line Item",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Select Product</label>
               <select id="modal-product-select" class="input-clay w-full text-xs">
-                ${p||'<option value="1">Enterprise M&A CPQ Core — $120,000</option>'}
+                ${d||'<option value="1">Enterprise M&A CPQ Core — ₹120,000</option>'}
               </select>
             </div>
             <div>
@@ -899,7 +1008,7 @@
               <input id="modal-product-qty" type="number" min="1" value="1" class="input-clay w-full text-xs" />
             </div>
           </div>
-        `,confirmText:"Add to Quotation",onConfirm:async()=>{var m;const u=parseInt(document.getElementById("modal-product-select").value,10),v=parseFloat(document.getElementById("modal-product-qty").value)||1;if(a)await c.post(`/quotations/${a}/lines`,{product_id:u,quantity:v}),window.location.reload();else{const w=((m=i[0])==null?void 0:m.id)||1,$=await c.post("/quotations",{customer_id:w});await c.post(`/quotations/${$.id}/lines`,{product_id:u,quantity:v}),window.location.hash=`#/quotations/${$.id}`}return!0}})}),document.querySelectorAll(".delete-line-btn").forEach(p=>{p.addEventListener("click",async()=>{const u=p.getAttribute("data-line-id");confirm("Remove this line item from quotation?")&&(await c.delete(`/quotations/${a}/lines/${u}`),window.location.reload())})});const e=async p=>{await c.put(`/quotations/${a}`,{status:p}),window.location.reload()},t=document.getElementById("btn-submit-approval");t&&t.addEventListener("click",()=>e("Pending Approval"));const r=document.getElementById("btn-approve-quote");r&&r.addEventListener("click",()=>e("Approved"));const o=document.getElementById("btn-reject-quote");o&&o.addEventListener("click",()=>e("Rejected"));const l=document.getElementById("btn-send-portal");l&&l.addEventListener("click",()=>e("Under Negotiation"));const d=document.getElementById("btn-confirm-quote");d&&d.addEventListener("click",()=>e("Confirmed"));const x=document.getElementById("btn-fulfill-quote");x&&x.addEventListener("click",()=>e("Fulfilled"))}function T(a=[]){const s=a.filter(e=>(e.status||"").toLowerCase().includes("pending")||(e.status||"").toLowerCase().includes("draft")),i=s.length>0?s:[{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",customer_tier:"Gold",total_amount:34e4,rep_name:"Marcus Hayes",discount:"18%",limit:"15%",reason:"Multi-region deployment incentive requested for 3-year upfront commitment."},{id:8488,deal_reference:"DEAL-8488",customer_name:"Starlight Pharma Logistics",customer_tier:"Silver",total_amount:115e4,rep_name:"Sarah Lin",discount:"14%",limit:"10%",reason:"Competitive displacement against legacy SAP stack."},{id:8461,deal_reference:"DEAL-8461",customer_name:"Apex Financial Cloud Vault",customer_tier:"Bronze",total_amount:475e3,rep_name:"David Kim",discount:"8%",limit:"5%",reason:"Volume licensing ramp-up structure."}],n=i.map(e=>`
+        `,confirmText:"Add to Quotation",onConfirm:async()=>{var f;const u=parseInt(document.getElementById("modal-product-select").value,10),v=parseFloat(document.getElementById("modal-product-qty").value)||1;if(a)await c.post(`/quotations/${a}/lines`,{product_id:u,quantity:v}),window.location.reload();else{const h=((f=i[0])==null?void 0:f.id)||1,w=await c.post("/quotations",{customer_id:h});await c.post(`/quotations/${w.id}/lines`,{product_id:u,quantity:v}),window.location.hash=`#/quotations/${w.id}`}return!0}})}),document.querySelectorAll(".delete-line-btn").forEach(d=>{d.addEventListener("click",async()=>{const u=d.getAttribute("data-line-id");confirm("Remove this line item from quotation?")&&(await c.delete(`/quotations/${a}/lines/${u}`),window.location.reload())})});const e=async d=>{await c.put(`/quotations/${a}`,{status:d}),window.location.reload()},t=document.getElementById("btn-submit-approval");t&&t.addEventListener("click",()=>e("Pending Approval"));const r=document.getElementById("btn-approve-quote");r&&r.addEventListener("click",()=>e("Approved"));const o=document.getElementById("btn-reject-quote");o&&o.addEventListener("click",()=>e("Rejected"));const m=document.getElementById("btn-send-portal");m&&m.addEventListener("click",()=>e("Under Negotiation"));const l=document.getElementById("btn-confirm-quote");l&&l.addEventListener("click",()=>e("Confirmed"));const x=document.getElementById("btn-fulfill-quote");x&&x.addEventListener("click",()=>e("Fulfilled"))}function tt(a=[]){const s=a.filter(e=>(e.status||"").toLowerCase().includes("pending")||(e.status||"").toLowerCase().includes("draft")),i=s.length>0?s:[{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",customer_tier:"Gold",total_amount:34e4,rep_name:"Marcus Hayes",discount:"18%",limit:"15%",reason:"Multi-region deployment incentive requested for 3-year upfront commitment."},{id:8488,deal_reference:"DEAL-8488",customer_name:"Starlight Pharma Logistics",customer_tier:"Silver",total_amount:115e4,rep_name:"Sarah Lin",discount:"14%",limit:"10%",reason:"Competitive displacement against legacy SAP stack."},{id:8461,deal_reference:"DEAL-8461",customer_name:"Apex Financial Cloud Vault",customer_tier:"Bronze",total_amount:475e3,rep_name:"David Kim",discount:"8%",limit:"5%",reason:"Volume licensing ramp-up structure."}],n=i.map(e=>`
     <div class="card card-extruded space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container-high/60 pb-3">
         <div class="flex items-center gap-3">
@@ -987,7 +1096,7 @@
         ${n}
       </div>
     </div>
-  `}async function B(){try{return await c.get("/quotations")}catch{return[]}}function M(){document.querySelectorAll(".approve-deal-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");try{await c.put(`/quotations/${s}`,{status:"Approved"}),alert(`Deal #${s} has been successfully approved.`),window.location.reload()}catch(i){alert(i.message||"Approval failed")}})}),document.querySelectorAll(".reject-approval-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");if(confirm(`Reject quotation #${s}?`))try{await c.put(`/quotations/${s}`,{status:"Rejected"}),alert(`Deal #${s} has been rejected.`),window.location.reload()}catch(i){alert(i.message||"Action failed")}})})}function R(a=[]){return`
+  `}async function et(){try{return await c.get("/quotations")}catch{return[]}}function at(){document.querySelectorAll(".approve-deal-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");try{await c.put(`/quotations/${s}`,{status:"Approved"}),alert(`Deal #${s} has been successfully approved.`),window.location.reload()}catch(i){alert(i.message||"Approval failed")}})}),document.querySelectorAll(".reject-approval-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");if(confirm(`Reject quotation #${s}?`))try{await c.put(`/quotations/${s}`,{status:"Rejected"}),alert(`Deal #${s} has been rejected.`),window.location.reload()}catch(i){alert(i.message||"Action failed")}})})}function st(a=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="card card-extruded">
@@ -1011,7 +1120,7 @@
             <div class="h-8 w-px bg-outline-variant/50"></div>
             <div>
               <span class="text-[10px] font-bold text-secondary uppercase">Avg Deal ACV</span>
-              <div class="font-mono font-bold text-lg text-primary">$184.2K</div>
+              <div class="font-mono font-bold text-lg text-primary">₹184.2K</div>
             </div>
           </div>
         </div>
@@ -1066,7 +1175,7 @@
   `).join("")}
       </div>
     </div>
-  `}async function N(){try{return await c.get("/products")}catch{return[]}}function H(){const a=document.getElementById("product-search-input"),s=document.querySelectorAll(".product-card");a&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.forEach(t=>{const r=t.textContent.toLowerCase();t.style.display=r.includes(e)?"":"none"})});const i=document.querySelectorAll("#product-category-filters button");i.forEach(n=>{n.addEventListener("click",()=>{i.forEach(t=>t.classList.remove("active")),n.classList.add("active");const e=n.getAttribute("data-cat");s.forEach(t=>{if(e==="all")t.style.display="";else{const r=t.getAttribute("data-category");t.style.display=r.includes(e)?"":"none"}})})}),document.querySelectorAll(".add-to-deal-btn").forEach(n=>{n.addEventListener("click",async()=>{const e=n.getAttribute("data-product-id"),t=n.getAttribute("data-product-name");g.show({title:`Add ${t} to Quotation`,content:`
+  `}async function nt(){try{return await c.get("/products")}catch{return[]}}function it(){const a=document.getElementById("product-search-input"),s=document.querySelectorAll(".product-card");a&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.forEach(t=>{const r=t.textContent.toLowerCase();t.style.display=r.includes(e)?"":"none"})});const i=document.querySelectorAll("#product-category-filters button");i.forEach(n=>{n.addEventListener("click",()=>{i.forEach(t=>t.classList.remove("active")),n.classList.add("active");const e=n.getAttribute("data-cat");s.forEach(t=>{if(e==="all")t.style.display="";else{const r=t.getAttribute("data-category");t.style.display=r.includes(e)?"":"none"}})})}),document.querySelectorAll(".add-to-deal-btn").forEach(n=>{n.addEventListener("click",async()=>{const e=n.getAttribute("data-product-id"),t=n.getAttribute("data-product-name");C.show({title:`Add ${t} to Quotation`,content:`
           <div class="space-y-3 text-xs">
             <p class="text-on-surface-variant">Configure quantity to append this SKU to an active deal:</p>
             <div>
@@ -1074,7 +1183,7 @@
               <input type="number" id="quick-add-qty" min="1" value="1" class="input-clay w-full" />
             </div>
           </div>
-        `,confirmText:"Generate Deal",onConfirm:async()=>{const r=parseFloat(document.getElementById("quick-add-qty").value)||1,o=await c.post("/quotations",{customer_id:1});return await c.post(`/quotations/${o.id}/lines`,{product_id:parseInt(e,10),quantity:r}),window.location.hash=`#/quotations/${o.id}`,!0}})})})}function F(a=[]){return`
+        `,confirmText:"Generate Deal",onConfirm:async()=>{const r=parseFloat(document.getElementById("quick-add-qty").value)||1,o=await c.post("/quotations",{customer_id:1});return await c.post(`/quotations/${o.id}/lines`,{product_id:parseInt(e,10),quantity:r}),window.location.hash=`#/quotations/${o.id}`,!0}})})})}function rt(a=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1183,10 +1292,10 @@
               </tr>
             </thead>
             <tbody>
-              ${(a.length>0?a:[{id:1,name:"Standard Enterprise Commercial",currency:"USD",is_active:!0,description:"Default global commercial price schedule with standard volume discounts."},{id:2,name:"Tier-1 Strategic Partner Rate Card",currency:"USD",is_active:!0,description:"Discounted baseline for accredited M&A integration channels."},{id:3,name:"Public Sector & FedRAMP Schedule",currency:"USD",is_active:!0,description:"Statutory capped rate matrix for government and institutional accounts."}]).map(n=>`
+              ${(a.length>0?a:[{id:1,name:"Standard Enterprise Commercial",currency:"INR",is_active:!0,description:"Default global commercial price schedule with standard volume discounts."},{id:2,name:"Tier-1 Strategic Partner Rate Card",currency:"INR",is_active:!0,description:"Discounted baseline for accredited M&A integration channels."},{id:3,name:"Public Sector & FedRAMP Schedule",currency:"INR",is_active:!0,description:"Statutory capped rate matrix for government and institutional accounts."}]).map(n=>`
     <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40">
       <td class="py-3 px-4 font-bold text-xs text-on-surface">${n.name}</td>
-      <td class="py-3 px-4 font-mono text-xs text-primary">${n.currency||"USD"}</td>
+      <td class="py-3 px-4 font-mono text-xs text-primary">${n.currency||"INR"}</td>
       <td class="py-3 px-4 text-xs text-on-surface-variant">${n.description||"Standard schedule"}</td>
       <td class="py-3 px-4">
         <span class="badge ${n.is_active?"badge-success":"badge-neutral"} text-[10px]">
@@ -1203,7 +1312,7 @@
         </div>
       </div>
     </div>
-  `}async function U(){try{return await c.get("/price-lists")}catch{return[]}}function Q(){const a=document.getElementById("btn-add-pricelist");a&&a.addEventListener("click",()=>{g.show({title:"New Commercial Price Schedule",content:`
+  `}async function ot(){try{return await c.get("/price-lists")}catch{return[]}}function ct(){const a=document.getElementById("btn-add-pricelist");a&&a.addEventListener("click",()=>{C.show({title:"New Commercial Price Schedule",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Schedule Name</label>
@@ -1211,14 +1320,14 @@
             </div>
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Currency Code</label>
-              <input id="pl-currency-input" type="text" class="input-clay w-full" value="USD" />
+              <input id="pl-currency-input" type="text" class="input-clay w-full" value="INR" />
             </div>
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Description</label>
               <input id="pl-desc-input" type="text" class="input-clay w-full" placeholder="Intended accounts or region" />
             </div>
           </div>
-        `,confirmText:"Create Schedule",onConfirm:async()=>{const s=document.getElementById("pl-name-input").value.trim(),i=document.getElementById("pl-currency-input").value.trim(),n=document.getElementById("pl-desc-input").value.trim();if(!s)throw new Error("Schedule name is required");return await c.post("/price-lists",{name:s,currency:i,description:n}),window.location.reload(),!0}})})}function G(a=[]){const s=a.length>0?a:[{id:1,name:"Acme Corp Global ERP",email:"procurement@acmeww.com",tier:"Gold",created_at:"2025-01-15"},{id:2,name:"Starlight Pharma Logistics",email:"operations@starlightpharma.com",tier:"Silver",created_at:"2025-02-01"},{id:3,name:"Helios Solar Microgrid Infra",email:"infrastructure@heliosmicro.io",tier:"Gold",created_at:"2025-02-18"},{id:4,name:"Apex Financial Cloud Vault",email:"finops@apexvault.com",tier:"Bronze",created_at:"2025-03-02"}],i=s.map(n=>{let e="badge-primary";const t=(n.tier||"Bronze").toLowerCase();return t.includes("gold")?e="badge-warning":t.includes("silver")&&(e="badge-neutral"),`
+        `,confirmText:"Create Schedule",onConfirm:async()=>{const s=document.getElementById("pl-name-input").value.trim(),i=document.getElementById("pl-currency-input").value.trim(),n=document.getElementById("pl-desc-input").value.trim();if(!s)throw new Error("Schedule name is required");return await c.post("/price-lists",{name:s,currency:i,description:n}),window.location.reload(),!0}})})}function lt(a=[]){const s=a.length>0?a:[{id:1,name:"Acme Corp Global ERP",email:"procurement@acmeww.com",tier:"Gold",created_at:"2025-01-15"},{id:2,name:"Starlight Pharma Logistics",email:"operations@starlightpharma.com",tier:"Silver",created_at:"2025-02-01"},{id:3,name:"Helios Solar Microgrid Infra",email:"infrastructure@heliosmicro.io",tier:"Gold",created_at:"2025-02-18"},{id:4,name:"Apex Financial Cloud Vault",email:"finops@apexvault.com",tier:"Bronze",created_at:"2025-03-02"}],i=s.map(n=>{let e="badge-primary";const t=(n.tier||"Bronze").toLowerCase();return t.includes("gold")?e="badge-warning":t.includes("silver")&&(e="badge-neutral"),`
       <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40">
         <td class="py-3 px-4">
           <div class="flex items-center gap-3">
@@ -1337,7 +1446,7 @@
         </div>
       </div>
     </div>
-  `}async function V(){try{return await c.get("/customers")}catch{return[]}}function O(){const a=document.getElementById("cust-search-input"),s=document.getElementById("customers-table");a&&s&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(e)?"":"none"})});const i=document.getElementById("btn-add-customer");i&&i.addEventListener("click",()=>{g.show({title:"Add Enterprise Client Account",content:`
+  `}async function dt(){try{return await c.get("/customers")}catch{return[]}}function pt(){const a=document.getElementById("cust-search-input"),s=document.getElementById("customers-table");a&&s&&a.addEventListener("input",n=>{const e=n.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(e)?"":"none"})});const i=document.getElementById("btn-add-customer");i&&i.addEventListener("click",()=>{C.show({title:"Add Enterprise Client Account",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Company / Entity Name</label>
@@ -1356,7 +1465,7 @@
               </select>
             </div>
           </div>
-        `,confirmText:"Create Account",onConfirm:async()=>{const n=document.getElementById("new-cust-name").value.trim(),e=document.getElementById("new-cust-email").value.trim(),t=document.getElementById("new-cust-tier").value;if(!n||!e)throw new Error("Company name and email are required");return await c.post("/customers",{name:n,email:e,tier:t}),window.location.reload(),!0}})}),document.querySelectorAll(".create-deal-for-cust-btn").forEach(n=>{n.addEventListener("click",async()=>{const e=parseInt(n.getAttribute("data-cust-id"),10);try{const t=await c.post("/quotations",{customer_id:e});window.location.hash=`#/quotations/${t.id}`}catch(t){alert(t.message||"Failed to create quotation")}})})}function W(a={}){const{quotation:s=null}=a,i=s||{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",total_amount:34e4,status:"Under Negotiation",lines:[{product_name:"Enterprise Cloud Orchestration Node",quantity:2,unit_price:12e4,line_total:24e4},{product_name:"Architecture Consulting & Migration SLA",quantity:1,unit_price:1e5,line_total:1e5}]},n=["Confirmed","Fulfilled"].includes(i.status);return`
+        `,confirmText:"Create Account",onConfirm:async()=>{const n=document.getElementById("new-cust-name").value.trim(),e=document.getElementById("new-cust-email").value.trim(),t=document.getElementById("new-cust-tier").value;if(!n||!e)throw new Error("Company name and email are required");return await c.post("/customers",{name:n,email:e,tier:t}),window.location.reload(),!0}})}),document.querySelectorAll(".create-deal-for-cust-btn").forEach(n=>{n.addEventListener("click",async()=>{const e=parseInt(n.getAttribute("data-cust-id"),10);try{const t=await c.post("/quotations",{customer_id:e});window.location.hash=`#/quotations/${t.id}`}catch(t){alert(t.message||"Failed to create quotation")}})})}function ut(a={}){const{quotation:s=null}=a,i=s||{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",total_amount:34e4,status:"Under Negotiation",lines:[{product_name:"Enterprise Cloud Orchestration Node",quantity:2,unit_price:12e4,line_total:24e4},{product_name:"Architecture Consulting & Migration SLA",quantity:1,unit_price:1e5,line_total:1e5}]},n=["Confirmed","Fulfilled"].includes(i.status);return`
     <div class="page-container space-y-6">
       <!-- Portal Top Banner -->
       <div class="card card-extruded bg-surface-container-low/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1411,8 +1520,8 @@
                     <tr class="table-row border-b border-surface-container-high/40 text-xs">
                       <td class="py-3 px-4 font-bold text-on-surface">${e.product_name||`Item #${e.product_id}`}</td>
                       <td class="py-3 px-4 font-mono">${e.quantity}</td>
-                      <td class="py-3 px-4 font-mono">$${Number(e.unit_price).toLocaleString()}</td>
-                      <td class="py-3 px-4 font-mono font-bold text-primary text-right">$${Number(e.line_total).toLocaleString()}</td>
+                      <td class="py-3 px-4 font-mono">₹${Number(e.unit_price).toLocaleString("en-IN")}</td>
+                      <td class="py-3 px-4 font-mono font-bold text-primary text-right">₹${Number(e.line_total).toLocaleString("en-IN")}</td>
                     </tr>
                   `).join("")}
                 </tbody>
@@ -1421,7 +1530,7 @@
 
             <div class="mt-4 p-3 rounded-xl bg-surface-container flex items-center justify-between">
               <span class="text-xs font-bold text-on-surface">Total Contract Amount</span>
-              <span class="text-xl font-bold font-mono text-primary">$${Number(i.total_amount||34e4).toLocaleString()} USD</span>
+              <span class="text-xl font-bold font-mono text-primary">₹${Number(i.total_amount||34e4).toLocaleString("en-IN")}</span>
             </div>
 
             <div class="mt-3 text-[11px] text-on-surface-variant space-y-1">
@@ -1491,7 +1600,7 @@
         </div>
       </div>
     </div>
-  `}async function K(a){try{const s=await c.get("/quotations"),i=a?s.find(n=>n.id===parseInt(a,10)):s[0];return i?{quotation:await c.get(`/quotations/${i.id}`).catch(()=>i)}:{quotation:null}}catch{return{quotation:null}}}function z(a){const s=(a==null?void 0:a.id)||8492,i=document.getElementById("btn-portal-accept");i&&i.addEventListener("click",async()=>{if(confirm("Confirm digital signature and ratify this commercial agreement?"))try{await c.put(`/quotations/${s}`,{status:"Confirmed"}),alert("Quotation digitally signed and ratified! Deal status updated to Confirmed."),window.location.reload()}catch(r){alert(r.message||"Signature failed")}});const n=document.getElementById("btn-send-portal-msg"),e=document.getElementById("portal-reply-text"),t=document.getElementById("portal-messages-list");n&&e&&t&&n.addEventListener("click",()=>{const r=e.value.trim();if(!r)return;const o=`
+  `}async function mt(a){try{const s=await c.get("/quotations"),i=a?s.find(n=>n.id===parseInt(a,10)):s[0];return i?{quotation:await c.get(`/quotations/${i.id}`).catch(()=>i)}:{quotation:null}}catch{return{quotation:null}}}function xt(a){const s=(a==null?void 0:a.id)||8492,i=document.getElementById("btn-portal-accept");i&&i.addEventListener("click",async()=>{if(confirm("Confirm digital signature and ratify this commercial agreement?"))try{await c.put(`/quotations/${s}`,{status:"Confirmed"}),alert("Quotation digitally signed and ratified! Deal status updated to Confirmed."),window.location.reload()}catch(r){alert(r.message||"Signature failed")}});const n=document.getElementById("btn-send-portal-msg"),e=document.getElementById("portal-reply-text"),t=document.getElementById("portal-messages-list");n&&e&&t&&n.addEventListener("click",()=>{const r=e.value.trim();if(!r)return;const o=`
         <div class="p-3 rounded-2xl bg-surface-container-lowest border border-primary-container/60 shadow-sm ml-4">
           <div class="flex items-center justify-between mb-1">
             <span class="font-bold text-secondary">Procurement Lead (Acme Corp)</span>
@@ -1499,7 +1608,7 @@
           </div>
           <p class="text-on-surface">${r}</p>
         </div>
-      `;t.insertAdjacentHTML("beforeend",o),e.value="",t.scrollTop=t.scrollHeight})}function J(a={}){const{warehouses:s=[],quotations:i=[]}=a,n=s.length>0?s:[{id:1,name:"Equinix NY4 North America Hub",code:"WH-US-EAST",location:"Secaucus, NJ",capacity:"94.2% Available"},{id:2,name:"Frankfurt FRA1 European Gateway",code:"WH-EU-CENTRAL",location:"Frankfurt, DE",capacity:"88.0% Available"},{id:3,name:"Singapore SG1 APAC Distribution",code:"WH-APAC-SG",location:"Jurong, SG",capacity:"91.5% Available"}],e=[{sku:"SKU-HDW-410",name:"Quantum Edge Gateway Terminal",req:10,wh1:"NY4 (8)",wh2:"FRA1 (2)",backorder:0,status:"Allocated"},{sku:"SKU-HDW-880",name:"High-Density Terabit Switch Blade",req:4,wh1:"NY4 (4)",wh2:"—",backorder:0,status:"Ready to Pack"},{sku:"SKU-CLD-900",name:"Enterprise Cloud Orchestration Node",req:2,wh1:"Cloud Provisioned",wh2:"—",backorder:0,status:"Fulfilled"}];return`
+      `;t.insertAdjacentHTML("beforeend",o),e.value="",t.scrollTop=t.scrollHeight})}function ft(a={}){const{warehouses:s=[],quotations:i=[]}=a,n=s.length>0?s:[{id:1,name:"Equinix NY4 North America Hub",code:"WH-US-EAST",location:"Secaucus, NJ",capacity:"94.2% Available"},{id:2,name:"Frankfurt FRA1 European Gateway",code:"WH-EU-CENTRAL",location:"Frankfurt, DE",capacity:"88.0% Available"},{id:3,name:"Singapore SG1 APAC Distribution",code:"WH-APAC-SG",location:"Jurong, SG",capacity:"91.5% Available"}],e=[{sku:"SKU-HDW-410",name:"Quantum Edge Gateway Terminal",req:10,wh1:"NY4 (8)",wh2:"FRA1 (2)",backorder:0,status:"Allocated"},{sku:"SKU-HDW-880",name:"High-Density Terabit Switch Blade",req:4,wh1:"NY4 (4)",wh2:"—",backorder:0,status:"Ready to Pack"},{sku:"SKU-CLD-900",name:"Enterprise Cloud Orchestration Node",req:2,wh1:"Cloud Provisioned",wh2:"—",backorder:0,status:"Fulfilled"}];return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1604,7 +1713,7 @@
         </div>
       </div>
     </div>
-  `}async function Y(){try{const[a,s]=await Promise.all([c.get("/warehouses").catch(()=>[]),c.get("/quotations").catch(()=>[])]);return{warehouses:a,quotations:s}}catch{return{warehouses:[],quotations:[]}}}function Z(){const a=document.getElementById("btn-commit-fulfillment");a&&a.addEventListener("click",()=>{alert("Fulfillment manifest confirmed! Warehouse pick & pack notifications generated.")});const s=document.getElementById("btn-suggest-split");s&&s.addEventListener("click",()=>{alert("Auto-Split Algorithm computed: 80% from Equinix NY4, 20% from Frankfurt FRA1 with 0 backorders.")})}function X(a=[]){const s=a.length>0?a:[{id:1041,number:"INV-1041",deal_ref:"DEAL-8492",customer:"Acme Corp Global ERP",amount:34e4,due:"2025-10-15",status:"Paid"},{id:1042,number:"INV-1042",deal_ref:"DEAL-8488",customer:"Starlight Pharma Logistics",amount:115e4,due:"2025-10-20",status:"Pending"},{id:1043,number:"INV-1043",deal_ref:"DEAL-8475",customer:"Helios Solar Microgrid Infra",amount:89e4,due:"2025-09-30",status:"Overdue"},{id:1044,number:"INV-1044",deal_ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",amount:475e3,due:"2025-10-25",status:"Pending"}],i=s.reduce((t,r)=>t+(r.amount||0),0),n=s.filter(t=>(t.status||"").toLowerCase()==="paid").length,e=s.map(t=>{let r="badge-warning";const o=(t.status||"").toLowerCase();return o==="paid"?r="badge-success":o==="overdue"&&(r="badge-error"),`
+  `}async function bt(){try{const[a,s]=await Promise.all([c.get("/warehouses").catch(()=>[]),c.get("/quotations").catch(()=>[])]);return{warehouses:a,quotations:s}}catch{return{warehouses:[],quotations:[]}}}function vt(){const a=document.getElementById("btn-commit-fulfillment");a&&a.addEventListener("click",()=>{alert("Fulfillment manifest confirmed! Warehouse pick & pack notifications generated.")});const s=document.getElementById("btn-suggest-split");s&&s.addEventListener("click",()=>{alert("Auto-Split Algorithm computed: 80% from Equinix NY4, 20% from Frankfurt FRA1 with 0 backorders.")})}function gt(a=[]){const s=a.length>0?a:[{id:1041,number:"INV-1041",deal_ref:"DEAL-8492",customer:"Acme Corp Global ERP",amount:34e4,due:"2025-10-15",status:"Paid"},{id:1042,number:"INV-1042",deal_ref:"DEAL-8488",customer:"Starlight Pharma Logistics",amount:115e4,due:"2025-10-20",status:"Pending"},{id:1043,number:"INV-1043",deal_ref:"DEAL-8475",customer:"Helios Solar Microgrid Infra",amount:89e4,due:"2025-09-30",status:"Overdue"},{id:1044,number:"INV-1044",deal_ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",amount:475e3,due:"2025-10-25",status:"Pending"}],i=s.reduce((t,r)=>t+(r.amount||0),0),n=s.filter(t=>(t.status||"").toLowerCase()==="paid").length,e=s.map(t=>{let r="badge-warning";const o=(t.status||"").toLowerCase();return o==="paid"?r="badge-success":o==="overdue"&&(r="badge-error"),`
       <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40 text-xs">
         <td class="py-3 px-4 font-mono font-bold text-primary">${t.number||`INV-${t.id}`}</td>
         <td class="py-3 px-4 font-mono text-on-surface-variant">${t.deal_ref||"DEAL-8492"}</td>
@@ -1715,7 +1824,7 @@
         </div>
       </div>
     </div>
-  `}async function tt(){try{return await c.get("/payments/invoices").catch(()=>[])}catch{return[]}}function et(){document.querySelectorAll(".preview-invoice-btn").forEach(a=>{a.addEventListener("click",()=>{const s=a.getAttribute("data-num"),i=a.getAttribute("data-customer"),n=Number(a.getAttribute("data-amount")||0).toLocaleString(),e=a.getAttribute("data-status");g.show({title:`Tax Invoice Preview — ${s}`,content:`
+  `}async function yt(){try{return await c.get("/payments/invoices").catch(()=>[])}catch{return[]}}function ht(){document.querySelectorAll(".preview-invoice-btn").forEach(a=>{a.addEventListener("click",()=>{const s=a.getAttribute("data-num"),i=a.getAttribute("data-customer"),n=Number(a.getAttribute("data-amount")||0).toLocaleString(),e=a.getAttribute("data-status");C.show({title:`Tax Invoice Preview — ${s}`,content:`
           <div class="space-y-4 text-xs">
             <div class="flex items-center justify-between p-3 rounded-2xl bg-surface-container">
               <div>
@@ -1740,7 +1849,7 @@
                 <tbody>
                   <tr class="border-t border-surface-container-high/60">
                     <td class="py-2 px-3">Commercial Quotation Scope &amp; Licenses</td>
-                    <td class="py-2 px-3 font-mono font-bold text-right">$${n} USD</td>
+                    <td class="py-2 px-3 font-mono font-bold text-right">₹${n}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1748,14 +1857,14 @@
 
             <div class="p-3 rounded-xl bg-surface-container-lowest flex justify-between items-center font-bold text-sm">
               <span>Total Payable</span>
-              <span class="text-primary font-mono">$${n} USD</span>
+              <span class="text-primary font-mono">₹${n}</span>
             </div>
 
             <p class="text-[10px] text-on-surface-variant text-center">
               Wire instructions: Chase Manhattan Bank • SWIFT: CHASUS33 • ACCT: 9820-4102-339
             </p>
           </div>
-        `,confirmText:"Download PDF",cancelText:"Close",onConfirm:()=>(alert("Generating authenticated cryptographic PDF receipt..."),!0)})})}),document.querySelectorAll(".pay-invoice-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");try{await c.post(`/payments/invoices/${s}/pay`,{}),alert(`Invoice #${s} marked as Paid!`),window.location.reload()}catch(i){alert(i.message||"Payment simulation failed")}})})}function at(a=[]){return`
+        `,confirmText:"Download PDF",cancelText:"Close",onConfirm:()=>(alert("Generating authenticated cryptographic PDF receipt..."),!0)})})}),document.querySelectorAll(".pay-invoice-btn").forEach(a=>{a.addEventListener("click",async()=>{const s=a.getAttribute("data-id");try{await c.post(`/payments/invoices/${s}/pay`,{}),alert(`Invoice #${s} marked as Paid!`),window.location.reload()}catch(i){alert(i.message||"Payment simulation failed")}})})}function wt(a=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1792,7 +1901,7 @@
       <div class="pt-3 border-t border-surface-container-high/60 flex items-center justify-between">
         <div>
           <span class="text-[10px] text-on-surface-variant block uppercase">Billing Rate</span>
-          <span class="font-mono font-bold text-lg text-primary">$${Number(n.price).toLocaleString()}</span>
+          <span class="font-mono font-bold text-lg text-primary">₹${Number(n.price).toLocaleString("en-IN")}</span>
           <span class="text-[10px] text-on-surface-variant">/ ${n.cadence==="Monthly"?"mo":"yr"}</span>
         </div>
         <button type="button" class="btn btn-secondary text-xs py-1.5 px-3 subscribe-plan-btn" data-plan-id="${n.id}" data-plan-name="${n.name}">
@@ -1817,8 +1926,8 @@
           <div>
             <label class="block font-semibold mb-1 text-on-surface-variant">Active Plan</label>
             <select class="input-clay w-full text-xs" id="prorate-plan">
-              <option value="120000">Enterprise Core ($120k/yr)</option>
-              <option value="4200">Executive Seats ($4,200/yr)</option>
+              <option value="120000">Enterprise Core (₹120k/yr)</option>
+              <option value="4200">Executive Seats (₹4,200/yr)</option>
             </select>
           </div>
           <div>
@@ -1832,13 +1941,13 @@
           <div>
             <label class="block font-semibold mb-1 text-on-surface-variant">Computed Proration Delta</label>
             <div class="font-mono font-bold text-base text-primary p-2 rounded-lg bg-surface-container" id="prorate-result">
-              $8,169.86 USD
+              ₹8,169.86
             </div>
           </div>
         </div>
       </div>
     </div>
-  `}async function st(){try{return await c.get("/subscriptions/plans").catch(()=>[])}catch{return[]}}function nt(){const a=document.getElementById("prorate-seats"),s=document.getElementById("prorate-days"),i=document.getElementById("prorate-result"),n=()=>{if(!a||!s||!i)return;const t=parseFloat(a.value)||0,r=parseFloat(s.value)||0,l=4200/365*r*t;i.textContent=`$${l.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})} USD`};a&&a.addEventListener("input",n),s&&s.addEventListener("input",n);const e=document.getElementById("btn-add-plan");e&&e.addEventListener("click",()=>{g.show({title:"New Subscription Plan",content:`
+  `}async function Et(){try{return await c.get("/subscriptions/plans").catch(()=>[])}catch{return[]}}function kt(){const a=document.getElementById("prorate-seats"),s=document.getElementById("prorate-days"),i=document.getElementById("prorate-result"),n=()=>{if(!a||!s||!i)return;const t=parseFloat(a.value)||0,r=parseFloat(s.value)||0,m=4200/365*r*t;i.textContent=`₹${m.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}`};a&&a.addEventListener("input",n),s&&s.addEventListener("input",n);const e=document.getElementById("btn-add-plan");e&&e.addEventListener("click",()=>{C.show({title:"New Subscription Plan",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Plan Name</label>
@@ -1852,11 +1961,11 @@
               </select>
             </div>
             <div>
-              <label class="block font-semibold mb-1 text-on-surface-variant">Base Rate (USD)</label>
+              <label class="block font-semibold mb-1 text-on-surface-variant">Base Rate (INR)</label>
               <input id="plan-price-in" type="number" class="input-clay w-full" placeholder="50000" />
             </div>
           </div>
-        `,confirmText:"Create Plan",onConfirm:async()=>{const t=document.getElementById("plan-name-in").value.trim(),r=document.getElementById("plan-cadence-in").value,o=parseFloat(document.getElementById("plan-price-in").value)||0;if(!t)throw new Error("Plan name required");return await c.post("/subscriptions/plans",{name:t,cadence:r,price:o}),window.location.reload(),!0}})})}function it(a={}){const{stalled:s=[],reports:i=null}=a,n=s.length>0?s:[{id:8461,ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",stage:"Draft Phase",days:18,risk:"High — Rep Inactive 12 Days"},{id:8440,ref:"DEAL-8440",customer:"Vanguard Aerospace Systems",stage:"Legal Terms Review",days:24,risk:"Medium — Redlines in Queue"},{id:8425,ref:"DEAL-8425",customer:"Nordic Marine Telecom",stage:"Pending Approval",days:9,risk:"Low — Escalation Pending VP"}];return`
+        `,confirmText:"Create Plan",onConfirm:async()=>{const t=document.getElementById("plan-name-in").value.trim(),r=document.getElementById("plan-cadence-in").value,o=parseFloat(document.getElementById("plan-price-in").value)||0;if(!t)throw new Error("Plan name required");return await c.post("/subscriptions/plans",{name:t,cadence:r,price:o}),window.location.reload(),!0}})})}function At(a={}){const{stalled:s=[],reports:i=null}=a,n=s.length>0?s:[{id:8461,ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",stage:"Draft Phase",days:18,risk:"High — Rep Inactive 12 Days"},{id:8440,ref:"DEAL-8440",customer:"Vanguard Aerospace Systems",stage:"Legal Terms Review",days:24,risk:"Medium — Redlines in Queue"},{id:8425,ref:"DEAL-8425",customer:"Nordic Marine Telecom",stage:"Pending Approval",days:9,risk:"Low — Escalation Pending VP"}];return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1886,7 +1995,7 @@
         <div class="card card-extruded flex items-center justify-between">
           <div>
             <span class="text-xs font-bold text-on-surface-variant uppercase">Q3 Closed Revenue</span>
-            <div class="text-xl font-bold font-mono text-primary mt-1">$4,820,500</div>
+            <div class="text-xl font-bold font-mono text-primary mt-1">₹4,820,500</div>
           </div>
           <div class="icon-circle bg-surface-container-high/60">
             <span class="material-symbols-outlined text-primary text-lg">trending_up</span>
@@ -1963,50 +2072,50 @@
         </div>
       </div>
     </div>
-  `}async function rt(){try{const[a,s]=await Promise.all([c.get("/reports/quotations").catch(()=>null),c.get("/deal_health/stalled").catch(()=>[])]);return{reports:a,stalled:s}}catch{return{reports:null,stalled:[]}}}function ot(){const a=document.getElementById("btn-export-csv");a&&a.addEventListener("click",()=>{window.open("/api/v1/reports/quotations/export/csv","_blank")});const s=document.getElementById("btn-export-pdf");s&&s.addEventListener("click",()=>{alert("Compiling executive board briefing deck (PDF format)...")}),document.querySelectorAll(".nudge-rep-btn").forEach(i=>{i.addEventListener("click",()=>{const n=i.getAttribute("data-id");alert(`Automated SLA notification dispatch sent to assigned sales rep for Deal #${n}.`)})})}class ct{constructor(){this.appEl=document.getElementById("app"),window.addEventListener("hashchange",()=>this.handleRoute())}init(){!window.location.hash||window.location.hash==="#/"?window.location.hash=y.isAuthenticated()?"#/dashboard":"#/login":this.handleRoute()}parseHash(){const s=window.location.hash.slice(1)||"/login",[i]=s.split("?"),e=(i.startsWith("/")?i.slice(1):i).split("/"),t=e[0]||"dashboard",r=e[1]||null,o=new URLSearchParams(window.location.hash.split("?")[1]||"");return{route:t,param:r,query:o}}showLoading(){this.appEl.innerHTML=`
+  `}async function St(){try{const[a,s]=await Promise.all([c.get("/reports/quotations").catch(()=>null),c.get("/deal_health/stalled").catch(()=>[])]);return{reports:a,stalled:s}}catch{return{reports:null,stalled:[]}}}function Ct(){const a=document.getElementById("btn-export-csv");a&&a.addEventListener("click",()=>{window.open("/api/v1/reports/quotations/export/csv","_blank")});const s=document.getElementById("btn-export-pdf");s&&s.addEventListener("click",()=>{alert("Compiling executive board briefing deck (PDF format)...")}),document.querySelectorAll(".nudge-rep-btn").forEach(i=>{i.addEventListener("click",()=>{const n=i.getAttribute("data-id");alert(`Automated SLA notification dispatch sent to assigned sales rep for Deal #${n}.`)})})}class $t{constructor(){this.appEl=document.getElementById("app"),window.addEventListener("hashchange",()=>this.handleRoute())}init(){!window.location.hash||window.location.hash==="#/"?window.location.hash=L.isAuthenticated()?"#/dashboard":"#/login":this.handleRoute()}parseHash(){const s=window.location.hash.slice(1)||"/login",[i]=s.split("?"),e=(i.startsWith("/")?i.slice(1):i).split("/"),t=e[0]||"dashboard",r=e[1]||null,o=new URLSearchParams(window.location.hash.split("?")[1]||"");return{route:t,param:r,query:o}}showLoading(){this.appEl.innerHTML=`
       <div class="min-h-screen flex items-center justify-center bg-background">
         <div class="card card-extruded p-6 flex flex-col items-center gap-3">
           <div class="loading-spinner w-8 h-8 border-3 border-primary border-t-transparent"></div>
           <span class="text-xs font-bold text-on-surface tracking-wider uppercase">Loading Workspace...</span>
         </div>
       </div>
-    `}async handleRoute(){const{route:s,param:i,query:n}=this.parseHash(),e=y.isAuthenticated();if(!e&&s!=="login"&&s!=="portal"){window.location.hash="#/login";return}if(e&&s==="login"){window.location.hash="#/dashboard";return}switch(window.scrollTo(0,0),s){case"login":{this.appEl.innerHTML=C(),L();break}case"dashboard":{this.showLoading();const t=await P();this.appEl.innerHTML=`
-          ${f("dashboard")}
-          <main class="main-content">${_(t)}</main>
-        `,b(),D();break}case"quotations":{if(i){this.showLoading();const t=await k(i);this.appEl.innerHTML=`
-            ${f("quotations")}
-            <main class="main-content">${E(t)}</main>
-          `,b(),S(i,t.products,t.customers)}else{this.showLoading();const t=await j();this.appEl.innerHTML=`
-            ${f("quotations")}
-            <main class="main-content">${I(t)}</main>
-          `,b(),q()}break}case"quotation-detail":{this.showLoading();const t=i||n.get("id"),r=await k(t);this.appEl.innerHTML=`
-          ${f("quotations")}
-          <main class="main-content">${E(r)}</main>
-        `,b(),S(t,r.products,r.customers);break}case"approvals":{this.showLoading();const t=await B();this.appEl.innerHTML=`
-          ${f("approvals")}
-          <main class="main-content">${T(t)}</main>
-        `,b(),M();break}case"products":{this.showLoading();const t=await N();this.appEl.innerHTML=`
-          ${f("products")}
-          <main class="main-content">${R(t)}</main>
-        `,b(),H();break}case"pricing":case"pricing-rules":{this.showLoading();const t=await U();this.appEl.innerHTML=`
-          ${f("pricing")}
-          <main class="main-content">${F(t)}</main>
-        `,b(),Q();break}case"customers":{this.showLoading();const t=await V();this.appEl.innerHTML=`
-          ${f("customers")}
-          <main class="main-content">${G(t)}</main>
-        `,b(),O();break}case"portal":{this.showLoading();const t=i||n.get("id"),r=await K(t);this.appEl.innerHTML=`
-          ${f("portal")}
-          <main class="main-content">${W(r)}</main>
-        `,b(),z(r.quotation);break}case"fulfillment":{this.showLoading();const t=await Y();this.appEl.innerHTML=`
-          ${f("fulfillment")}
-          <main class="main-content">${J(t)}</main>
-        `,b(),Z();break}case"invoices":{this.showLoading();const t=await tt();this.appEl.innerHTML=`
-          ${f("invoices")}
-          <main class="main-content">${X(t)}</main>
-        `,b(),et();break}case"subscriptions":{this.showLoading();const t=await st();this.appEl.innerHTML=`
-          ${f("subscriptions")}
-          <main class="main-content">${at(t)}</main>
-        `,b(),nt();break}case"reports":{this.showLoading();const t=await rt();this.appEl.innerHTML=`
-          ${f("reports")}
-          <main class="main-content">${it(t)}</main>
-        `,b(),ot();break}default:{window.location.hash="#/dashboard";break}}}}document.addEventListener("DOMContentLoaded",()=>{new ct().init()});
+    `}async handleRoute(){const{route:s,param:i,query:n}=this.parseHash(),e=L.isAuthenticated();if(!e&&s!=="login"&&s!=="portal"){window.location.hash="#/login";return}if(e&&s==="login"){window.location.hash="#/dashboard";return}switch(window.scrollTo(0,0),s){case"login":{this.appEl.innerHTML=O(),W();break}case"dashboard":{this.showLoading();const t=await K();this.appEl.innerHTML=`
+          ${g("dashboard")}
+          <main class="main-content">${z(t)}</main>
+        `,y(),J();break}case"quotations":{if(i){this.showLoading();const t=await H(i);this.appEl.innerHTML=`
+            ${g("quotations")}
+            <main class="main-content">${M(t)}</main>
+          `,y(),F(i,t.products,t.customers)}else{this.showLoading();const t=await Z();this.appEl.innerHTML=`
+            ${g("quotations")}
+            <main class="main-content">${Y(t)}</main>
+          `,y(),X()}break}case"quotation-detail":{this.showLoading();const t=i||n.get("id"),r=await H(t);this.appEl.innerHTML=`
+          ${g("quotations")}
+          <main class="main-content">${M(r)}</main>
+        `,y(),F(t,r.products,r.customers);break}case"approvals":{this.showLoading();const t=await et();this.appEl.innerHTML=`
+          ${g("approvals")}
+          <main class="main-content">${tt(t)}</main>
+        `,y(),at();break}case"products":{this.showLoading();const t=await nt();this.appEl.innerHTML=`
+          ${g("products")}
+          <main class="main-content">${st(t)}</main>
+        `,y(),it();break}case"pricing":case"pricing-rules":{this.showLoading();const t=await ot();this.appEl.innerHTML=`
+          ${g("pricing")}
+          <main class="main-content">${rt(t)}</main>
+        `,y(),ct();break}case"customers":{this.showLoading();const t=await dt();this.appEl.innerHTML=`
+          ${g("customers")}
+          <main class="main-content">${lt(t)}</main>
+        `,y(),pt();break}case"portal":{this.showLoading();const t=i||n.get("id"),r=await mt(t);this.appEl.innerHTML=`
+          ${g("portal")}
+          <main class="main-content">${ut(r)}</main>
+        `,y(),xt(r.quotation);break}case"fulfillment":{this.showLoading();const t=await bt();this.appEl.innerHTML=`
+          ${g("fulfillment")}
+          <main class="main-content">${ft(t)}</main>
+        `,y(),vt();break}case"invoices":{this.showLoading();const t=await yt();this.appEl.innerHTML=`
+          ${g("invoices")}
+          <main class="main-content">${gt(t)}</main>
+        `,y(),ht();break}case"subscriptions":{this.showLoading();const t=await Et();this.appEl.innerHTML=`
+          ${g("subscriptions")}
+          <main class="main-content">${wt(t)}</main>
+        `,y(),kt();break}case"reports":{this.showLoading();const t=await St();this.appEl.innerHTML=`
+          ${g("reports")}
+          <main class="main-content">${At(t)}</main>
+        `,y(),Ct();break}default:{window.location.hash="#/dashboard";break}}}}document.addEventListener("DOMContentLoaded",()=>{new $t().init()});

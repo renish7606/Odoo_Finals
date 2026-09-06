@@ -18,7 +18,7 @@ import { renderFulfillmentPage, loadFulfillment, setupFulfillmentEvents } from '
 import { renderInvoicesPage, loadInvoices, setupInvoicesEvents } from './pages/invoices.js';
 import { renderSubscriptionsPage, loadSubscriptions, setupSubscriptionsEvents } from './pages/subscriptions.js';
 import { renderReportsPage, loadReports, setupReportsEvents } from './pages/reports.js';
-
+import { renderDealHealthPage, loadDealHealth, setupDealHealthEvents } from './pages/deal-health.js';
 export class Router {
   constructor() {
     this.appEl = document.getElementById('app');
@@ -91,6 +91,18 @@ export class Router {
         `;
         setupNavbarEvents();
         setupDashboardEvents();
+        break;
+      }
+
+      case 'deal-health': {
+        this.showLoading();
+        const data = await loadDealHealth();
+        this.appEl.innerHTML = `
+          ${renderNavbar('deal-health')}
+          <main class="main-content" id="app-content">${renderDealHealthPage(data)}</main>
+        `;
+        setupNavbarEvents();
+        setupDealHealthEvents();
         break;
       }
 
