@@ -28,10 +28,15 @@ class PaymentIn(BaseModel):
 def _ensure_seed_invoices(db: Session) -> None:
     """Ensure sample corporate invoices exist if table is empty."""
     try:
+<<<<<<< HEAD
         query = db.query(Invoice)
         if not hasattr(query, "count"):
             return
         if query.count() > 0:
+=======
+        existing = db.query(Invoice).all()
+        if existing:
+>>>>>>> 57e7eed (Add minor changes)
             return
     except Exception:
         return
@@ -286,7 +291,12 @@ def pay_invoice(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
 
     # Determine amount
+<<<<<<< HEAD
     total_paid_so_far = sum(p.amount for p in invoice.payments) + sum(c.amount for c in getattr(invoice, "credit_notes", []))
+=======
+    total_credits = sum(cn.amount for cn in (getattr(invoice, "credit_notes", []) or []))
+    total_paid_so_far = sum(p.amount for p in invoice.payments) + total_credits
+>>>>>>> 57e7eed (Add minor changes)
     remaining = invoice.amount - total_paid_so_far
     amount_to_pay = payment_in.amount if (payment_in.amount and payment_in.amount > 0) else remaining
 
@@ -305,7 +315,11 @@ def pay_invoice(
 
     # Update invoice status
     db.refresh(invoice)
+<<<<<<< HEAD
     total_paid = sum(p.amount for p in invoice.payments) + sum(c.amount for c in getattr(invoice, "credit_notes", []))
+=======
+    total_paid = sum(p.amount for p in invoice.payments) + total_credits
+>>>>>>> 57e7eed (Add minor changes)
     if total_paid >= invoice.amount:
         invoice.status = InvoiceStatus.PAID
     else:

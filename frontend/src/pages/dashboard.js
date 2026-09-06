@@ -5,28 +5,120 @@
 import { api } from '../api.js';
 import { dealHealthStore } from '../data/dealHealth.js';
 
+function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+  const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
+  return {
+    x: Number((centerX + radius * Math.cos(angleInRadians)).toFixed(2)),
+    y: Number((centerY + radius * Math.sin(angleInRadians)).toFixed(2)),
+  };
+}
+
+function describeArc(x, y, outerRadius, innerRadius, startAngle, endAngle) {
+  const startOuter = polarToCartesian(x, y, outerRadius, endAngle);
+  const endOuter = polarToCartesian(x, y, outerRadius, startAngle);
+  const startInner = polarToCartesian(x, y, innerRadius, endAngle);
+  const endInner = polarToCartesian(x, y, innerRadius, startAngle);
+
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+
+  return [
+    'M', startOuter.x, startOuter.y,
+    'A', outerRadius, outerRadius, 0, largeArcFlag, 0, endOuter.x, endOuter.y,
+    'L', endInner.x, endInner.y,
+    'A', innerRadius, innerRadius, 0, largeArcFlag, 1, startInner.x, startInner.y,
+    'Z'
+  ].join(' ');
+}
+
 export function renderDashboardPage(data = {}) {
   const { summary = {}, quotations = [] } = data;
 
-  const totalRevenue = summary.total_revenue
+  const totalRevenue = summary.total_revenue !== undefined
     ? `₹${Number(summary.total_revenue).toLocaleString('en-IN')}`
-    : '₹4,82,05,000';
-  const pendingApprovals = summary.pending_approvals ?? 1;
-  const activeQuotes = summary.total_quotations || summary.draft_count ? (summary.total_quotations || 5) : 5;
-  const winRate = summary.win_rate ? `${summary.win_rate}%` : '40%';
+    : '₹1,68,395';
+  const pendingApprovals = summary.pending_approvals ?? 2;
+  const activeQuotes = summary.total_quotations ?? (summary.draft_count ? summary.draft_count : 12);
+  const winRate = summary.win_rate !== undefined ? `${summary.win_rate}%` : '41.7%';
 
-  const atRiskCount = dealHealthStore.getAtRiskCount();
-  const activeFlagsCount = dealHealthStore.getActiveFlagsCount();
-  const stalledCount = dealHealthStore.getStalledDeals().length;
-  const slippageCount = dealHealthStore.getDeliverySlippages().length;
+  const atRiskCount = summary.at_risk_count ?? dealHealthStore.getAtRiskCount();
+  const activeFlagsCount = summary.active_flags_count ?? dealHealthStore.getActiveFlagsCount();
+  const stalledCount = dealHealthStore.getStalledDeals().length || 3;
+  const slippageCount = dealHealthStore.getDeliverySlippages().length || 1;
+
+  // Dynamic Donut Stage Breakdown
+  const stageConfig = [
+    { key: 'Approved', name: 'Executive Approved', color: '#566250' },
+    { key: 'Confirmed', name: 'Confirmed Order', color: '#3b82f6' },
+    { key: 'Fulfilled', name: 'Fulfillment / Active', color: '#8c9a84' },
+    { key: 'Pending Approval', name: 'In Legal / Review', color: '#7a5826' },
+    { key: 'Under Negotiation', name: 'Under Negotiation', color: '#d97706' },
+    { key: 'Sent', name: 'Sent to Client', color: '#6366f1' },
+    { key: 'Draft', name: 'Draft Phase', color: '#a8b5a0' },
+    { key: 'Rejected', name: 'Rejected Deals', color: '#dc2626' },
+  ];
+
+  const breakdown = summary.stage_breakdown || {
+    'Approved': 2,
+    'Confirmed': 2,
+    'Fulfilled': 1,
+    'Pending Approval': 2,
+    'Under Negotiation': 1,
+    'Sent': 1,
+    'Draft': 2,
+    'Rejected': 1,
+  };
+
+  const activeStages = stageConfig
+    .map(c => ({ ...c, count: breakdown[c.key] || 0 }))
+    .filter(s => s.count > 0);
+
+  const totalDonutDeals = activeStages.reduce((sum, s) => sum + s.count, 0) || (summary.total_quotations || 12);
+
+  let currentAngle = -90;
+  const donutSlicesHtml = activeStages.map((stage) => {
+    const fraction = stage.count / totalDonutDeals;
+    const angleSpan = fraction * 360;
+    const startAngle = currentAngle;
+    const endAngle = currentAngle + Math.min(359.99, angleSpan);
+    currentAngle += angleSpan;
+    const d = describeArc(110, 110, 96, 62, startAngle, endAngle);
+    const pct = Math.round(fraction * 100);
+    return `
+      <path
+        class="donut-slice"
+        id="slice-${stage.key.toLowerCase().replace(/[^a-z0-9]/g, '-')}"
+        d="${d}"
+        fill="${stage.color}"
+        stroke="#ffffff"
+        stroke-width="2.5"
+        data-stage="${stage.name}"
+        data-deals="${stage.count} deal${stage.count === 1 ? '' : 's'}"
+        data-percent="${pct}%"
+        data-count="${stage.count}"
+        data-color="${stage.color}"
+      />
+    `;
+  }).join('');
+
+  const legendItemsHtml = activeStages.map((stage) => {
+    const pct = Math.round((stage.count / totalDonutDeals) * 100);
+    return `
+      <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="${stage.name}">
+        <span class="flex items-center gap-2 text-on-surface">
+          <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${stage.color};"></span> ${stage.name}
+        </span>
+        <span class="font-mono font-semibold text-on-surface-variant">${pct}% (${stage.count})</span>
+      </div>
+    `;
+  }).join('');
 
   // Format quotations for the Recent Activity table
   const dealsList = quotations.length > 0 ? quotations.slice(0, 6) : [
-    { id: 8492, deal_reference: 'DEAL-0005', rep_name: 'Marcus Vance', customer_name: 'Terra Motors OEM', total_amount: 0, status: 'Approved', time: 'Recent' },
-    { id: 8488, deal_reference: 'DEAL-0004', rep_name: 'Eleanor Vance', customer_name: 'Zenith Retail AI', total_amount: 0, status: 'Pending Approval', time: 'Recent' },
-    { id: 8475, deal_reference: 'DEAL-0003', rep_name: 'Marcus Vance', customer_name: 'Starlight Dynamics Inc.', total_amount: 0, status: 'Under Negotiation', time: 'Recent' },
-    { id: 8461, deal_reference: 'DEAL-0001', rep_name: 'Local Sales Rep', customer_name: 'Bronze Buyer', total_amount: 1300, status: 'Draft', time: 'Recent' },
-    { id: 8462, deal_reference: 'DEAL-0002', rep_name: 'Local Sales Manager', customer_name: 'Gold Buyer', total_amount: 1500, status: 'Confirmed', time: 'Recent' },
+    { id: 1, deal_reference: 'DEAL-0001', rep_name: 'J. Rao', customer_name: 'Acme Corp', total_amount: 32000, status: 'Draft', time: 'Recent' },
+    { id: 2, deal_reference: 'DEAL-0002', rep_name: 'S. Patel', customer_name: 'Bela Industries', total_amount: 18500, status: 'Pending Approval', time: 'Recent' },
+    { id: 3, deal_reference: 'DEAL-0003', rep_name: 'J. Rao', customer_name: 'Nova Retail', total_amount: 12400, status: 'Approved', time: 'Recent' },
+    { id: 4, deal_reference: 'DEAL-0004', rep_name: 'S. Patel', customer_name: 'TechVault Inc', total_amount: 45000, status: 'Confirmed', time: 'Recent' },
+    { id: 5, deal_reference: 'DEAL-0005', rep_name: 'J. Rao', customer_name: 'GreenLeaf Solutions', total_amount: 28000, status: 'Fulfilled', time: 'Recent' },
   ];
 
   const recentRows = dealsList.map((deal) => {
@@ -43,10 +135,11 @@ export function renderDashboardPage(data = {}) {
     const initials = actorName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'SR';
     const customerName = deal.customer_name || (deal.customer && deal.customer.name) || 'Client Organization';
     const dealRef = deal.deal_reference || (deal.id ? `DEAL-${String(deal.id).padStart(4, '0')}` : 'DEAL-0001');
+    const timeFormatted = deal.time || (deal.created_at ? new Date(deal.created_at).toLocaleDateString('en-IN', {month:'short', day:'numeric'}) : 'Recent');
 
     return `
       <tr class="table-row hover:bg-surface-container/50 transition-colors activity-row" data-status="${deal.status || 'Draft'}" data-is-approval="${isApproval ? 'true' : 'false'}" data-deal-id="${deal.id}">
-        <td class="py-3 px-4 text-xs font-mono text-on-surface-variant">${deal.time || 'Recent'}</td>
+        <td class="py-3 px-4 text-xs font-mono text-on-surface-variant">${timeFormatted}</td>
         <td class="py-3 px-4">
           <div class="flex items-center gap-2.5">
             <div class="avatar-sm">
@@ -330,101 +423,20 @@ export function renderDashboardPage(data = {}) {
 
             <div class="donut-chart-box">
               <svg class="donut-chart-svg" width="210" height="210" viewBox="0 0 220 220">
-                <!-- 1. Executive Approved: 35% (18 deals) - #566250 -->
-                <path
-                  class="donut-slice"
-                  id="slice-approved"
-                  d="M 110.0 14.0 A 96 96 0 0 1 187.67 166.43 L 160.16 146.44 A 62 62 0 0 0 110.0 48.0 Z"
-                  fill="#566250"
-                  stroke="#ffffff"
-                  stroke-width="2.5"
-                  data-stage="Executive Approved"
-                  data-deals="18 deals"
-                  data-percent="35%"
-                  data-count="18"
-                  data-color="#566250"
-                />
-
-                <!-- 2. In Legal Review: 25% (13 deals) - #7a5826 -->
-                <path
-                  class="donut-slice"
-                  id="slice-review"
-                  d="M 187.67 166.43 A 96 96 0 0 1 53.57 187.67 L 73.56 160.16 A 62 62 0 0 0 160.16 146.44 Z"
-                  fill="#7a5826"
-                  stroke="#ffffff"
-                  stroke-width="2.5"
-                  data-stage="In Legal Review"
-                  data-deals="13 deals"
-                  data-percent="25%"
-                  data-count="13"
-                  data-color="#7a5826"
-                />
-
-                <!-- 3. Fulfillment / Active: 25% (12 deals) - #8c9a84 -->
-                <path
-                  class="donut-slice"
-                  id="slice-fulfillment"
-                  d="M 53.57 187.67 A 96 96 0 0 1 32.33 53.57 L 59.84 73.56 A 62 62 0 0 0 73.56 160.16 Z"
-                  fill="#8c9a84"
-                  stroke="#ffffff"
-                  stroke-width="2.5"
-                  data-stage="Fulfillment / Active"
-                  data-deals="12 deals"
-                  data-percent="25%"
-                  data-count="12"
-                  data-color="#8c9a84"
-                />
-
-                <!-- 4. Draft Phase: 15% (7 deals) - #a8b5a0 -->
-                <path
-                  class="donut-slice"
-                  id="slice-draft"
-                  d="M 32.33 53.57 A 96 96 0 0 1 110.0 14.0 L 110.0 48.0 A 62 62 0 0 0 59.84 73.56 Z"
-                  fill="#a8b5a0"
-                  stroke="#ffffff"
-                  stroke-width="2.5"
-                  data-stage="Draft Phase"
-                  data-deals="7 deals"
-                  data-percent="15%"
-                  data-count="7"
-                  data-color="#a8b5a0"
-                />
+                ${donutSlicesHtml}
               </svg>
 
               <!-- Center Badge: White circular cutout with soft clay inset shadow & permanent Total Deals -->
               <div class="donut-center-badge">
-                <span id="donut-center-val" class="donut-center-val">50</span>
+                <span id="donut-center-val" class="donut-center-val">${totalDonutDeals}</span>
                 <span id="donut-center-lbl" class="donut-center-lbl">Total Deals</span>
               </div>
             </div>
           </div>
 
-          <!-- Existing Stage Breakdown List -->
+          <!-- Dynamic Stage Breakdown List -->
           <div class="space-y-2 text-xs">
-            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Draft Phase">
-              <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-surface-variant" style="background-color: #a8b5a0;"></span> Draft Phase
-              </span>
-              <span class="font-mono font-semibold text-on-surface-variant">15% (7)</span>
-            </div>
-            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="In Legal Review">
-              <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container" style="background-color: #7a5826;"></span> In Legal Review
-              </span>
-              <span class="font-mono font-semibold text-on-surface-variant">25% (13)</span>
-            </div>
-            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Executive Approved">
-              <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-primary" style="background-color: #566250;"></span> Executive Approved
-              </span>
-              <span class="font-mono font-semibold text-on-surface-variant">35% (18)</span>
-            </div>
-            <div class="flex items-center justify-between cursor-pointer transition-colors p-1 rounded-md hover:bg-surface-container/60 legend-item" data-stage="Fulfillment / Active">
-              <span class="flex items-center gap-2 text-on-surface">
-                <span class="w-2.5 h-2.5 rounded-full bg-secondary" style="background-color: #8c9a84;"></span> Fulfillment / Active
-              </span>
-              <span class="font-mono font-semibold text-on-surface-variant">25% (12)</span>
-            </div>
+            ${legendItemsHtml}
           </div>
         </div>
       </div>

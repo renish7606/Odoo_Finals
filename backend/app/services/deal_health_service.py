@@ -1,3 +1,4 @@
+import app.db.base  # noqa: F401
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from sqlalchemy.orm import Session
@@ -50,9 +51,6 @@ def detect_stalled_deals(db: Session) -> int:
 def detect_discount_anomalies(db: Session) -> int:
     """Identify when a rep offers a discount way above their historical mean."""
     # Group by rep_id, count quotes, get avg discount across all their lines
-    # This is a simplified approach:
-    
-    # For each rep, get historical average discount
     reps_stats = db.query(
         Quotation.rep_id,
         func.count(func.distinct(Quotation.id)).label("quote_count"),
@@ -113,6 +111,8 @@ def get_all_delivery_slippages(db: Session) -> list:
         if slippage > 0:
             results.append({
                 "quotation_id": q.id,
-                "slippage_days": slippage
+                "slippage_days": slippage,
+                "days_delayed": slippage
             })
     return results
+

@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.db.session import engine
+import app.db.base  # noqa: F401
 
 # The main app only wires shared infrastructure, never domain business logic.
 app = FastAPI(title=settings.app_name, version="1.0.0")
