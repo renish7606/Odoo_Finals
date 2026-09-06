@@ -13,12 +13,10 @@ export function renderNavbar(activeRoute = 'dashboard') {
     { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
     { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
     { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
-    { key: 'customers', label: 'Customers', icon: 'corporate_fare', href: '#/customers' },
     { key: 'products', label: 'Products', icon: 'inventory_2', href: '#/products' },
     { key: 'pricing', label: 'Pricing', icon: 'sell', href: '#/pricing' },
     { key: 'subscriptions', label: 'Subscriptions', icon: 'sync', href: '#/subscriptions' },
     { key: 'reports', label: 'Reports', icon: 'bar_chart', href: '#/reports' },
-    { key: 'portal', label: 'Portal', icon: 'open_in_browser', href: '#/portal' },
   ];
 
   const navLinksHtml = navItems
@@ -66,11 +64,6 @@ export function renderNavbar(activeRoute = 'dashboard') {
             <span class="text-xs text-on-surface-variant font-medium">Q3 Pipeline</span>
             <span class="text-xs font-mono font-bold text-primary">99.4%</span>
           </div>
-
-          <button type="button" class="icon-btn relative" title="Notifications" id="btn-notifications">
-            <span class="material-symbols-outlined text-lg text-on-surface-variant">notifications</span>
-            <span class="notification-badge"></span>
-          </button>
 
           <div class="h-6 w-px bg-outline-variant/50 hidden md:block"></div>
 

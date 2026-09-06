@@ -10,7 +10,9 @@ import { renderDashboardPage, loadDashboard, setupDashboardEvents } from './page
 import { renderQuotationsPage, loadQuotations, setupQuotationsEvents } from './pages/quotations.js';
 import { renderQuotationDetailPage, loadQuotationDetail, setupQuotationDetailEvents } from './pages/quotation-detail.js';
 import { renderApprovalsPage, loadApprovals, setupApprovalsEvents } from './pages/approvals.js';
+import { renderApprovalDetailPage, loadApprovalDetail, setupApprovalDetailEvents } from './pages/approval-detail.js';
 import { renderProductsPage, loadProducts, setupProductsEvents } from './pages/products.js';
+import { renderProductDetailPage, loadProductDetail, setupProductDetailEvents } from './pages/product-detail.js';
 import { renderPricingPage, loadPricing, setupPricingEvents } from './pages/pricing.js';
 import { renderCustomersPage, loadCustomers, setupCustomersEvents } from './pages/customers.js';
 import { renderCustomerPortalPage, loadCustomerPortal, setupCustomerPortalEvents } from './pages/customer-portal.js';
@@ -143,6 +145,19 @@ export class Router {
         break;
       }
 
+      case 'approval-detail': {
+        this.showLoading();
+        const quoteId = param || query.get('id');
+        const data = await loadApprovalDetail(quoteId);
+        this.appEl.innerHTML = `
+          ${renderNavbar('approvals')}
+          <main class="main-content">${renderApprovalDetailPage(data)}</main>
+        `;
+        setupNavbarEvents();
+        setupApprovalDetailEvents(quoteId);
+        break;
+      }
+
       case 'products': {
         this.showLoading();
         const products = await loadProducts();
@@ -152,6 +167,19 @@ export class Router {
         `;
         setupNavbarEvents();
         setupProductsEvents();
+        break;
+      }
+
+      case 'product-detail': {
+        this.showLoading();
+        const prodId = param || 'new';
+        const prodData = await loadProductDetail(prodId);
+        this.appEl.innerHTML = `
+          ${renderNavbar('products')}
+          <main class="main-content">${renderProductDetailPage(prodData)}</main>
+        `;
+        setupNavbarEvents();
+        setupProductDetailEvents(prodId);
         break;
       }
 

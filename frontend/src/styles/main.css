@@ -982,7 +982,7 @@ a:hover { color: var(--color-on-surface); }
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  overflow-x: auto;
+  overflow: visible;
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
   background: var(--color-surface-container);
