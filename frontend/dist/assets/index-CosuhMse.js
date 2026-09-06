@@ -1,4 +1,4 @@
-(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))a(n);new MutationObserver(n=>{for(const t of n)if(t.type==="childList")for(const r of t.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&a(r)}).observe(document,{childList:!0,subtree:!0});function i(n){const t={};return n.integrity&&(t.integrity=n.integrity),n.referrerPolicy&&(t.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?t.credentials="include":n.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function a(n){if(n.ep)return;n.ep=!0;const t=i(n);fetch(n.href,t)}})();const S="/api/v1";class h extends Error{constructor(s,i,a){super(s),this.name="ApiError",this.status=i,this.data=a}}const c={getToken(){return localStorage.getItem("dealflow_token")},setToken(e){e?localStorage.setItem("dealflow_token",e):localStorage.removeItem("dealflow_token")},getHeaders(e={}){const s={"Content-Type":"application/json",...e},i=this.getToken();return i&&(s.Authorization=`Bearer ${i}`),s},async request(e,s={}){const i=`${S}${e}`,a=this.getHeaders(s.headers),n={...s,headers:a};n.body&&typeof n.body=="object"&&!(n.body instanceof FormData)&&(n.body=JSON.stringify(n.body));try{const t=await fetch(i,n);if(t.status===401&&!e.includes("/auth/login"))throw this.setToken(null),localStorage.removeItem("dealflow_user"),window.location.hash="#/login",new h("Session expired. Please sign in again.",401,null);if(t.status===204)return null;const r=t.headers.get("content-type")||"";let l=null;if(r.includes("application/json")?l=await t.json():l=await t.text(),!t.ok){const o=(l==null?void 0:l.detail)||(l==null?void 0:l.message)||`Request failed with status ${t.status}`;throw new h(o,t.status,l)}return l}catch(t){throw t instanceof h?t:new h(t.message||"Network connection failed",0,null)}},get(e,s){let i=e;if(s){const a=new URLSearchParams(s).toString();a&&(i+=`?${a}`)}return this.request(i,{method:"GET"})},post(e,s){return this.request(e,{method:"POST",body:s})},put(e,s){return this.request(e,{method:"PUT",body:s})},delete(e){return this.request(e,{method:"DELETE"})}},v={getUser(){try{const e=localStorage.getItem("dealflow_user");return e?JSON.parse(e):null}catch{return null}},setUser(e){e?localStorage.setItem("dealflow_user",JSON.stringify(e)):localStorage.removeItem("dealflow_user")},isAuthenticated(){return!!c.getToken()},async login(e,s,i){const a=await c.post("/auth/login",{email:e,password:s});if(a.access_token){c.setToken(a.access_token);try{const n=await c.get("/auth/me");return n.selected_role=i||n.role,this.setUser(n),{success:!0,user:n}}catch{const n={email:e,full_name:e.split("@")[0],role:i||"SalesRep",selected_role:i||"SalesRep"};return this.setUser(n),{success:!0,user:n}}}throw new Error("Authentication failed: No access token received")},async signup({full_name:e,email:s,password:i,role:a}){return await c.post("/auth/signup",{full_name:e,email:s,password:i,role:a})},logout(){c.setToken(null),this.setUser(null),window.location.hash="#/login"}};function x(e="quotations"){const s=v.getUser()||{full_name:"User",role:"SalesRep"},i=s.selected_role||s.role||"",a=[{key:"quotations",label:"My Quotations",icon:"request_quote",href:"#/quotations"},{key:"messages",label:"Messages",icon:"chat_bubble",href:"#/messages"},{key:"profile",label:"Profile",icon:"account_circle",href:"#/profile"}];return i==="Admin"&&a.unshift({key:"dashboard",label:"Dashboard",icon:"dashboard",href:"#/dashboard"}),`
+(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))a(n);new MutationObserver(n=>{for(const t of n)if(t.type==="childList")for(const r of t.addedNodes)r.tagName==="LINK"&&r.rel==="modulepreload"&&a(r)}).observe(document,{childList:!0,subtree:!0});function i(n){const t={};return n.integrity&&(t.integrity=n.integrity),n.referrerPolicy&&(t.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?t.credentials="include":n.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function a(n){if(n.ep)return;n.ep=!0;const t=i(n);fetch(n.href,t)}})();const C="/api/v1";class w extends Error{constructor(s,i,a){super(s),this.name="ApiError",this.status=i,this.data=a}}const c={getToken(){return localStorage.getItem("dealflow_token")},setToken(e){e?localStorage.setItem("dealflow_token",e):localStorage.removeItem("dealflow_token")},getHeaders(e={}){const s={"Content-Type":"application/json",...e},i=this.getToken();return i&&(s.Authorization=`Bearer ${i}`),s},async request(e,s={}){const i=`${C}${e}`,a=this.getHeaders(s.headers),n={...s,headers:a};n.body&&typeof n.body=="object"&&!(n.body instanceof FormData)&&(n.body=JSON.stringify(n.body));try{const t=await fetch(i,n);if(t.status===401&&!e.includes("/auth/login"))throw this.setToken(null),localStorage.removeItem("dealflow_user"),window.location.hash="#/login",new w("Session expired. Please sign in again.",401,null);if(t.status===204)return null;const r=t.headers.get("content-type")||"";let l=null;if(r.includes("application/json")?l=await t.json():l=await t.text(),!t.ok){const o=(l==null?void 0:l.detail)||(l==null?void 0:l.message)||`Request failed with status ${t.status}`;throw new w(o,t.status,l)}return l}catch(t){throw t instanceof w?t:new w(t.message||"Network connection failed",0,null)}},get(e,s){let i=e;if(s){const a=new URLSearchParams(s).toString();a&&(i+=`?${a}`)}return this.request(i,{method:"GET"})},post(e,s){return this.request(e,{method:"POST",body:s})},put(e,s){return this.request(e,{method:"PUT",body:s})},delete(e){return this.request(e,{method:"DELETE"})}},b={getUser(){try{const e=localStorage.getItem("dealflow_user");return e?JSON.parse(e):null}catch{return null}},setUser(e){e?localStorage.setItem("dealflow_user",JSON.stringify(e)):localStorage.removeItem("dealflow_user")},isAuthenticated(){return!!c.getToken()},async login(e,s,i){const a=await c.post("/auth/login",{email:e,password:s});if(a.access_token){c.setToken(a.access_token);try{const n=await c.get("/auth/me");return n.selected_role=i||n.role,this.setUser(n),{success:!0,user:n}}catch{const n={email:e,full_name:e.split("@")[0],role:i||"SalesRep",selected_role:i||"SalesRep"};return this.setUser(n),{success:!0,user:n}}}throw new Error("Authentication failed: No access token received")},async signup({full_name:e,email:s,password:i,role:a}){return await c.post("/auth/signup",{full_name:e,email:s,password:i,role:a})},logout(){c.setToken(null),this.setUser(null),window.location.hash="#/login"}};function x(e="quotations"){const s=b.getUser()||{full_name:"User",role:"SalesRep"},i=s.selected_role||s.role||"",a=[{key:"quotations",label:"My Quotations",icon:"request_quote",href:"#/quotations"},{key:"messages",label:"Messages",icon:"chat_bubble",href:"#/messages"},{key:"profile",label:"Profile",icon:"account_circle",href:"#/profile"}];return i==="Admin"&&a.unshift({key:"dashboard",label:"Dashboard",icon:"dashboard",href:"#/dashboard"}),`
     <header class="navbar-header">
       <div class="navbar-inner">
         <!-- Logo & Branding -->
@@ -48,7 +48,7 @@
         </div>
       </div>
     </header>
-  `}function f(){const e=document.getElementById("btn-logout");e&&e.addEventListener("click",()=>{confirm("Are you sure you want to sign out?")&&v.logout()})}function C(){return`
+  `}function f(){const e=document.getElementById("btn-logout");e&&e.addEventListener("click",()=>{confirm("Are you sure you want to sign out?")&&b.logout()})}function L(){return`
     <div class="login-wrapper flex items-center justify-center min-h-screen w-full p-4">
       <!-- Ambient clay orbs -->
       <div class="ambient-orb orb-1"></div>
@@ -127,7 +127,7 @@
         </div>
       </div>
     </div>
-  `}function L(){const e=document.getElementById("login-form"),s=document.getElementById("login-error"),i=document.getElementById("btn-submit-login"),a=document.getElementById("toggle-pw"),n=document.getElementById("login-password"),t=document.getElementById("pw-icon");a&&n&&t&&a.addEventListener("click",()=>{n.type==="password"?(n.type="text",t.textContent="visibility_off"):(n.type="password",t.textContent="visibility")}),e&&e.addEventListener("submit",async r=>{r.preventDefault(),s.classList.add("hidden"),s.textContent="",i.disabled=!0,i.innerHTML='<span class="loading-spinner"></span> Authenticating...';const l=document.getElementById("login-email").value.trim(),o=n.value.trim();try{await v.login(l,o),window.location.hash="#/quotations"}catch(d){s.textContent=d.message||"Login failed. Check your credentials.",s.classList.remove("hidden")}finally{i.disabled=!1,i.innerHTML='<span><span>Sign In to DealFlow360</span><span class="material-symbols-outlined text-base">arrow_forward</span></span>'}})}function _(){return`
+  `}function _(){const e=document.getElementById("login-form"),s=document.getElementById("login-error"),i=document.getElementById("btn-submit-login"),a=document.getElementById("toggle-pw"),n=document.getElementById("login-password"),t=document.getElementById("pw-icon");a&&n&&t&&a.addEventListener("click",()=>{n.type==="password"?(n.type="text",t.textContent="visibility_off"):(n.type="password",t.textContent="visibility")}),e&&e.addEventListener("submit",async r=>{r.preventDefault(),s.classList.add("hidden"),s.textContent="",i.disabled=!0,i.innerHTML='<span class="loading-spinner"></span> Authenticating...';const l=document.getElementById("login-email").value.trim(),o=n.value.trim();try{await b.login(l,o),window.location.hash="#/quotations"}catch(d){s.textContent=d.message||"Login failed. Check your credentials.",s.classList.remove("hidden")}finally{i.disabled=!1,i.innerHTML='<span><span>Sign In to DealFlow360</span><span class="material-symbols-outlined text-base">arrow_forward</span></span>'}})}function P(){return`
     <div class="login-wrapper flex items-center justify-center min-h-screen w-full p-4">
       <!-- Ambient clay orbs -->
       <div class="ambient-orb orb-1"></div>
@@ -147,7 +147,7 @@
               </svg>
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-on-surface">Create Account</h1>
-            <p class="text-xs text-on-surface-variant mt-1">Join DealFlow360 to get started</p>
+            <p class="text-xs text-on-surface-variant mt-1">Join DealFlow360 workspace</p>
           </div>
 
           <!-- Error Alert Banner -->
@@ -224,24 +224,6 @@
               </div>
             </div>
 
-            <!-- Role Dropdown -->
-            <div class="space-y-1.5 text-left">
-              <label class="text-xs font-semibold text-on-surface-variant" for="signup-role">Select Role</label>
-              <div class="relative flex items-center">
-                <select
-                  id="signup-role"
-                  class="input-clay w-full text-sm h-11 appearance-none pr-10 cursor-pointer"
-                  required
-                >
-                  <option value="SalesRep">Sales Representative</option>
-                  <option value="SalesManager">Sales Manager</option>
-                  <option value="FinanceOps">Finance</option>
-                  <option value="Customer">Customer</option>
-                </select>
-                <span class="material-symbols-outlined text-secondary absolute right-3 text-base pointer-events-none">expand_more</span>
-              </div>
-            </div>
-
             <!-- Submit Button -->
             <div class="pt-3">
               <button type="submit" id="btn-submit-signup" class="btn btn-primary w-full h-11 text-sm font-semibold justify-center gap-2 rounded-xl shadow-sm">
@@ -261,7 +243,7 @@
         </div>
       </div>
     </div>
-  `}function P(){const e=document.getElementById("signup-form"),s=document.getElementById("signup-error"),i=document.getElementById("signup-success"),a=document.getElementById("btn-submit-signup"),n=document.getElementById("signup-toggle-pw"),t=document.getElementById("signup-password"),r=document.getElementById("signup-pw-icon");n&&t&&r&&n.addEventListener("click",()=>{t.type==="password"?(t.type="text",r.textContent="visibility_off"):(t.type="password",r.textContent="visibility")}),e&&e.addEventListener("submit",async l=>{l.preventDefault(),s.classList.add("hidden"),s.textContent="",i.classList.add("hidden"),i.textContent="",a.disabled=!0,a.innerHTML='<span class="loading-spinner"></span> Creating Account...';const o=document.getElementById("signup-name").value.trim(),d=document.getElementById("signup-email").value.trim(),u=t.value,p=document.getElementById("signup-confirm-password").value,m=document.getElementById("signup-role").value;if(u!==p){s.textContent="Passwords do not match.",s.classList.remove("hidden"),a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>';return}if(u.length<8){s.textContent="Password must be at least 8 characters.",s.classList.remove("hidden"),a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>';return}try{await v.signup({full_name:o,email:d,password:u,role:m}),i.textContent="Account created successfully! Redirecting to login...",i.classList.remove("hidden"),e.reset(),setTimeout(()=>{window.location.hash="#/login"},1500)}catch(g){s.textContent=g.message||"Signup failed. Please try again.",s.classList.remove("hidden")}finally{a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>'}})}const y={show({title:e,content:s,onConfirm:i,confirmText:a="Confirm",cancelText:n="Cancel",showConfirm:t=!0}){const r=document.getElementById("df-modal-backdrop");r&&r.remove();const l=`
+  `}function D(){const e=document.getElementById("signup-form"),s=document.getElementById("signup-error"),i=document.getElementById("signup-success"),a=document.getElementById("btn-submit-signup"),n=document.getElementById("signup-toggle-pw"),t=document.getElementById("signup-password"),r=document.getElementById("signup-pw-icon");n&&t&&r&&n.addEventListener("click",()=>{t.type==="password"?(t.type="text",r.textContent="visibility_off"):(t.type="password",r.textContent="visibility")}),e&&e.addEventListener("submit",async l=>{l.preventDefault(),s.classList.add("hidden"),s.textContent="",i.classList.add("hidden"),i.textContent="",a.disabled=!0,a.innerHTML='<span class="loading-spinner"></span> Creating Account...';const o=document.getElementById("signup-name").value.trim(),d=document.getElementById("signup-email").value.trim(),u=t.value,p=document.getElementById("signup-confirm-password").value;if(u!==p){s.textContent="Passwords do not match.",s.classList.remove("hidden"),a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>';return}if(u.length<8){s.textContent="Password must be at least 8 characters.",s.classList.remove("hidden"),a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>';return}try{await b.signup({full_name:o,email:d,password:u,role:"SalesRep"}),i.textContent="Account created successfully! Redirecting to login...",i.classList.remove("hidden"),e.reset(),setTimeout(()=>{window.location.hash="#/login"},1500)}catch(m){s.textContent=m.message||"Signup failed. Please try again.",s.classList.remove("hidden")}finally{a.disabled=!1,a.innerHTML='<span>Create Account</span><span class="material-symbols-outlined text-base">person_add</span>'}})}const y={show({title:e,content:s,onConfirm:i,confirmText:a="Confirm",cancelText:n="Cancel",showConfirm:t=!0}){const r=document.getElementById("df-modal-backdrop");r&&r.remove();const l=`
       <div id="df-modal-backdrop" class="modal-backdrop">
         <div class="modal-card">
           <div class="modal-header">
@@ -588,7 +570,7 @@
         </div>
       </div>
     </div>
-  `}async function D(){try{const[e,s]=await Promise.all([c.get("/dashboard/summary").catch(()=>({})),c.get("/quotations").catch(()=>[])]);return{summary:e,quotations:s}}catch{return{summary:{},quotations:[]}}}function B(){const e=document.getElementById("btn-export-dash");e&&e.addEventListener("click",()=>{window.location.hash="#/reports"});const s=document.getElementById("btn-new-deal-dash");s&&s.addEventListener("click",()=>{window.location.hash="#/quotation-detail"});const i=document.getElementById("btn-dl-audit");i&&i.addEventListener("click",()=>{alert("Downloading audit trail CSV...")})}function T(e=[],s="my",i="kanban"){const a=v.getUser()||{full_name:"User"},n=[{id:"draft",title:"Draft",match:o=>o.includes("draft")},{id:"pending",title:"Pending Approval",match:o=>o.includes("pending")||o.includes("review")},{id:"approved",title:"Approved",match:o=>o.includes("approved")},{id:"negotiation",title:"Negotiation",match:o=>o.includes("negotiat")||o.includes("sent")},{id:"confirmed",title:"Confirmed",match:o=>o.includes("confirmed")||o.includes("fulfilled")}],t=o=>{const d=Number(o.total_amount||0).toLocaleString("en-IN");return`
+  `}async function B(){try{const[e,s]=await Promise.all([c.get("/dashboard/summary").catch(()=>({})),c.get("/quotations").catch(()=>[])]);return{summary:e,quotations:s}}catch{return{summary:{},quotations:[]}}}function T(){const e=document.getElementById("btn-export-dash");e&&e.addEventListener("click",()=>{window.location.hash="#/reports"});const s=document.getElementById("btn-new-deal-dash");s&&s.addEventListener("click",()=>{window.location.hash="#/quotation-detail"});const i=document.getElementById("btn-dl-audit");i&&i.addEventListener("click",()=>{alert("Downloading audit trail CSV...")})}function j(e=[],s="my",i="kanban"){const a=b.getUser()||{full_name:"User"},n=[{id:"draft",title:"Draft",match:o=>o.includes("draft")},{id:"pending",title:"Pending Approval",match:o=>o.includes("pending")||o.includes("review")},{id:"approved",title:"Approved",match:o=>o.includes("approved")},{id:"negotiation",title:"Negotiation",match:o=>o.includes("negotiat")||o.includes("sent")},{id:"confirmed",title:"Confirmed",match:o=>o.includes("confirmed")||o.includes("fulfilled")}],t=o=>{const d=Number(o.total_amount||0).toLocaleString("en-IN");return`
       <div 
         class="quote-card card card-extruded border border-outline-variant/60 rounded-2xl p-4 cursor-pointer hover:border-primary transition-all space-y-1.5"
         onclick="window.location.hash='#/quotations/${o.id}'"
@@ -701,34 +683,34 @@
         </button>
       </div>
     </div>
-  `}async function j(e=!0){try{return await c.get(`/quotations?my_only=${e}`)}catch{return[]}}function q(e,s){document.querySelectorAll("#quote-scope-toggle button").forEach(n=>{n.addEventListener("click",()=>{const t=n.getAttribute("data-scope");typeof e=="function"&&e(t==="my")})});const a=document.getElementById("btn-mode-toggle");a&&a.addEventListener("click",()=>{const n=a.getAttribute("data-target-mode");typeof s=="function"&&s(n)})}function k(e={}){var p,m,g;const{quotation:s=null,products:i=[],customers:a=[]}=e,n=!s||!s.id,t=s||{id:0,deal_reference:"DEAL-NEW",customer_name:((p=a[0])==null?void 0:p.name)||"Acme Corp Global ERP",customer_email:((m=a[0])==null?void 0:m.email)||"procurement@acme.corp",customer_tier:((g=a[0])==null?void 0:g.tier)||"Gold",status:"Draft",lines:[]},r=!t.lines||t.lines.length===0?`
+  `}async function q(e=!0){try{return await c.get(`/quotations?my_only=${e}`)}catch{return[]}}function R(e,s){document.querySelectorAll("#quote-scope-toggle button").forEach(n=>{n.addEventListener("click",()=>{const t=n.getAttribute("data-scope");typeof e=="function"&&e(t==="my")})});const a=document.getElementById("btn-mode-toggle");a&&a.addEventListener("click",()=>{const n=a.getAttribute("data-target-mode");typeof s=="function"&&s(n)})}function k(e={}){var p,m,g;const{quotation:s=null,products:i=[],customers:a=[]}=e,n=!s||!s.id,t=s||{id:0,deal_reference:"DEAL-NEW",customer_name:((p=a[0])==null?void 0:p.name)||"Acme Corp Global ERP",customer_email:((m=a[0])==null?void 0:m.email)||"procurement@acme.corp",customer_tier:((g=a[0])==null?void 0:g.tier)||"Gold",status:"Draft",lines:[]},r=!t.lines||t.lines.length===0?`
       <tr>
         <td colspan="7" class="text-center py-6 text-on-surface-variant text-xs">
           No line items added yet. Click <strong>Add Product Line +</strong> to populate this deal.
         </td>
       </tr>
-    `:t.lines.map(b=>`
+    `:t.lines.map(v=>`
         <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40">
           <td class="py-2.5 px-4 font-bold text-xs text-on-surface">
-            ${b.product_name||`Product #${b.product_id}`}
+            ${v.product_name||`Product #${v.product_id}`}
           </td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface-variant">${b.sku||"SKU-STD"}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface-variant">${v.sku||"SKU-STD"}</td>
           <td class="py-2.5 px-4">
-            <span class="badge badge-neutral text-[10px]">${b.category_snapshot||"Hardware"}</span>
+            <span class="badge badge-neutral text-[10px]">${v.category_snapshot||"Hardware"}</span>
           </td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">${b.quantity}</td>
-          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">₹${Number(b.unit_price).toLocaleString("en-IN")}</td>
-          <td class="py-2.5 px-4 font-mono text-xs text-tertiary">${b.discount_percent||0}%</td>
-          <td class="py-2.5 px-4 font-mono font-bold text-xs text-primary">₹${Number(b.line_total).toLocaleString("en-IN")}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">${v.quantity}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-on-surface">₹${Number(v.unit_price).toLocaleString("en-IN")}</td>
+          <td class="py-2.5 px-4 font-mono text-xs text-tertiary">${v.discount_percent||0}%</td>
+          <td class="py-2.5 px-4 font-mono font-bold text-xs text-primary">₹${Number(v.line_total).toLocaleString("en-IN")}</td>
           <td class="py-2.5 px-4 text-right">
             ${n?"":`
-              <button type="button" class="icon-btn text-error hover:bg-error-container/30 delete-line-btn" data-line-id="${b.id}" title="Remove Line">
+              <button type="button" class="icon-btn text-error hover:bg-error-container/30 delete-line-btn" data-line-id="${v.id}" title="Remove Line">
                 <span class="material-symbols-outlined text-sm">delete</span>
               </button>
             `}
           </td>
         </tr>
-      `).join(""),l=t.lines?t.lines.reduce((b,w)=>b+(w.line_total||0),0):0,o=l;let d="badge-neutral";const u=(t.status||"").toLowerCase();return u.includes("approved")?d="badge-success":u.includes("pending")?d="badge-warning":u.includes("negotiat")?d="badge-info":(u.includes("fulfilled")||u.includes("confirmed"))&&(d="badge-success"),`
+      `).join(""),l=t.lines?t.lines.reduce((v,h)=>v+(h.line_total||0),0):0,o=l;let d="badge-neutral";const u=(t.status||"").toLowerCase();return u.includes("approved")?d="badge-success":u.includes("pending")?d="badge-warning":u.includes("negotiat")?d="badge-info":(u.includes("fulfilled")||u.includes("confirmed"))&&(d="badge-success"),`
     <div class="page-container space-y-6">
       <!-- Breadcrumb & Back -->
       <div class="flex items-center justify-between">
@@ -927,13 +909,13 @@
       </div>
     </div>
   `}async function A(e){try{const[s,i,a]=await Promise.all([e?c.get(`/quotations/${e}`).catch(()=>null):null,c.get("/products").catch(()=>[]),c.get("/customers").catch(()=>[])]);return{quotation:s,products:i,customers:a}}catch{return{quotation:null,products:[],customers:[]}}}function $(e,s=[],i=[]){const a=document.getElementById("btn-add-line-modal");a&&a.addEventListener("click",()=>{const p=s.map(m=>`
-        <option value="${m.id}">${m.name} — $${Number(m.base_price).toLocaleString()} (${m.category})</option>
+        <option value="${m.id}">${m.name} — ₹${Number(m.base_price).toLocaleString("en-IN")} (${m.category})</option>
       `).join("");y.show({title:"Add Product Line Item",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Select Product</label>
               <select id="modal-product-select" class="input-clay w-full text-xs">
-                ${p||'<option value="1">Enterprise M&A CPQ Core — ₹120,000</option>'}
+                ${p||'<option value="1">Enterprise Cloud Orchestration Node — ₹120,000</option>'}
               </select>
             </div>
             <div>
@@ -941,7 +923,7 @@
               <input id="modal-product-qty" type="number" min="1" value="1" class="input-clay w-full text-xs" />
             </div>
           </div>
-        `,confirmText:"Add to Quotation",onConfirm:async()=>{var b;const m=parseInt(document.getElementById("modal-product-select").value,10),g=parseFloat(document.getElementById("modal-product-qty").value)||1;if(e)await c.post(`/quotations/${e}/lines`,{product_id:m,quantity:g}),window.location.reload();else{const w=((b=i[0])==null?void 0:b.id)||1,E=await c.post("/quotations",{customer_id:w});await c.post(`/quotations/${E.id}/lines`,{product_id:m,quantity:g}),window.location.hash=`#/quotations/${E.id}`}return!0}})}),document.querySelectorAll(".delete-line-btn").forEach(p=>{p.addEventListener("click",async()=>{const m=p.getAttribute("data-line-id");confirm("Remove this line item from quotation?")&&(await c.delete(`/quotations/${e}/lines/${m}`),window.location.reload())})});const n=async p=>{await c.put(`/quotations/${e}`,{status:p}),window.location.reload()},t=document.getElementById("btn-submit-approval");t&&t.addEventListener("click",()=>n("Pending Approval"));const r=document.getElementById("btn-approve-quote");r&&r.addEventListener("click",()=>n("Approved"));const l=document.getElementById("btn-reject-quote");l&&l.addEventListener("click",()=>n("Rejected"));const o=document.getElementById("btn-send-portal");o&&o.addEventListener("click",()=>n("Under Negotiation"));const d=document.getElementById("btn-confirm-quote");d&&d.addEventListener("click",()=>n("Confirmed"));const u=document.getElementById("btn-fulfill-quote");u&&u.addEventListener("click",()=>n("Fulfilled"))}function R(e=[]){const s=e.filter(n=>(n.status||"").toLowerCase().includes("pending")||(n.status||"").toLowerCase().includes("draft")),i=s.length>0?s:[{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",customer_tier:"Gold",total_amount:34e4,rep_name:"Marcus Hayes",discount:"18%",limit:"15%",reason:"Multi-region deployment incentive requested for 3-year upfront commitment."},{id:8488,deal_reference:"DEAL-8488",customer_name:"Starlight Pharma Logistics",customer_tier:"Silver",total_amount:115e4,rep_name:"Sarah Lin",discount:"14%",limit:"10%",reason:"Competitive displacement against legacy SAP stack."},{id:8461,deal_reference:"DEAL-8461",customer_name:"Apex Financial Cloud Vault",customer_tier:"Bronze",total_amount:475e3,rep_name:"David Kim",discount:"8%",limit:"5%",reason:"Volume licensing ramp-up structure."}],a=i.map(n=>`
+        `,confirmText:"Add to Quotation",onConfirm:async()=>{var h;const m=parseInt(document.getElementById("modal-product-select").value,10),g=parseFloat(document.getElementById("modal-product-qty").value)||1;if(!e||e==="0"||e===0||e==="undefined"){const S=((h=i[0])==null?void 0:h.id)||1,E=await c.post("/quotations",{customer_id:S});await c.post(`/quotations/${E.id}/lines`,{product_id:m,quantity:g}),window.location.hash=`#/quotations/${E.id}`,window.location.reload()}else await c.post(`/quotations/${e}/lines`,{product_id:m,quantity:g}),window.location.reload();return!0}})}),document.querySelectorAll(".delete-line-btn").forEach(p=>{p.addEventListener("click",async()=>{const m=p.getAttribute("data-line-id");confirm("Remove this line item from quotation?")&&(await c.delete(`/quotations/${e}/lines/${m}`),window.location.reload())})});const n=async p=>{await c.put(`/quotations/${e}`,{status:p}),window.location.reload()},t=document.getElementById("btn-submit-approval");t&&t.addEventListener("click",()=>n("Pending Approval"));const r=document.getElementById("btn-approve-quote");r&&r.addEventListener("click",()=>n("Approved"));const l=document.getElementById("btn-reject-quote");l&&l.addEventListener("click",()=>n("Rejected"));const o=document.getElementById("btn-send-portal");o&&o.addEventListener("click",()=>n("Under Negotiation"));const d=document.getElementById("btn-confirm-quote");d&&d.addEventListener("click",()=>n("Confirmed"));const u=document.getElementById("btn-fulfill-quote");u&&u.addEventListener("click",()=>n("Fulfilled"))}function M(e=[]){const s=e.filter(n=>(n.status||"").toLowerCase().includes("pending")||(n.status||"").toLowerCase().includes("draft")),i=s.length>0?s:[{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",customer_tier:"Gold",total_amount:34e4,rep_name:"Marcus Hayes",discount:"18%",limit:"15%",reason:"Multi-region deployment incentive requested for 3-year upfront commitment."},{id:8488,deal_reference:"DEAL-8488",customer_name:"Starlight Pharma Logistics",customer_tier:"Silver",total_amount:115e4,rep_name:"Sarah Lin",discount:"14%",limit:"10%",reason:"Competitive displacement against legacy SAP stack."},{id:8461,deal_reference:"DEAL-8461",customer_name:"Apex Financial Cloud Vault",customer_tier:"Bronze",total_amount:475e3,rep_name:"David Kim",discount:"8%",limit:"5%",reason:"Volume licensing ramp-up structure."}],a=i.map(n=>`
     <div class="card card-extruded space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container-high/60 pb-3">
         <div class="flex items-center gap-3">
@@ -1029,7 +1011,7 @@
         ${a}
       </div>
     </div>
-  `}async function M(){try{return await c.get("/quotations")}catch{return[]}}function N(){document.querySelectorAll(".approve-deal-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");try{await c.put(`/quotations/${s}`,{status:"Approved"}),alert(`Deal #${s} has been successfully approved.`),window.location.reload()}catch(i){alert(i.message||"Approval failed")}})}),document.querySelectorAll(".reject-approval-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");if(confirm(`Reject quotation #${s}?`))try{await c.put(`/quotations/${s}`,{status:"Rejected"}),alert(`Deal #${s} has been rejected.`),window.location.reload()}catch(i){alert(i.message||"Action failed")}})})}function H(e=[]){return`
+  `}async function N(){try{return await c.get("/quotations")}catch{return[]}}function H(){document.querySelectorAll(".approve-deal-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");try{await c.put(`/quotations/${s}`,{status:"Approved"}),alert(`Deal #${s} has been successfully approved.`),window.location.reload()}catch(i){alert(i.message||"Approval failed")}})}),document.querySelectorAll(".reject-approval-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");if(confirm(`Reject quotation #${s}?`))try{await c.put(`/quotations/${s}`,{status:"Rejected"}),alert(`Deal #${s} has been rejected.`),window.location.reload()}catch(i){alert(i.message||"Action failed")}})})}function F(e=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="card card-extruded">
@@ -1108,7 +1090,7 @@
   `).join("")}
       </div>
     </div>
-  `}async function F(){try{return await c.get("/products")}catch{return[]}}function U(){const e=document.getElementById("product-search-input"),s=document.querySelectorAll(".product-card");e&&e.addEventListener("input",a=>{const n=a.target.value.toLowerCase();s.forEach(t=>{const r=t.textContent.toLowerCase();t.style.display=r.includes(n)?"":"none"})});const i=document.querySelectorAll("#product-category-filters button");i.forEach(a=>{a.addEventListener("click",()=>{i.forEach(t=>t.classList.remove("active")),a.classList.add("active");const n=a.getAttribute("data-cat");s.forEach(t=>{if(n==="all")t.style.display="";else{const r=t.getAttribute("data-category");t.style.display=r.includes(n)?"":"none"}})})}),document.querySelectorAll(".add-to-deal-btn").forEach(a=>{a.addEventListener("click",async()=>{const n=a.getAttribute("data-product-id"),t=a.getAttribute("data-product-name");y.show({title:`Add ${t} to Quotation`,content:`
+  `}async function U(){try{return await c.get("/products")}catch{return[]}}function G(){const e=document.getElementById("product-search-input"),s=document.querySelectorAll(".product-card");e&&e.addEventListener("input",a=>{const n=a.target.value.toLowerCase();s.forEach(t=>{const r=t.textContent.toLowerCase();t.style.display=r.includes(n)?"":"none"})});const i=document.querySelectorAll("#product-category-filters button");i.forEach(a=>{a.addEventListener("click",()=>{i.forEach(t=>t.classList.remove("active")),a.classList.add("active");const n=a.getAttribute("data-cat");s.forEach(t=>{if(n==="all")t.style.display="";else{const r=t.getAttribute("data-category");t.style.display=r.includes(n)?"":"none"}})})}),document.querySelectorAll(".add-to-deal-btn").forEach(a=>{a.addEventListener("click",async()=>{const n=a.getAttribute("data-product-id"),t=a.getAttribute("data-product-name");y.show({title:`Add ${t} to Quotation`,content:`
           <div class="space-y-3 text-xs">
             <p class="text-on-surface-variant">Configure quantity to append this SKU to an active deal:</p>
             <div>
@@ -1116,7 +1098,7 @@
               <input type="number" id="quick-add-qty" min="1" value="1" class="input-clay w-full" />
             </div>
           </div>
-        `,confirmText:"Generate Deal",onConfirm:async()=>{const r=parseFloat(document.getElementById("quick-add-qty").value)||1,l=await c.post("/quotations",{customer_id:1});return await c.post(`/quotations/${l.id}/lines`,{product_id:parseInt(n,10),quantity:r}),window.location.hash=`#/quotations/${l.id}`,!0}})})})}function G(e=[]){return`
+        `,confirmText:"Generate Deal",onConfirm:async()=>{const r=parseFloat(document.getElementById("quick-add-qty").value)||1,l=await c.post("/quotations",{customer_id:1});return await c.post(`/quotations/${l.id}/lines`,{product_id:parseInt(n,10),quantity:r}),window.location.hash=`#/quotations/${l.id}`,!0}})})})}function Q(e=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1245,7 +1227,7 @@
         </div>
       </div>
     </div>
-  `}async function Q(){try{return await c.get("/price-lists")}catch{return[]}}function V(){const e=document.getElementById("btn-add-pricelist");e&&e.addEventListener("click",()=>{y.show({title:"New Commercial Price Schedule",content:`
+  `}async function V(){try{return await c.get("/price-lists")}catch{return[]}}function W(){const e=document.getElementById("btn-add-pricelist");e&&e.addEventListener("click",()=>{y.show({title:"New Commercial Price Schedule",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Schedule Name</label>
@@ -1260,7 +1242,7 @@
               <input id="pl-desc-input" type="text" class="input-clay w-full" placeholder="Intended accounts or region" />
             </div>
           </div>
-        `,confirmText:"Create Schedule",onConfirm:async()=>{const s=document.getElementById("pl-name-input").value.trim(),i=document.getElementById("pl-currency-input").value.trim(),a=document.getElementById("pl-desc-input").value.trim();if(!s)throw new Error("Schedule name is required");return await c.post("/price-lists",{name:s,currency:i,description:a}),window.location.reload(),!0}})})}function W(e=[]){const s=e.length>0?e:[{id:1,name:"Acme Corp Global ERP",email:"procurement@acmeww.com",tier:"Gold",created_at:"2025-01-15"},{id:2,name:"Starlight Pharma Logistics",email:"operations@starlightpharma.com",tier:"Silver",created_at:"2025-02-01"},{id:3,name:"Helios Solar Microgrid Infra",email:"infrastructure@heliosmicro.io",tier:"Gold",created_at:"2025-02-18"},{id:4,name:"Apex Financial Cloud Vault",email:"finops@apexvault.com",tier:"Bronze",created_at:"2025-03-02"}],i=s.map(a=>{let n="badge-primary";const t=(a.tier||"Bronze").toLowerCase();return t.includes("gold")?n="badge-warning":t.includes("silver")&&(n="badge-neutral"),`
+        `,confirmText:"Create Schedule",onConfirm:async()=>{const s=document.getElementById("pl-name-input").value.trim(),i=document.getElementById("pl-currency-input").value.trim(),a=document.getElementById("pl-desc-input").value.trim();if(!s)throw new Error("Schedule name is required");return await c.post("/price-lists",{name:s,currency:i,description:a}),window.location.reload(),!0}})})}function O(e=[]){const s=e.length>0?e:[{id:1,name:"Acme Corp Global ERP",email:"procurement@acmeww.com",tier:"Gold",created_at:"2025-01-15"},{id:2,name:"Starlight Pharma Logistics",email:"operations@starlightpharma.com",tier:"Silver",created_at:"2025-02-01"},{id:3,name:"Helios Solar Microgrid Infra",email:"infrastructure@heliosmicro.io",tier:"Gold",created_at:"2025-02-18"},{id:4,name:"Apex Financial Cloud Vault",email:"finops@apexvault.com",tier:"Bronze",created_at:"2025-03-02"}],i=s.map(a=>{let n="badge-primary";const t=(a.tier||"Bronze").toLowerCase();return t.includes("gold")?n="badge-warning":t.includes("silver")&&(n="badge-neutral"),`
       <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40">
         <td class="py-3 px-4">
           <div class="flex items-center gap-3">
@@ -1379,7 +1361,7 @@
         </div>
       </div>
     </div>
-  `}async function O(){try{return await c.get("/customers")}catch{return[]}}function K(){const e=document.getElementById("cust-search-input"),s=document.getElementById("customers-table");e&&s&&e.addEventListener("input",a=>{const n=a.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(n)?"":"none"})});const i=document.getElementById("btn-add-customer");i&&i.addEventListener("click",()=>{y.show({title:"Add Enterprise Client Account",content:`
+  `}async function K(){try{return await c.get("/customers")}catch{return[]}}function z(){const e=document.getElementById("cust-search-input"),s=document.getElementById("customers-table");e&&s&&e.addEventListener("input",a=>{const n=a.target.value.toLowerCase();s.querySelectorAll("tbody tr").forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(n)?"":"none"})});const i=document.getElementById("btn-add-customer");i&&i.addEventListener("click",()=>{y.show({title:"Add Enterprise Client Account",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Company / Entity Name</label>
@@ -1398,7 +1380,7 @@
               </select>
             </div>
           </div>
-        `,confirmText:"Create Account",onConfirm:async()=>{const a=document.getElementById("new-cust-name").value.trim(),n=document.getElementById("new-cust-email").value.trim(),t=document.getElementById("new-cust-tier").value;if(!a||!n)throw new Error("Company name and email are required");return await c.post("/customers",{name:a,email:n,tier:t}),window.location.reload(),!0}})}),document.querySelectorAll(".create-deal-for-cust-btn").forEach(a=>{a.addEventListener("click",async()=>{const n=parseInt(a.getAttribute("data-cust-id"),10);try{const t=await c.post("/quotations",{customer_id:n});window.location.hash=`#/quotations/${t.id}`}catch(t){alert(t.message||"Failed to create quotation")}})})}function z(e={}){const{quotation:s=null}=e,i=s||{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",total_amount:34e4,status:"Under Negotiation",lines:[{product_name:"Enterprise Cloud Orchestration Node",quantity:2,unit_price:12e4,line_total:24e4},{product_name:"Architecture Consulting & Migration SLA",quantity:1,unit_price:1e5,line_total:1e5}]},a=["Confirmed","Fulfilled"].includes(i.status);return`
+        `,confirmText:"Create Account",onConfirm:async()=>{const a=document.getElementById("new-cust-name").value.trim(),n=document.getElementById("new-cust-email").value.trim(),t=document.getElementById("new-cust-tier").value;if(!a||!n)throw new Error("Company name and email are required");return await c.post("/customers",{name:a,email:n,tier:t}),window.location.reload(),!0}})}),document.querySelectorAll(".create-deal-for-cust-btn").forEach(a=>{a.addEventListener("click",async()=>{const n=parseInt(a.getAttribute("data-cust-id"),10);try{const t=await c.post("/quotations",{customer_id:n});window.location.hash=`#/quotations/${t.id}`}catch(t){alert(t.message||"Failed to create quotation")}})})}function J(e={}){const{quotation:s=null}=e,i=s||{id:8492,deal_reference:"DEAL-8492",customer_name:"Acme Corp Global ERP",total_amount:34e4,status:"Under Negotiation",lines:[{product_name:"Enterprise Cloud Orchestration Node",quantity:2,unit_price:12e4,line_total:24e4},{product_name:"Architecture Consulting & Migration SLA",quantity:1,unit_price:1e5,line_total:1e5}]},a=["Confirmed","Fulfilled"].includes(i.status);return`
     <div class="page-container space-y-6">
       <!-- Portal Top Banner -->
       <div class="card card-extruded bg-surface-container-low/60 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1533,7 +1515,7 @@
         </div>
       </div>
     </div>
-  `}async function J(e){try{const s=await c.get("/quotations"),i=e?s.find(a=>a.id===parseInt(e,10)):s[0];return i?{quotation:await c.get(`/quotations/${i.id}`).catch(()=>i)}:{quotation:null}}catch{return{quotation:null}}}function Y(e){const s=(e==null?void 0:e.id)||8492,i=document.getElementById("btn-portal-accept");i&&i.addEventListener("click",async()=>{if(confirm("Confirm digital signature and ratify this commercial agreement?"))try{await c.put(`/quotations/${s}`,{status:"Confirmed"}),alert("Quotation digitally signed and ratified! Deal status updated to Confirmed."),window.location.reload()}catch(r){alert(r.message||"Signature failed")}});const a=document.getElementById("btn-send-portal-msg"),n=document.getElementById("portal-reply-text"),t=document.getElementById("portal-messages-list");a&&n&&t&&a.addEventListener("click",()=>{const r=n.value.trim();if(!r)return;const l=`
+  `}async function Y(e){try{const s=await c.get("/quotations"),i=e?s.find(a=>a.id===parseInt(e,10)):s[0];return i?{quotation:await c.get(`/quotations/${i.id}`).catch(()=>i)}:{quotation:null}}catch{return{quotation:null}}}function Z(e){const s=(e==null?void 0:e.id)||8492,i=document.getElementById("btn-portal-accept");i&&i.addEventListener("click",async()=>{if(confirm("Confirm digital signature and ratify this commercial agreement?"))try{await c.put(`/quotations/${s}`,{status:"Confirmed"}),alert("Quotation digitally signed and ratified! Deal status updated to Confirmed."),window.location.reload()}catch(r){alert(r.message||"Signature failed")}});const a=document.getElementById("btn-send-portal-msg"),n=document.getElementById("portal-reply-text"),t=document.getElementById("portal-messages-list");a&&n&&t&&a.addEventListener("click",()=>{const r=n.value.trim();if(!r)return;const l=`
         <div class="p-3 rounded-2xl bg-surface-container-lowest border border-primary-container/60 shadow-sm ml-4">
           <div class="flex items-center justify-between mb-1">
             <span class="font-bold text-secondary">Procurement Lead (Acme Corp)</span>
@@ -1541,7 +1523,7 @@
           </div>
           <p class="text-on-surface">${r}</p>
         </div>
-      `;t.insertAdjacentHTML("beforeend",l),n.value="",t.scrollTop=t.scrollHeight})}function Z(e={}){const{warehouses:s=[],quotations:i=[]}=e,a=s.length>0?s:[{id:1,name:"Equinix NY4 North America Hub",code:"WH-US-EAST",location:"Secaucus, NJ",capacity:"94.2% Available"},{id:2,name:"Frankfurt FRA1 European Gateway",code:"WH-EU-CENTRAL",location:"Frankfurt, DE",capacity:"88.0% Available"},{id:3,name:"Singapore SG1 APAC Distribution",code:"WH-APAC-SG",location:"Jurong, SG",capacity:"91.5% Available"}],n=[{sku:"SKU-HDW-410",name:"Quantum Edge Gateway Terminal",req:10,wh1:"NY4 (8)",wh2:"FRA1 (2)",backorder:0,status:"Allocated"},{sku:"SKU-HDW-880",name:"High-Density Terabit Switch Blade",req:4,wh1:"NY4 (4)",wh2:"—",backorder:0,status:"Ready to Pack"},{sku:"SKU-CLD-900",name:"Enterprise Cloud Orchestration Node",req:2,wh1:"Cloud Provisioned",wh2:"—",backorder:0,status:"Fulfilled"}];return`
+      `;t.insertAdjacentHTML("beforeend",l),n.value="",t.scrollTop=t.scrollHeight})}function X(e={}){const{warehouses:s=[],quotations:i=[]}=e,a=s.length>0?s:[{id:1,name:"Equinix NY4 North America Hub",code:"WH-US-EAST",location:"Secaucus, NJ",capacity:"94.2% Available"},{id:2,name:"Frankfurt FRA1 European Gateway",code:"WH-EU-CENTRAL",location:"Frankfurt, DE",capacity:"88.0% Available"},{id:3,name:"Singapore SG1 APAC Distribution",code:"WH-APAC-SG",location:"Jurong, SG",capacity:"91.5% Available"}],n=[{sku:"SKU-HDW-410",name:"Quantum Edge Gateway Terminal",req:10,wh1:"NY4 (8)",wh2:"FRA1 (2)",backorder:0,status:"Allocated"},{sku:"SKU-HDW-880",name:"High-Density Terabit Switch Blade",req:4,wh1:"NY4 (4)",wh2:"—",backorder:0,status:"Ready to Pack"},{sku:"SKU-CLD-900",name:"Enterprise Cloud Orchestration Node",req:2,wh1:"Cloud Provisioned",wh2:"—",backorder:0,status:"Fulfilled"}];return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1646,7 +1628,7 @@
         </div>
       </div>
     </div>
-  `}async function X(){try{const[e,s]=await Promise.all([c.get("/warehouses").catch(()=>[]),c.get("/quotations").catch(()=>[])]);return{warehouses:e,quotations:s}}catch{return{warehouses:[],quotations:[]}}}function tt(){const e=document.getElementById("btn-commit-fulfillment");e&&e.addEventListener("click",()=>{alert("Fulfillment manifest confirmed! Warehouse pick & pack notifications generated.")});const s=document.getElementById("btn-suggest-split");s&&s.addEventListener("click",()=>{alert("Auto-Split Algorithm computed: 80% from Equinix NY4, 20% from Frankfurt FRA1 with 0 backorders.")})}function et(e=[]){const s=e.length>0?e:[{id:1041,number:"INV-1041",deal_ref:"DEAL-8492",customer:"Acme Corp Global ERP",amount:34e4,due:"2025-10-15",status:"Paid"},{id:1042,number:"INV-1042",deal_ref:"DEAL-8488",customer:"Starlight Pharma Logistics",amount:115e4,due:"2025-10-20",status:"Pending"},{id:1043,number:"INV-1043",deal_ref:"DEAL-8475",customer:"Helios Solar Microgrid Infra",amount:89e4,due:"2025-09-30",status:"Overdue"},{id:1044,number:"INV-1044",deal_ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",amount:475e3,due:"2025-10-25",status:"Pending"}],i=s.reduce((t,r)=>t+(r.amount||0),0),a=s.filter(t=>(t.status||"").toLowerCase()==="paid").length,n=s.map(t=>{let r="badge-warning";const l=(t.status||"").toLowerCase();return l==="paid"?r="badge-success":l==="overdue"&&(r="badge-error"),`
+  `}async function tt(){try{const[e,s]=await Promise.all([c.get("/warehouses").catch(()=>[]),c.get("/quotations").catch(()=>[])]);return{warehouses:e,quotations:s}}catch{return{warehouses:[],quotations:[]}}}function et(){const e=document.getElementById("btn-commit-fulfillment");e&&e.addEventListener("click",()=>{alert("Fulfillment manifest confirmed! Warehouse pick & pack notifications generated.")});const s=document.getElementById("btn-suggest-split");s&&s.addEventListener("click",()=>{alert("Auto-Split Algorithm computed: 80% from Equinix NY4, 20% from Frankfurt FRA1 with 0 backorders.")})}function st(e=[]){const s=e.length>0?e:[{id:1041,number:"INV-1041",deal_ref:"DEAL-8492",customer:"Acme Corp Global ERP",amount:34e4,due:"2025-10-15",status:"Paid"},{id:1042,number:"INV-1042",deal_ref:"DEAL-8488",customer:"Starlight Pharma Logistics",amount:115e4,due:"2025-10-20",status:"Pending"},{id:1043,number:"INV-1043",deal_ref:"DEAL-8475",customer:"Helios Solar Microgrid Infra",amount:89e4,due:"2025-09-30",status:"Overdue"},{id:1044,number:"INV-1044",deal_ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",amount:475e3,due:"2025-10-25",status:"Pending"}],i=s.reduce((t,r)=>t+(r.amount||0),0),a=s.filter(t=>(t.status||"").toLowerCase()==="paid").length,n=s.map(t=>{let r="badge-warning";const l=(t.status||"").toLowerCase();return l==="paid"?r="badge-success":l==="overdue"&&(r="badge-error"),`
       <tr class="table-row border-b border-surface-container-high/40 hover:bg-surface-container/40 text-xs">
         <td class="py-3 px-4 font-mono font-bold text-primary">${t.number||`INV-${t.id}`}</td>
         <td class="py-3 px-4 font-mono text-on-surface-variant">${t.deal_ref||"DEAL-8492"}</td>
@@ -1757,7 +1739,7 @@
         </div>
       </div>
     </div>
-  `}async function st(){try{return await c.get("/payments/invoices").catch(()=>[])}catch{return[]}}function at(){document.querySelectorAll(".preview-invoice-btn").forEach(e=>{e.addEventListener("click",()=>{const s=e.getAttribute("data-num"),i=e.getAttribute("data-customer"),a=Number(e.getAttribute("data-amount")||0).toLocaleString(),n=e.getAttribute("data-status");y.show({title:`Tax Invoice Preview — ${s}`,content:`
+  `}async function at(){try{return await c.get("/payments/invoices").catch(()=>[])}catch{return[]}}function nt(){document.querySelectorAll(".preview-invoice-btn").forEach(e=>{e.addEventListener("click",()=>{const s=e.getAttribute("data-num"),i=e.getAttribute("data-customer"),a=Number(e.getAttribute("data-amount")||0).toLocaleString(),n=e.getAttribute("data-status");y.show({title:`Tax Invoice Preview — ${s}`,content:`
           <div class="space-y-4 text-xs">
             <div class="flex items-center justify-between p-3 rounded-2xl bg-surface-container">
               <div>
@@ -1797,7 +1779,7 @@
               Wire instructions: Chase Manhattan Bank • SWIFT: CHASUS33 • ACCT: 9820-4102-339
             </p>
           </div>
-        `,confirmText:"Download PDF",cancelText:"Close",onConfirm:()=>(alert("Generating authenticated cryptographic PDF receipt..."),!0)})})}),document.querySelectorAll(".pay-invoice-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");try{await c.post(`/payments/invoices/${s}/pay`,{}),alert(`Invoice #${s} marked as Paid!`),window.location.reload()}catch(i){alert(i.message||"Payment simulation failed")}})})}function nt(e=[]){return`
+        `,confirmText:"Download PDF",cancelText:"Close",onConfirm:()=>(alert("Generating authenticated cryptographic PDF receipt..."),!0)})})}),document.querySelectorAll(".pay-invoice-btn").forEach(e=>{e.addEventListener("click",async()=>{const s=e.getAttribute("data-id");try{await c.post(`/payments/invoices/${s}/pay`,{}),alert(`Invoice #${s} marked as Paid!`),window.location.reload()}catch(i){alert(i.message||"Payment simulation failed")}})})}function it(e=[]){return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1880,7 +1862,7 @@
         </div>
       </div>
     </div>
-  `}async function it(){try{return await c.get("/subscriptions/plans").catch(()=>[])}catch{return[]}}function rt(){const e=document.getElementById("prorate-seats"),s=document.getElementById("prorate-days"),i=document.getElementById("prorate-result"),a=()=>{if(!e||!s||!i)return;const t=parseFloat(e.value)||0,r=parseFloat(s.value)||0,o=4200/365*r*t;i.textContent=`₹${o.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}`};e&&e.addEventListener("input",a),s&&s.addEventListener("input",a);const n=document.getElementById("btn-add-plan");n&&n.addEventListener("click",()=>{y.show({title:"New Subscription Plan",content:`
+  `}async function rt(){try{return await c.get("/subscriptions/plans").catch(()=>[])}catch{return[]}}function ot(){const e=document.getElementById("prorate-seats"),s=document.getElementById("prorate-days"),i=document.getElementById("prorate-result"),a=()=>{if(!e||!s||!i)return;const t=parseFloat(e.value)||0,r=parseFloat(s.value)||0,o=4200/365*r*t;i.textContent=`₹${o.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}`};e&&e.addEventListener("input",a),s&&s.addEventListener("input",a);const n=document.getElementById("btn-add-plan");n&&n.addEventListener("click",()=>{y.show({title:"New Subscription Plan",content:`
           <div class="space-y-3 text-xs">
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Plan Name</label>
@@ -1898,7 +1880,7 @@
               <input id="plan-price-in" type="number" class="input-clay w-full" placeholder="50000" />
             </div>
           </div>
-        `,confirmText:"Create Plan",onConfirm:async()=>{const t=document.getElementById("plan-name-in").value.trim(),r=document.getElementById("plan-cadence-in").value,l=parseFloat(document.getElementById("plan-price-in").value)||0;if(!t)throw new Error("Plan name required");return await c.post("/subscriptions/plans",{name:t,cadence:r,price:l}),window.location.reload(),!0}})})}function ot(e={}){const{stalled:s=[],reports:i=null}=e,a=s.length>0?s:[{id:8461,ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",stage:"Draft Phase",days:18,risk:"High — Rep Inactive 12 Days"},{id:8440,ref:"DEAL-8440",customer:"Vanguard Aerospace Systems",stage:"Legal Terms Review",days:24,risk:"Medium — Redlines in Queue"},{id:8425,ref:"DEAL-8425",customer:"Nordic Marine Telecom",stage:"Pending Approval",days:9,risk:"Low — Escalation Pending VP"}];return`
+        `,confirmText:"Create Plan",onConfirm:async()=>{const t=document.getElementById("plan-name-in").value.trim(),r=document.getElementById("plan-cadence-in").value,l=parseFloat(document.getElementById("plan-price-in").value)||0;if(!t)throw new Error("Plan name required");return await c.post("/subscriptions/plans",{name:t,cadence:r,price:l}),window.location.reload(),!0}})})}function lt(e={}){const{stalled:s=[],reports:i=null}=e,a=s.length>0?s:[{id:8461,ref:"DEAL-8461",customer:"Apex Financial Cloud Vault",stage:"Draft Phase",days:18,risk:"High — Rep Inactive 12 Days"},{id:8440,ref:"DEAL-8440",customer:"Vanguard Aerospace Systems",stage:"Legal Terms Review",days:24,risk:"Medium — Redlines in Queue"},{id:8425,ref:"DEAL-8425",customer:"Nordic Marine Telecom",stage:"Pending Approval",days:9,risk:"Low — Escalation Pending VP"}];return`
     <div class="page-container space-y-6">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -2005,7 +1987,7 @@
         </div>
       </div>
     </div>
-  `}async function lt(){try{const[e,s]=await Promise.all([c.get("/reports/quotations").catch(()=>null),c.get("/deal_health/stalled").catch(()=>[])]);return{reports:e,stalled:s}}catch{return{reports:null,stalled:[]}}}function ct(){const e=document.getElementById("btn-export-csv");e&&e.addEventListener("click",()=>{window.open("/api/v1/reports/quotations/export/csv","_blank")});const s=document.getElementById("btn-export-pdf");s&&s.addEventListener("click",()=>{alert("Compiling executive board briefing deck (PDF format)...")}),document.querySelectorAll(".nudge-rep-btn").forEach(i=>{i.addEventListener("click",()=>{const a=i.getAttribute("data-id");alert(`Automated SLA notification dispatch sent to assigned sales rep for Deal #${a}.`)})})}function dt(){return`
+  `}async function ct(){try{const[e,s]=await Promise.all([c.get("/reports/quotations").catch(()=>null),c.get("/deal_health/stalled").catch(()=>[])]);return{reports:e,stalled:s}}catch{return{reports:null,stalled:[]}}}function dt(){const e=document.getElementById("btn-export-csv");e&&e.addEventListener("click",()=>{window.open("/api/v1/reports/quotations/export/csv","_blank")});const s=document.getElementById("btn-export-pdf");s&&s.addEventListener("click",()=>{alert("Compiling executive board briefing deck (PDF format)...")}),document.querySelectorAll(".nudge-rep-btn").forEach(i=>{i.addEventListener("click",()=>{const a=i.getAttribute("data-id");alert(`Automated SLA notification dispatch sent to assigned sales rep for Deal #${a}.`)})})}function pt(){return`
     <div class="page-container space-y-6">
       <!-- Top Banner -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -2105,7 +2087,7 @@
 
               <div class="flex flex-col items-start max-w-[80%]">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="text-[11px] font-bold text-on-surface">${(v.getUser()||{full_name:"User"}).full_name||"You"}</span>
+                  <span class="text-[11px] font-bold text-on-surface">${(b.getUser()||{full_name:"User"}).full_name||"You"}</span>
                   <span class="text-[10px] text-on-surface-variant font-mono">10:42 AM</span>
                 </div>
                 <div class="bg-surface-container p-3 rounded-2xl rounded-tl-xs text-xs text-on-surface border border-surface-container-high/60">
@@ -2126,7 +2108,7 @@
         </div>
       </div>
     </div>
-  `}function pt(){const e=document.getElementById("btn-send-msg"),s=document.getElementById("msg-input"),i=document.getElementById("messages-list");if(e&&s&&i){const a=()=>{const n=s.value.trim();if(!n)return;const t=v.getUser()||{full_name:"You"},r=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),l=document.createElement("div");l.className="flex flex-col items-start max-w-[80%]",l.innerHTML=`
+  `}function ut(){const e=document.getElementById("btn-send-msg"),s=document.getElementById("msg-input"),i=document.getElementById("messages-list");if(e&&s&&i){const a=()=>{const n=s.value.trim();if(!n)return;const t=b.getUser()||{full_name:"You"},r=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),l=document.createElement("div");l.className="flex flex-col items-start max-w-[80%]",l.innerHTML=`
         <div class="flex items-center gap-2 mb-1">
           <span class="text-[11px] font-bold text-on-surface">${t.full_name}</span>
           <span class="text-[10px] text-on-surface-variant font-mono">${r}</span>
@@ -2134,7 +2116,7 @@
         <div class="bg-surface-container p-3 rounded-2xl rounded-tl-xs text-xs text-on-surface border border-surface-container-high/60">
           ${n}
         </div>
-      `,i.appendChild(l),s.value="",i.scrollTop=i.scrollHeight};e.addEventListener("click",a),s.addEventListener("keydown",n=>{n.key==="Enter"&&a()})}}function ut(){const e=v.getUser()||{full_name:"Alice Johnson",email:"salesrep@dealflow360.com",role:"SalesRep",phone:"+1 (555) 234-5678",address:"742 Evergreen Terrace, San Francisco, CA 94107",age:"28"},s=e.full_name?e.full_name.split(" ").map(i=>i[0]).join("").toUpperCase().slice(0,2):"US";return`
+      `,i.appendChild(l),s.value="",i.scrollTop=i.scrollHeight};e.addEventListener("click",a),s.addEventListener("keydown",n=>{n.key==="Enter"&&a()})}}function mt(){const e=b.getUser()||{full_name:"Alice Johnson",email:"salesrep@dealflow360.com",role:"SalesRep",phone:"+1 (555) 234-5678",address:"742 Evergreen Terrace, San Francisco, CA 94107",age:"28"},s=e.full_name?e.full_name.split(" ").map(i=>i[0]).join("").toUpperCase().slice(0,2):"US";return`
     <div class="page-container max-w-4xl mx-auto space-y-6 py-4">
       <!-- Page Header -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-high/60 pb-4">
@@ -2313,56 +2295,56 @@
         </div>
       </div>
     </div>
-  `}function mt(){const e=document.getElementById("profile-form"),s=document.getElementById("prof-name"),i=document.getElementById("prof-phone"),a=document.getElementById("prof-age"),n=document.getElementById("prof-address"),t=document.getElementById("profile-msg"),r=document.getElementById("btn-profile-logout");e&&e.addEventListener("submit",l=>{l.preventDefault();const o=s.value.trim();if(!o)return;const d=v.getUser()||{};d.full_name=o,d.phone=i?i.value.trim():d.phone,d.age=a?a.value.trim():d.age,d.address=n?n.value.trim():d.address,v.setUser(d),t&&(t.classList.remove("hidden"),setTimeout(()=>t.classList.add("hidden"),3500))}),r&&r.addEventListener("click",()=>{confirm("Are you sure you want to sign out of DealFlow360?")&&v.logout()})}class xt{constructor(){this.appEl=document.getElementById("app"),window.addEventListener("hashchange",()=>this.handleRoute())}init(){!window.location.hash||window.location.hash==="#/"?window.location.hash=v.isAuthenticated()?"#/quotations":"#/login":this.handleRoute()}parseHash(){const s=window.location.hash.slice(1)||"/login",[i]=s.split("?"),n=(i.startsWith("/")?i.slice(1):i).split("/"),t=n[0]||"quotations",r=n[1]||null,l=new URLSearchParams(window.location.hash.split("?")[1]||"");return{route:t,param:r,query:l}}showLoading(){this.appEl.innerHTML=`
+  `}function xt(){const e=document.getElementById("profile-form"),s=document.getElementById("prof-name"),i=document.getElementById("prof-phone"),a=document.getElementById("prof-age"),n=document.getElementById("prof-address"),t=document.getElementById("profile-msg"),r=document.getElementById("btn-profile-logout");e&&e.addEventListener("submit",l=>{l.preventDefault();const o=s.value.trim();if(!o)return;const d=b.getUser()||{};d.full_name=o,d.phone=i?i.value.trim():d.phone,d.age=a?a.value.trim():d.age,d.address=n?n.value.trim():d.address,b.setUser(d),t&&(t.classList.remove("hidden"),setTimeout(()=>t.classList.add("hidden"),3500))}),r&&r.addEventListener("click",()=>{confirm("Are you sure you want to sign out of DealFlow360?")&&b.logout()})}class ft{constructor(){this.appEl=document.getElementById("app"),window.addEventListener("hashchange",()=>this.handleRoute())}init(){!window.location.hash||window.location.hash==="#/"?window.location.hash=b.isAuthenticated()?"#/quotations":"#/login":this.handleRoute()}parseHash(){const s=window.location.hash.slice(1)||"/login",[i]=s.split("?"),n=(i.startsWith("/")?i.slice(1):i).split("/"),t=n[0]||"quotations",r=n[1]||null,l=new URLSearchParams(window.location.hash.split("?")[1]||"");return{route:t,param:r,query:l}}showLoading(){this.appEl.innerHTML=`
       <div class="min-h-screen flex items-center justify-center bg-background">
         <div class="card card-extruded p-6 flex flex-col items-center gap-3">
           <div class="loading-spinner w-8 h-8 border-3 border-primary border-t-transparent"></div>
           <span class="text-xs font-bold text-on-surface tracking-wider uppercase">Loading Workspace...</span>
         </div>
       </div>
-    `}async handleRoute(){const{route:s,param:i,query:a}=this.parseHash(),n=v.isAuthenticated();if(!n&&s!=="login"&&s!=="signup"&&s!=="portal"){window.location.hash="#/login";return}if(n&&(s==="login"||s==="signup")){window.location.hash="#/quotations";return}switch(window.scrollTo(0,0),s){case"login":{this.appEl.innerHTML=C(),L();break}case"signup":{this.appEl.innerHTML=_(),P();break}case"dashboard":{const t=v.getUser();if((t?t.selected_role||t.role:"")!=="Admin"){window.location.hash="#/quotations";break}this.showLoading();const l=await D();this.appEl.innerHTML=`
+    `}async handleRoute(){const{route:s,param:i,query:a}=this.parseHash(),n=b.isAuthenticated();if(!n&&s!=="login"&&s!=="signup"&&s!=="portal"){window.location.hash="#/login";return}if(n&&(s==="login"||s==="signup")){window.location.hash="#/quotations";return}switch(window.scrollTo(0,0),s){case"login":{this.appEl.innerHTML=L(),_();break}case"signup":{this.appEl.innerHTML=P(),D();break}case"dashboard":{const t=b.getUser();if((t?t.selected_role||t.role:"")!=="Admin"){window.location.hash="#/quotations";break}this.showLoading();const l=await B();this.appEl.innerHTML=`
           ${x("dashboard")}
           <main class="main-content">${I(l)}</main>
-        `,f(),B();break}case"quotations":{if(i){this.showLoading();const t=await A(i);this.appEl.innerHTML=`
+        `,f(),T();break}case"quotations":{if(i){this.showLoading();const t=await A(i);this.appEl.innerHTML=`
             ${x("quotations")}
             <main class="main-content">${k(t)}</main>
-          `,f(),$(i,t.products,t.customers)}else{this.showLoading();let t=!0,r="kanban";const l=async(o=t,d=r)=>{t=o,r=d;const u=await j(o);this.appEl.innerHTML=`
+          `,f(),$(i,t.products,t.customers)}else{this.showLoading();let t=!0,r="kanban";const l=async(o=t,d=r)=>{t=o,r=d;const u=await q(o);this.appEl.innerHTML=`
               ${x("quotations")}
-              <main class="main-content">${T(u,o?"my":"all",d)}</main>
-            `,f(),q(p=>l(p,r),p=>l(t,p))};await l(!0,"kanban")}break}case"quotation-detail":{this.showLoading();const t=i||a.get("id"),r=await A(t);this.appEl.innerHTML=`
+              <main class="main-content">${j(u,o?"my":"all",d)}</main>
+            `,f(),R(p=>l(p,r),p=>l(t,p))};await l(!0,"kanban")}break}case"quotation-detail":{this.showLoading();const t=i||a.get("id"),r=await A(t);this.appEl.innerHTML=`
           ${x("quotations")}
           <main class="main-content">${k(r)}</main>
-        `,f(),$(t,r.products,r.customers);break}case"approvals":{this.showLoading();const t=await M();this.appEl.innerHTML=`
+        `,f(),$(t,r.products,r.customers);break}case"approvals":{this.showLoading();const t=await N();this.appEl.innerHTML=`
           ${x("approvals")}
-          <main class="main-content">${R(t)}</main>
-        `,f(),N();break}case"products":{this.showLoading();const t=await F();this.appEl.innerHTML=`
+          <main class="main-content">${M(t)}</main>
+        `,f(),H();break}case"products":{this.showLoading();const t=await U();this.appEl.innerHTML=`
           ${x("products")}
-          <main class="main-content">${H(t)}</main>
-        `,f(),U();break}case"pricing":case"pricing-rules":{this.showLoading();const t=await Q();this.appEl.innerHTML=`
+          <main class="main-content">${F(t)}</main>
+        `,f(),G();break}case"pricing":case"pricing-rules":{this.showLoading();const t=await V();this.appEl.innerHTML=`
           ${x("pricing")}
-          <main class="main-content">${G(t)}</main>
-        `,f(),V();break}case"customers":{this.showLoading();const t=await O();this.appEl.innerHTML=`
+          <main class="main-content">${Q(t)}</main>
+        `,f(),W();break}case"customers":{this.showLoading();const t=await K();this.appEl.innerHTML=`
           ${x("customers")}
-          <main class="main-content">${W(t)}</main>
-        `,f(),K();break}case"portal":{this.showLoading();const t=i||a.get("id"),r=await J(t);this.appEl.innerHTML=`
+          <main class="main-content">${O(t)}</main>
+        `,f(),z();break}case"portal":{this.showLoading();const t=i||a.get("id"),r=await Y(t);this.appEl.innerHTML=`
           ${x("portal")}
-          <main class="main-content">${z(r)}</main>
-        `,f(),Y(r.quotation);break}case"fulfillment":{this.showLoading();const t=await X();this.appEl.innerHTML=`
+          <main class="main-content">${J(r)}</main>
+        `,f(),Z(r.quotation);break}case"fulfillment":{this.showLoading();const t=await tt();this.appEl.innerHTML=`
           ${x("fulfillment")}
-          <main class="main-content">${Z(t)}</main>
-        `,f(),tt();break}case"invoices":{this.showLoading();const t=await st();this.appEl.innerHTML=`
+          <main class="main-content">${X(t)}</main>
+        `,f(),et();break}case"invoices":{this.showLoading();const t=await at();this.appEl.innerHTML=`
           ${x("invoices")}
-          <main class="main-content">${et(t)}</main>
-        `,f(),at();break}case"subscriptions":{this.showLoading();const t=await it();this.appEl.innerHTML=`
+          <main class="main-content">${st(t)}</main>
+        `,f(),nt();break}case"subscriptions":{this.showLoading();const t=await rt();this.appEl.innerHTML=`
           ${x("subscriptions")}
-          <main class="main-content">${nt(t)}</main>
-        `,f(),rt();break}case"reports":{this.showLoading();const t=await lt();this.appEl.innerHTML=`
+          <main class="main-content">${it(t)}</main>
+        `,f(),ot();break}case"reports":{this.showLoading();const t=await ct();this.appEl.innerHTML=`
           ${x("reports")}
-          <main class="main-content">${ot(t)}</main>
-        `,f(),ct();break}case"messages":{this.appEl.innerHTML=`
+          <main class="main-content">${lt(t)}</main>
+        `,f(),dt();break}case"messages":{this.appEl.innerHTML=`
           ${x("messages")}
-          <main class="main-content">${dt()}</main>
-        `,f(),pt();break}case"profile":{this.appEl.innerHTML=`
+          <main class="main-content">${pt()}</main>
+        `,f(),ut();break}case"profile":{this.appEl.innerHTML=`
           ${x("profile")}
-          <main class="main-content">${ut()}</main>
-        `,f(),mt();break}default:{window.location.hash="#/quotations";break}}}}document.addEventListener("DOMContentLoaded",()=>{new xt().init()});
+          <main class="main-content">${mt()}</main>
+        `,f(),xt();break}default:{window.location.hash="#/quotations";break}}}}document.addEventListener("DOMContentLoaded",()=>{new ft().init()});

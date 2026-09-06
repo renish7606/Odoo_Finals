@@ -113,7 +113,7 @@ def get_quotation(quotation_id: int, db: Session = Depends(get_db), user: User =
                 "id": ln.id,
                 "product_id": ln.product_id,
                 "product_name": ln.product.name if ln.product else f"Product #{ln.product_id}",
-                "sku": ln.product.sku if ln.product else "",
+                "sku": getattr(ln.product, "sku", f"SKU-{ln.product_id:04d}"),
                 "quantity": float(ln.quantity),
                 "unit_price": float(ln.unit_price),
                 "discount_percent": float(ln.discount_percent) if ln.discount_percent else 0,

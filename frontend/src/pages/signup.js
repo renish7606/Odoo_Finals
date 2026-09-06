@@ -1,6 +1,7 @@
 /**
  * DealFlow360 Signup Page
- * Registration form for new users with role selection.
+ * Registration form for new users without role selection.
+ * Role assignment is managed exclusively by administrators.
  */
 import { auth } from '../auth.js';
 
@@ -25,7 +26,7 @@ export function renderSignupPage() {
               </svg>
             </div>
             <h1 class="text-2xl font-bold tracking-tight text-on-surface">Create Account</h1>
-            <p class="text-xs text-on-surface-variant mt-1">Join DealFlow360 to get started</p>
+            <p class="text-xs text-on-surface-variant mt-1">Join DealFlow360 workspace</p>
           </div>
 
           <!-- Error Alert Banner -->
@@ -102,24 +103,6 @@ export function renderSignupPage() {
               </div>
             </div>
 
-            <!-- Role Dropdown -->
-            <div class="space-y-1.5 text-left">
-              <label class="text-xs font-semibold text-on-surface-variant" for="signup-role">Select Role</label>
-              <div class="relative flex items-center">
-                <select
-                  id="signup-role"
-                  class="input-clay w-full text-sm h-11 appearance-none pr-10 cursor-pointer"
-                  required
-                >
-                  <option value="SalesRep">Sales Representative</option>
-                  <option value="SalesManager">Sales Manager</option>
-                  <option value="FinanceOps">Finance</option>
-                  <option value="Customer">Customer</option>
-                </select>
-                <span class="material-symbols-outlined text-secondary absolute right-3 text-base pointer-events-none">expand_more</span>
-              </div>
-            </div>
-
             <!-- Submit Button -->
             <div class="pt-3">
               <button type="submit" id="btn-submit-signup" class="btn btn-primary w-full h-11 text-sm font-semibold justify-center gap-2 rounded-xl shadow-sm">
@@ -177,7 +160,6 @@ export function setupSignupEvents() {
       const email = document.getElementById('signup-email').value.trim();
       const password = pwField.value;
       const confirmPassword = document.getElementById('signup-confirm-password').value;
-      const role = document.getElementById('signup-role').value;
 
       // Client-side validation
       if (password !== confirmPassword) {
@@ -197,7 +179,7 @@ export function setupSignupEvents() {
       }
 
       try {
-        await auth.signup({ full_name, email, password, role });
+        await auth.signup({ full_name, email, password, role: 'SalesRep' });
         successEl.textContent = 'Account created successfully! Redirecting to login...';
         successEl.classList.remove('hidden');
         form.reset();
