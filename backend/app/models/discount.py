@@ -1,6 +1,7 @@
 """Store discount ceilings and routing bands."""
 from decimal import Decimal
 from enum import Enum
+from typing import Optional
 from sqlalchemy import Enum as SqlEnum, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base_class import Base
@@ -26,5 +27,5 @@ class ApprovalChainConfig(Base):
     __tablename__ = "approval_chain_configs"
     id: Mapped[int] = mapped_column(primary_key=True)
     min_score: Mapped[Decimal] = mapped_column(Numeric(8,4))
-    max_score: Mapped[Decimal | None] = mapped_column(Numeric(8,4), nullable=True)
+    max_score: Mapped[Optional[Decimal]] = mapped_column(Numeric(8,4), nullable=True)
     required_level: Mapped[ApprovalLevel] = mapped_column(SqlEnum(ApprovalLevel, name="approval_level_enum"))

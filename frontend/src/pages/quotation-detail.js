@@ -281,7 +281,7 @@ export function setupQuotationDetailEvents(quotationId, products = [], customers
   if (addLineBtn) {
     addLineBtn.addEventListener('click', () => {
       const productOptions = products.map((p) => `
-        <option value="${p.id}">${p.name} — $${Number(p.base_price).toLocaleString()} (${p.category})</option>
+        <option value="${p.id}">${p.name} — ₹${Number(p.base_price).toLocaleString('en-IN')} (${p.category})</option>
       `).join('');
 
       modal.show({
@@ -291,7 +291,7 @@ export function setupQuotationDetailEvents(quotationId, products = [], customers
             <div>
               <label class="block font-semibold mb-1 text-on-surface-variant">Select Product</label>
               <select id="modal-product-select" class="input-clay w-full text-xs">
-                ${productOptions || '<option value="1">Enterprise M&A CPQ Core — ₹120,000</option>'}
+                ${productOptions || '<option value="1">Enterprise Cloud Orchestration Node — ₹120,000</option>'}
               </select>
             </div>
             <div>
@@ -305,12 +305,14 @@ export function setupQuotationDetailEvents(quotationId, products = [], customers
           const prodId = parseInt(document.getElementById('modal-product-select').value, 10);
           const qty = parseFloat(document.getElementById('modal-product-qty').value) || 1;
 
-          if (!quotationId) {
+          const isNewQuote = !quotationId || quotationId === '0' || quotationId === 0 || quotationId === 'undefined';
+          if (isNewQuote) {
             // Need to create quotation first
             const custId = customers[0]?.id || 1;
             const newQ = await api.post('/quotations', { customer_id: custId });
             await api.post(`/quotations/${newQ.id}/lines`, { product_id: prodId, quantity: qty });
             window.location.hash = `#/quotations/${newQ.id}`;
+            window.location.reload();
           } else {
             await api.post(`/quotations/${quotationId}/lines`, { product_id: prodId, quantity: qty });
             window.location.reload();

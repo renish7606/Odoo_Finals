@@ -1,5 +1,6 @@
 """Warehouse stock model owned by Group B."""
 
+from typing import Optional
 from sqlalchemy import ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -23,10 +24,10 @@ class WarehouseStock(Base):
     )
     quantity_on_hand: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     reserved_quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    replenishment_threshold: Mapped[int | None] = mapped_column(
+    replenishment_threshold: Mapped[Optional[int]] = mapped_column(
         Integer, nullable=True
     )
-    replenishment_lead_time_days: Mapped[int | None] = mapped_column(
+    replenishment_lead_time_days: Mapped[Optional[int]] = mapped_column(
         Integer, nullable=True
     )
 

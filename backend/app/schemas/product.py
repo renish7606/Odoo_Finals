@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validate product and variant API data."""
 from decimal import Decimal
 from pydantic import BaseModel, Field

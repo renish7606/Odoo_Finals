@@ -6,11 +6,14 @@ import { renderNavbar, setupNavbarEvents } from './components/navbar.js';
 
 // Page modules
 import { renderLoginPage, setupLoginEvents } from './pages/login.js';
+import { renderSignupPage, setupSignupEvents } from './pages/signup.js';
 import { renderDashboardPage, loadDashboard, setupDashboardEvents } from './pages/dashboard.js';
 import { renderQuotationsPage, loadQuotations, setupQuotationsEvents } from './pages/quotations.js';
 import { renderQuotationDetailPage, loadQuotationDetail, setupQuotationDetailEvents } from './pages/quotation-detail.js';
 import { renderApprovalsPage, loadApprovals, setupApprovalsEvents } from './pages/approvals.js';
+import { renderApprovalDetailPage, loadApprovalDetail, setupApprovalDetailEvents } from './pages/approval-detail.js';
 import { renderProductsPage, loadProducts, setupProductsEvents } from './pages/products.js';
+import { renderProductDetailPage, loadProductDetail, setupProductDetailEvents } from './pages/product-detail.js';
 import { renderPricingPage, loadPricing, setupPricingEvents } from './pages/pricing.js';
 import { renderCustomersPage, loadCustomers, setupCustomersEvents } from './pages/customers.js';
 import { renderCustomerPortalPage, loadCustomerPortal, setupCustomerPortalEvents } from './pages/customer-portal.js';
@@ -22,6 +25,8 @@ import { renderInvoiceDetailPage, loadInvoiceDetail, setupInvoiceDetailEvents } 
 import { renderSubscriptionsPage, loadSubscriptions, setupSubscriptionsEvents } from './pages/subscriptions.js';
 import { renderSubscriptionDetailPage, loadSubscriptionDetail, setupSubscriptionDetailEvents } from './pages/subscription-detail.js';
 import { renderReportsPage, loadReports, setupReportsEvents } from './pages/reports.js';
+import { renderMessagesPage, setupMessagesEvents } from './pages/messages.js';
+import { renderProfilePage, setupProfileEvents } from './pages/profile.js';
 
 export class Router {
   constructor() {
@@ -31,7 +36,7 @@ export class Router {
 
   init() {
     if (!window.location.hash || window.location.hash === '#/') {
-      window.location.hash = auth.isAuthenticated() ? '#/dashboard' : '#/login';
+      window.location.hash = auth.isAuthenticated() ? '#/quotations' : '#/login';
     } else {
       this.handleRoute();
     }
@@ -42,7 +47,7 @@ export class Router {
     const [pathWithParams] = raw.split('?');
     const path = pathWithParams.startsWith('/') ? pathWithParams.slice(1) : pathWithParams;
     const parts = path.split('/');
-    const route = parts[0] || 'dashboard';
+    const route = parts[0] || 'quotations';
     const param = parts[1] || null;
 
     // Search params
@@ -66,12 +71,12 @@ export class Router {
 
     // Authentication Guard
     const isAuthed = auth.isAuthenticated();
-    if (!isAuthed && route !== 'login' && route !== 'portal') {
+    if (!isAuthed && route !== 'login' && route !== 'signup' && route !== 'portal') {
       window.location.hash = '#/login';
       return;
     }
-    if (isAuthed && route === 'login') {
-      window.location.hash = '#/dashboard';
+    if (isAuthed && (route === 'login' || route === 'signup')) {
+      window.location.hash = '#/quotations';
       return;
     }
 
@@ -86,7 +91,19 @@ export class Router {
         break;
       }
 
+      case 'signup': {
+        this.appEl.innerHTML = renderSignupPage();
+        setupSignupEvents();
+        break;
+      }
+
       case 'dashboard': {
+        const user = auth.getUser();
+        const userRole = user ? (user.selected_role || user.role) : '';
+        if (userRole !== 'Admin') {
+          window.location.hash = '#/quotations';
+          break;
+        }
         this.showLoading();
         const data = await loadDashboard();
         this.appEl.innerHTML = `
@@ -111,13 +128,24 @@ export class Router {
           setupQuotationDetailEvents(param, data.products, data.customers);
         } else {
           this.showLoading();
-          const quotes = await loadQuotations();
-          this.appEl.innerHTML = `
-            ${renderNavbar('quotations')}
-            <main class="main-content">${renderQuotationsPage(quotes)}</main>
-          `;
-          setupNavbarEvents();
-          setupQuotationsEvents();
+          let currentMyOnly = true;
+          let currentMode = 'kanban';
+
+          const renderList = async (myOnly = currentMyOnly, mode = currentMode) => {
+            currentMyOnly = myOnly;
+            currentMode = mode;
+            const quotes = await loadQuotations(myOnly);
+            this.appEl.innerHTML = `
+              ${renderNavbar('quotations')}
+              <main class="main-content">${renderQuotationsPage(quotes, myOnly ? 'my' : 'all', mode)}</main>
+            `;
+            setupNavbarEvents();
+            setupQuotationsEvents(
+              (newMyOnly) => renderList(newMyOnly, currentMode),
+              (newMode) => renderList(currentMyOnly, newMode)
+            );
+          };
+          await renderList(true, 'kanban');
         }
         break;
       }
@@ -147,6 +175,19 @@ export class Router {
         break;
       }
 
+      case 'approval-detail': {
+        this.showLoading();
+        const quoteId = param || query.get('id');
+        const data = await loadApprovalDetail(quoteId);
+        this.appEl.innerHTML = `
+          ${renderNavbar('approvals')}
+          <main class="main-content">${renderApprovalDetailPage(data)}</main>
+        `;
+        setupNavbarEvents();
+        setupApprovalDetailEvents(quoteId);
+        break;
+      }
+
       case 'products': {
         this.showLoading();
         const products = await loadProducts();
@@ -156,6 +197,19 @@ export class Router {
         `;
         setupNavbarEvents();
         setupProductsEvents();
+        break;
+      }
+
+      case 'product-detail': {
+        this.showLoading();
+        const prodId = param || 'new';
+        const prodData = await loadProductDetail(prodId);
+        this.appEl.innerHTML = `
+          ${renderNavbar('products')}
+          <main class="main-content">${renderProductDetailPage(prodData)}</main>
+        `;
+        setupNavbarEvents();
+        setupProductDetailEvents(prodId);
         break;
       }
 
@@ -275,8 +329,28 @@ export class Router {
         break;
       }
 
+      case 'messages': {
+        this.appEl.innerHTML = `
+          ${renderNavbar('messages')}
+          <main class="main-content">${renderMessagesPage()}</main>
+        `;
+        setupNavbarEvents();
+        setupMessagesEvents();
+        break;
+      }
+
+      case 'profile': {
+        this.appEl.innerHTML = `
+          ${renderNavbar('profile')}
+          <main class="main-content">${renderProfilePage()}</main>
+        `;
+        setupNavbarEvents();
+        setupProfileEvents();
+        break;
+      }
+
       default: {
-        window.location.hash = '#/dashboard';
+        window.location.hash = '#/quotations';
         break;
       }
     }

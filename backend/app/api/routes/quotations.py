@@ -13,18 +13,29 @@ from app.models.user import User
 router = APIRouter(prefix="/quotations", tags=["quotations"])
 
 
+from app.models.role import Role
+
 @router.get("")
-def list_quotations(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def list_quotations(
+    my_only: bool = False,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
     """List all quotations with customer info and total."""
-    rows = (
-        db.scalars(
-            select(Quotation)
-            .options(joinedload(Quotation.customer), joinedload(Quotation.lines), joinedload(Quotation.rep))
-            .order_by(Quotation.created_at.desc())
-        )
-        .unique()
-        .all()
+    stmt = (
+        select(Quotation)
+        .options(joinedload(Quotation.customer), joinedload(Quotation.lines), joinedload(Quotation.rep))
+        .order_by(Quotation.created_at.desc())
     )
+    if my_only and user:
+        if user.role == Role.CUSTOMER:
+            cust = db.scalars(select(Customer).where(Customer.email == user.email)).first()
+            if cust:
+                stmt = stmt.where(Quotation.customer_id == cust.id)
+        else:
+            stmt = stmt.where(Quotation.rep_id == user.id)
+
+    rows = db.scalars(stmt).unique().all()
     results = []
     for q in rows:
         total = sum(float(l.line_total) for l in q.lines) if q.lines else 0.0
@@ -37,6 +48,7 @@ def list_quotations(db: Session = Depends(get_db), user: User = Depends(get_curr
             "customer_tier": q.customer.tier.value if q.customer and hasattr(q.customer.tier, "value") else "Bronze",
             "rep_id": q.rep_id,
             "rep_name": q.rep.full_name if q.rep else "Sales Rep",
+            "rep_email": q.rep.email if q.rep else "",
             "status": q.status.value,
             "line_count": len(q.lines) if q.lines else 0,
             "total_amount": total,
@@ -101,7 +113,7 @@ def get_quotation(quotation_id: int, db: Session = Depends(get_db), user: User =
                 "id": ln.id,
                 "product_id": ln.product_id,
                 "product_name": ln.product.name if ln.product else f"Product #{ln.product_id}",
-                "sku": getattr(ln.product, "sku", "") if ln.product else "",
+                "sku": getattr(ln.product, "sku", f"SKU-{ln.product_id:04d}"),
                 "quantity": float(ln.quantity),
                 "unit_price": float(ln.unit_price),
                 "discount_percent": float(ln.discount_percent) if ln.discount_percent else 0,
