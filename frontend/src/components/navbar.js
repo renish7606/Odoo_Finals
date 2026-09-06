@@ -9,6 +9,7 @@ export function renderNavbar(activeRoute = 'quotations') {
   const userRole = (user.selected_role || user.role || '').toLowerCase();
   const isCustomer = userRole === 'customer';
 
+<<<<<<< HEAD
   const navItems = isCustomer
     ? [
         { key: 'quotations', label: 'My Quotations', icon: 'request_quote', href: '#/quotations' },
@@ -30,15 +31,42 @@ export function renderNavbar(activeRoute = 'quotations') {
         { key: 'messages', label: 'Messages', icon: 'chat_bubble', href: '#/messages' },
         { key: 'profile', label: 'Profile', icon: 'account_circle', href: '#/profile' },
       ];
+=======
+  const allNavItems = [
+    { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' },
+    { key: 'quotations', label: 'Quotations', icon: 'request_quote', href: '#/quotations' },
+    { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
+    { key: 'deal-health', label: 'Deal Health', icon: 'crisis_alert', href: '#/deal-health' },
+    { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
+    { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
+    { key: 'products', label: 'Products', icon: 'inventory_2', href: '#/products' },
+    { key: 'pricing', label: 'Pricing', icon: 'sell', href: '#/pricing' },
+    { key: 'subscriptions', label: 'Subscriptions', icon: 'sync', href: '#/subscriptions' },
+    { key: 'reports', label: 'Reports', icon: 'bar_chart', href: '#/reports' },
+    { key: 'messages', label: 'Messages', icon: 'chat_bubble', href: '#/messages' },
+    { key: 'profile', label: 'Profile', icon: 'account_circle', href: '#/profile' },
+  ];
+
+  const roleTabs = {
+    SalesRep: ['dashboard', 'quotations', 'customers', 'products'],
+    SalesManager: ['dashboard', 'quotations', 'approvals', 'pricing', 'reports'],
+    FinanceOps: ['dashboard', 'approvals', 'fulfillment', 'invoices', 'subscriptions'],
+    Admin: ['dashboard', 'quotations', 'approvals', 'deal-health', 'fulfillment', 'invoices', 'customers', 'products', 'pricing', 'subscriptions', 'reports'],
+    Customer: ['quotations', 'messages', 'profile'],
+  };
+  const allowedTabs = roleTabs[userRole] || roleTabs.SalesRep;
+  const navItems = allNavItems.filter((item) => allowedTabs.includes(item.key));
+>>>>>>> 9fd844c (Add different LogIn)
 
   const navLinksHtml = navItems
     .map((item) => {
       const isActive = activeRoute === item.key || (activeRoute === 'quotation-detail' && item.key === 'quotations');
       const activeClass = isActive ? 'nav-item-active' : 'nav-item-inactive';
+      const label = userRole === 'Customer' && item.key === 'quotations' ? 'My Quotations' : item.label;
       return `
         <a href="${item.href}" class="nav-item ${activeClass}" data-route="${item.key}">
           <span class="material-symbols-outlined text-lg">${item.icon}</span>
-          <span>${item.label}</span>
+          <span>${label}</span>
         </a>
       `;
     })

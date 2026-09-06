@@ -26,6 +26,7 @@ def seed_data() -> None:
             ("manager@dealflow360.com", "Local Sales Manager", Role.SALES_MANAGER),
             ("rep@dealflow360.com", "Local Sales Rep", Role.SALES_REP),
             ("finance@dealflow360.com", "Local Finance Ops", Role.FINANCE_OPS),
+            ("customer@dealflow360.com", "Portal Customer", Role.CUSTOMER),
         ]
         for email, full_name, role in sample_users:
             if session.scalar(select(User).where(User.email == email)) is None:
@@ -35,6 +36,7 @@ def seed_data() -> None:
             ("Bronze Buyer", "bronze@dealflow360.com", CustomerTier.BRONZE),
             ("Silver Buyer", "silver@dealflow360.com", CustomerTier.SILVER),
             ("Gold Buyer", "gold@dealflow360.com", CustomerTier.GOLD),
+            ("Portal Demo Customer", "customer@dealflow360.com", CustomerTier.GOLD),
         ]
         for name, email, tier in sample_customers:
             if session.scalar(select(Customer).where(Customer.email == email)) is None:

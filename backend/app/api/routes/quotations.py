@@ -27,13 +27,12 @@ def list_quotations(
         .options(joinedload(Quotation.customer), joinedload(Quotation.lines), joinedload(Quotation.rep))
         .order_by(Quotation.created_at.desc())
     )
-    if my_only and user:
-        if user.role == Role.CUSTOMER:
-            cust = db.scalars(select(Customer).where(Customer.email == user.email)).first()
-            if cust:
-                stmt = stmt.where(Quotation.customer_id == cust.id)
-        else:
-            stmt = stmt.where(Quotation.rep_id == user.id)
+    if user and user.role == Role.CUSTOMER:
+        cust = db.scalars(select(Customer).where(Customer.email == user.email)).first()
+        if cust:
+            stmt = stmt.where(Quotation.customer_id == cust.id)
+    elif my_only and user:
+        stmt = stmt.where(Quotation.rep_id == user.id)
 
     rows = db.scalars(stmt).unique().all()
     results = []
@@ -93,6 +92,10 @@ def get_quotation(quotation_id: int, db: Session = Depends(get_db), user: User =
     )
     if not q:
         raise HTTPException(status_code=404, detail="Quotation not found")
+    if user.role == Role.CUSTOMER:
+        customer = db.scalar(select(Customer).where(Customer.email == user.email))
+        if not customer or q.customer_id != customer.id:
+            raise HTTPException(status_code=404, detail="Quotation not found")
     lines = q.lines or []
     total = sum(float(ln.line_total) for ln in lines) if lines else 0.0
     return {

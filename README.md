@@ -14,6 +14,27 @@ uvicorn app.main:app --reload
 
 `alembic upgrade head` creates the core tables. `python -m app.db.init_db` safely adds local sample data and can be run more than once. The sample user password is `ChangeMe123!`; change it outside local development.
 
+### Local sample accounts
+
+All local sample accounts use password `ChangeMe123!`:
+
+| Role | Email |
+| --- | --- |
+| Admin | `admin@dealflow360.com` |
+| Sales Rep | `rep@dealflow360.com` |
+| Sales Manager | `manager@dealflow360.com` |
+| Finance / Operations | `finance@dealflow360.com` |
+| Customer Portal User | `customer@dealflow360.com` |
+
+### Workspace access matrix
+
+- Sales Rep: Dashboard, Quotations, Customers, Products
+- Sales Manager: Dashboard, Quotations, Approvals, Pricing, Reports
+- Finance / Operations: Dashboard, Approvals, Fulfillment, Invoices, Subscriptions
+- Admin: all internal workspace tabs
+- Customer: My Quotations, Messages, Profile
+- External portal users: quotation portal only; no internal workspace tabs
+
 ## Endpoint auto-include
 
 Add a Python file under `app/api/v1/endpoints/` and export `router = APIRouter(...)`. The version-one API discovers and includes it automatically, so teams do not edit one shared router file.

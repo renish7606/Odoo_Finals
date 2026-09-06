@@ -80,6 +80,20 @@ export class Router {
       return;
     }
 
+    const user = auth.getUser();
+    const userRole = user ? (user.selected_role || user.role) : '';
+    const allowedRoutes = {
+      SalesRep: ['dashboard', 'quotations', 'customers', 'products', 'profile'],
+      SalesManager: ['dashboard', 'quotations', 'approvals', 'pricing', 'reports', 'profile'],
+      FinanceOps: ['dashboard', 'approvals', 'fulfillment', 'invoices', 'subscriptions', 'profile'],
+      Admin: ['dashboard', 'quotations', 'approvals', 'deal-health', 'fulfillment', 'invoices', 'customers', 'products', 'pricing', 'subscriptions', 'reports', 'profile'],
+      Customer: ['quotations', 'messages', 'profile'],
+    };
+    if (!['login', 'signup', 'portal'].includes(route) && !(allowedRoutes[userRole] || allowedRoutes.SalesRep).includes(route)) {
+      window.location.hash = '#/quotations';
+      return;
+    }
+
     // Scroll to top on route change
     window.scrollTo(0, 0);
 
@@ -98,12 +112,15 @@ export class Router {
       }
 
       case 'dashboard': {
+<<<<<<< HEAD
         const user = auth.getUser();
         const userRole = (user?.selected_role || user?.role || '').toLowerCase();
         if (userRole === 'customer') {
           window.location.hash = '#/quotations';
           break;
         }
+=======
+>>>>>>> 9fd844c (Add different LogIn)
         this.showLoading();
         const data = await loadDashboard();
         this.appEl.innerHTML = `
@@ -255,10 +272,8 @@ export class Router {
         const dealId = param || query.get('id');
         const data = await loadCustomerPortal(dealId);
         this.appEl.innerHTML = `
-          ${renderNavbar('portal')}
-          <main class="main-content">${renderCustomerPortalPage(data)}</main>
+          <main class="main-content portal-shell">${renderCustomerPortalPage(data)}</main>
         `;
-        setupNavbarEvents();
         setupCustomerPortalEvents(data.quotation);
         break;
       }
