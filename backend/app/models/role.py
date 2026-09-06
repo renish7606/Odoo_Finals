@@ -9,4 +9,5 @@ class Role(str, Enum):
     SALES_REP = "SalesRep"
     SALES_MANAGER = "SalesManager"
     FINANCE_OPS = "FinanceOps"
+    CUSTOMER = "Customer"
     ADMIN = "Admin"

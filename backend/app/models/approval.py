@@ -2,6 +2,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
+from typing import Optional
 from sqlalchemy import DateTime, Enum as SqlEnum, ForeignKey, Integer, JSON, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base_class import Base
@@ -25,19 +26,19 @@ class ApprovalStep(Base):
     approval_request_id: Mapped[int]=mapped_column(ForeignKey("approval_requests.id"),index=True)
     step_number: Mapped[int]=mapped_column(Integer)
     approver_role: Mapped[Role]=mapped_column(SqlEnum(Role,name="role_enum",create_type=False,values_callable=lambda x:[v.value for v in x]))
-    decision: Mapped[str|None]=mapped_column(String(20),nullable=True)
-    decided_by: Mapped[int|None]=mapped_column(ForeignKey("users.id"),nullable=True)
-    decided_at: Mapped[datetime|None]=mapped_column(DateTime(timezone=True),nullable=True)
-    reason: Mapped[str|None]=mapped_column(Text,nullable=True)
+    decision: Mapped[Optional[str]]=mapped_column(String(20),nullable=True)
+    decided_by: Mapped[Optional[int]]=mapped_column(ForeignKey("users.id"),nullable=True)
+    decided_at: Mapped[Optional[datetime]]=mapped_column(DateTime(timezone=True),nullable=True)
+    reason: Mapped[Optional[str]]=mapped_column(Text,nullable=True)
 class AuditLogEntry(Base):
     """Append-only approval action evidence."""
     __tablename__="approval_audit_logs"
     id: Mapped[int]=mapped_column(primary_key=True)
-    user_id: Mapped[int|None]=mapped_column(ForeignKey("users.id"),nullable=True)
+    user_id: Mapped[Optional[int]]=mapped_column(ForeignKey("users.id"),nullable=True)
     action: Mapped[str]=mapped_column(String(100))
     entity_type: Mapped[str]=mapped_column(String(100))
     entity_id: Mapped[int]=mapped_column()
-    reason: Mapped[str|None]=mapped_column(Text,nullable=True)
-    before_snapshot: Mapped[dict|None]=mapped_column(JSON,nullable=True)
-    after_snapshot: Mapped[dict|None]=mapped_column(JSON,nullable=True)
+    reason: Mapped[Optional[str]]=mapped_column(Text,nullable=True)
+    before_snapshot: Mapped[Optional[dict]]=mapped_column(JSON,nullable=True)
+    after_snapshot: Mapped[Optional[dict]]=mapped_column(JSON,nullable=True)
     timestamp: Mapped[datetime]=mapped_column(DateTime(timezone=True),server_default=func.now())
