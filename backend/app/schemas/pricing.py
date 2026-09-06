@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validate price-list API data."""
 from datetime import date
 from decimal import Decimal

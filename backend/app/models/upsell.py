@@ -1,6 +1,7 @@
 """Upsell and cross-sell data models for Group B."""
 
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -51,11 +52,11 @@ class ProductPromotion(Base):
         Integer, ForeignKey("products.id"), unique=True, nullable=False
     )
     is_promoted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    promo_label: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    starts_at: Mapped[datetime | None] = mapped_column(
+    promo_label: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    starts_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
-    ends_at: Mapped[datetime | None] = mapped_column(
+    ends_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
 

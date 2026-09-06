@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 """Warehouse fulfillment auto-split engine — Group B.
 
 The core algorithm is in ``compute_suggested_split``, a pure function that
 takes plain data and returns plain data so it can be unit-tested without
 any database or session coupling.
 """
-
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone

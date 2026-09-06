@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Proration service: compute and apply mid-cycle plan/quantity changes.
 
@@ -9,8 +11,6 @@ Formula (days_remaining_ratio)
 * Negative result → downgrade → create a CreditNote against the latest Invoice
 * Future BillingSchedule rows are updated to the new cycle amount.
 """
-from __future__ import annotations
-
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Optional

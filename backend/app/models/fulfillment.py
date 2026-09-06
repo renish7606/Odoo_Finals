@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 from sqlalchemy import (
     DateTime,
@@ -116,7 +117,7 @@ class Backorder(Base):
         default=BackorderStatus.OPEN,
         nullable=False,
     )
-    resolved_at: Mapped[datetime | None] = mapped_column(
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
 

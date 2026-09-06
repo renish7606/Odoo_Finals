@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Pydantic schemas for warehouse, stock, fulfillment, and backorder endpoints."""
 
 from datetime import datetime
