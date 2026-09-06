@@ -27,7 +27,7 @@ import { renderSubscriptionDetailPage, loadSubscriptionDetail, setupSubscription
 import { renderReportsPage, loadReports, setupReportsEvents } from './pages/reports.js';
 import { renderMessagesPage, setupMessagesEvents } from './pages/messages.js';
 import { renderProfilePage, setupProfileEvents } from './pages/profile.js';
-
+import { renderDealHealthPage, loadDealHealth, setupDealHealthEvents } from './pages/deal-health.js';
 export class Router {
   constructor() {
     this.appEl = document.getElementById('app');
@@ -112,6 +112,18 @@ export class Router {
         `;
         setupNavbarEvents();
         setupDashboardEvents();
+        break;
+      }
+
+      case 'deal-health': {
+        this.showLoading();
+        const data = await loadDealHealth();
+        this.appEl.innerHTML = `
+          ${renderNavbar('deal-health')}
+          <main class="main-content" id="app-content">${renderDealHealthPage(data)}</main>
+        `;
+        setupNavbarEvents();
+        setupDealHealthEvents();
         break;
       }
 

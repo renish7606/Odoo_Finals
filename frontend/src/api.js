@@ -3,7 +3,7 @@
  * Centralized fetch client for backend communication with auth token injection.
  */
 
-const BASE_URL = '/api/v1';
+const BASE_URL = import.meta.env?.VITE_API_BASE_URL || '/api/v1';
 
 export class ApiError extends Error {
   constructor(message, status, data) {
