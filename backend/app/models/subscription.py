@@ -5,7 +5,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from sqlalchemy import Date, DateTime, Enum as SqlEnum, ForeignKey, JSON, Numeric, String, func
+from sqlalchemy import Boolean, Date, DateTime, Enum as SqlEnum, ForeignKey, JSON, Numeric, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base_class import Base
@@ -47,6 +47,7 @@ class SubscriptionPlan(Base):
     )
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), index=True)
     price: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true", index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships

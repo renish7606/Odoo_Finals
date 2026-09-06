@@ -12,6 +12,8 @@ from app.models.product import Product
 from app.models.quotation import Quotation, QuotationLine, QuotationStatus
 from app.models.role import Role
 from app.models.user import User
+from app.models.warehouse import Warehouse
+from app.models.warehouse_stock import WarehouseStock
 
 
 def seed_data() -> None:
@@ -47,6 +49,34 @@ def seed_data() -> None:
             if session.scalar(select(Product).where(Product.name == name)) is None:
                 session.add(Product(name=name, category=category, base_price=price, unit=unit, tax_rate=tax_rate))
 
+        session.flush()
+
+        sample_warehouses = [
+            ("Equinix NY4 North America Hub", "Secaucus, NJ", 1.0),
+            ("Frankfurt FRA1 European Gateway", "Frankfurt, DE", 1.15),
+        ]
+        for name, location, shipping_cost_weight in sample_warehouses:
+            if session.scalar(select(Warehouse).where(Warehouse.name == name)) is None:
+                session.add(Warehouse(name=name, location=location, shipping_cost_weight=shipping_cost_weight))
+        session.flush()
+
+        for warehouse in session.scalars(select(Warehouse)).all():
+            for product in session.scalars(select(Product)).all():
+                existing_stock = session.scalar(
+                    select(WarehouseStock).where(
+                        WarehouseStock.warehouse_id == warehouse.id,
+                        WarehouseStock.product_id == product.id,
+                    )
+                )
+                if existing_stock is None:
+                    session.add(WarehouseStock(
+                        warehouse_id=warehouse.id,
+                        product_id=product.id,
+                        quantity_on_hand=500,
+                        reserved_quantity=0,
+                        replenishment_threshold=50,
+                        replenishment_lead_time_days=7,
+                    ))
         session.flush()
 
         sample_quotations = [

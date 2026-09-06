@@ -19,6 +19,7 @@ export function renderNavbar(activeRoute = 'quotations') {
         { key: 'dashboard', label: 'Dashboard', icon: 'dashboard', href: '#/dashboard' },
         { key: 'quotations', label: 'Quotations', icon: 'request_quote', href: '#/quotations' },
         { key: 'approvals', label: 'Approvals', icon: 'verified', href: '#/approvals' },
+        { key: 'deal-health', label: 'Deal Health', icon: 'crisis_alert', href: '#/deal-health' },
         { key: 'fulfillment', label: 'Fulfillment', icon: 'assignment_turned_in', href: '#/fulfillment' },
         { key: 'invoices', label: 'Invoices', icon: 'receipt_long', href: '#/invoices' },
         { key: 'customers', label: 'Customers', icon: 'corporate_fare', href: '#/customers' },
@@ -70,6 +71,12 @@ export function renderNavbar(activeRoute = 'quotations') {
 
         <!-- Right User Actions -->
         <div class="navbar-actions">
+          <div class="status-pill hidden sm:flex items-center gap-2">
+            <span class="pulse-dot"></span>
+            <span class="text-xs text-on-surface-variant font-medium">Q3 Pipeline</span>
+            <span class="text-xs font-mono font-bold text-primary">99.4%</span>
+          </div>
+
           <div class="h-6 w-px bg-outline-variant/50 hidden md:block"></div>
 
           <!-- User Profile & Logout Menu -->

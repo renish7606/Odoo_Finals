@@ -1,148 +1,159 @@
 /**
- * DealFlow360 Approvals Board Page
- * Connected to `/api/v1/quotations` and `/api/v1/approvals`.
+ * DealFlow360 Approvals List Page
+ * Connected to `/api/v1/approvals`.
  */
 import { api } from '../api.js';
 
-export function renderApprovalsPage(quotations = []) {
-  // Filter deals that are in Pending Approval or Draft
-  const pendingDeals = quotations.filter(
-    (q) => (q.status || '').toLowerCase().includes('pending') || (q.status || '').toLowerCase().includes('draft')
-  );
-
-  const displayDeals = pendingDeals.length > 0 ? pendingDeals : [
-    { id: 8492, deal_reference: 'DEAL-8492', customer_name: 'Acme Corp Global ERP', customer_tier: 'Gold', total_amount: 340000, rep_name: 'Marcus Hayes', discount: '18%', limit: '15%', reason: 'Multi-region deployment incentive requested for 3-year upfront commitment.' },
-    { id: 8488, deal_reference: 'DEAL-8488', customer_name: 'Starlight Pharma Logistics', customer_tier: 'Silver', total_amount: 1150000, rep_name: 'Sarah Lin', discount: '14%', limit: '10%', reason: 'Competitive displacement against legacy SAP stack.' },
-    { id: 8461, deal_reference: 'DEAL-8461', customer_name: 'Apex Financial Cloud Vault', customer_tier: 'Bronze', total_amount: 475000, rep_name: 'David Kim', discount: '8%', limit: '5%', reason: 'Volume licensing ramp-up structure.' },
-  ];
-
-  const cardsHtml = displayDeals.map((deal) => `
-    <div class="card card-extruded space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container-high/60 pb-3">
-        <div class="flex items-center gap-3">
-          <span class="font-mono font-bold text-sm text-primary">${deal.deal_reference || `DEAL-${deal.id}`}</span>
-          <span class="badge badge-warning text-[10px]">VP Sign-off Required</span>
-        </div>
-        <div class="text-right">
-          <span class="text-xs text-on-surface-variant">Contract Valuation</span>
-          <div class="font-mono font-bold text-base text-on-surface">$${Number(deal.total_amount || 340000).toLocaleString()}</div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div>
-          <span class="text-on-surface-variant block mb-1">Customer Account</span>
-          <div class="font-bold text-on-surface">${deal.customer_name}</div>
-          <span class="badge badge-neutral text-[10px] mt-1">${deal.customer_tier || 'Gold'} Tier</span>
-        </div>
-        <div>
-          <span class="text-on-surface-variant block mb-1">Discount Threshold</span>
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-error">${deal.discount || '15%'} Requested</span>
-            <span class="text-on-surface-variant">(Max allowed: ${deal.limit || '10%'})</span>
-          </div>
-          <span class="text-[10px] text-error font-semibold mt-1 block">Tier Exception Triggered</span>
-        </div>
-        <div>
-          <span class="text-on-surface-variant block mb-1">Sales Representative</span>
-          <div class="font-bold text-on-surface">${deal.rep_name || 'Eleanor Vance'}</div>
-          <span class="text-[10px] text-on-surface-variant">Enterprise Mid-Market</span>
-        </div>
-      </div>
-
-      <div class="p-3 rounded-xl bg-surface-container text-xs text-on-surface-variant">
-        <strong class="text-on-surface">Escalation Note:</strong>
-        ${deal.reason || 'Requested commercial discount exceeding sales representative discretion for multi-year upfront commitment.'}
-      </div>
-
-      <div class="flex items-center justify-end gap-2 pt-2 border-t border-surface-container-high/60">
-        <a href="#/quotations/${deal.id}" class="btn btn-secondary text-xs">
-          <span class="material-symbols-outlined text-sm">visibility</span>
-          Inspect Line Items
-        </a>
-        <button type="button" class="btn btn-secondary text-xs text-error reject-approval-btn" data-id="${deal.id}">
-          <span class="material-symbols-outlined text-sm">close</span>
-          Reject
-        </button>
-        <button type="button" class="btn btn-primary text-xs approve-deal-btn" data-id="${deal.id}">
-          <span class="material-symbols-outlined text-sm">check</span>
-          Authorize &amp; Approve
-        </button>
-      </div>
-    </div>
-  `).join('');
-
-  return `
-    <div class="page-container space-y-6">
-      <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2 mb-1">
-            <span class="pulse-dot"></span>
-            <span class="text-xs font-bold text-primary tracking-widest uppercase">Executive Governance</span>
-          </div>
-          <h1 class="text-2xl font-bold tracking-tight text-on-surface">Approvals &amp; Pricing Escalations</h1>
-          <p class="text-xs text-on-surface-variant">Commercial discount gates, threshold waivers, and executive sign-off queues</p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span class="badge badge-warning text-xs">
-            <span class="material-symbols-outlined text-sm">gavel</span>
-            ${displayDeals.length} Escalations Pending
-          </span>
-        </div>
-      </div>
-
-      <!-- Filter Chips -->
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        <button type="button" class="btn btn-secondary py-1 px-3 active">All Pending (${displayDeals.length})</button>
-        <button type="button" class="btn btn-secondary py-1 px-3">High Priority (4)</button>
-        <button type="button" class="btn btn-secondary py-1 px-3">Discount Exception (6)</button>
-        <button type="button" class="btn btn-secondary py-1 px-3">Legal Terms (2)</button>
-      </div>
-
-      <!-- Approvals List -->
-      <div class="space-y-4">
-        ${cardsHtml}
-      </div>
-    </div>
-  `;
-}
-
 export async function loadApprovals() {
   try {
-    return await api.get('/quotations');
+    return await api.get('/approvals');
   } catch {
     return [];
   }
 }
 
+export function renderApprovalsPage(approvals = []) {
+  const displayApprovals = approvals.length > 0 ? approvals : [];
+
+  const pendingCount = displayApprovals.filter(a =>
+    a.status === 'PENDING_MANAGER' || a.status === 'PENDING_FINANCE'
+  ).length;
+  const returnedCount = displayApprovals.filter(a => a.status === 'RETURNED').length;
+  const approvedCount = displayApprovals.filter(a => a.status === 'APPROVED').length;
+
+  const rowsHtml = displayApprovals.length === 0
+    ? `
+      <tr>
+        <td colspan="5" class="text-on-surface-variant" style="text-align: center; padding: 2rem;">
+          No approval requests found. Approvals are created when quotations exceed discount limits.
+        </td>
+      </tr>
+    `
+    : displayApprovals.map(a => {
+      const riskClass = a.blended_risk === 'HIGH' ? 'font-bold' : '';
+      return `
+        <tr class="approval-row" data-quotation-id="${a.quotation_id}" style="cursor: pointer;">
+          <td class="font-bold text-on-surface">${a.quotation_ref}</td>
+          <td class="text-on-surface">${a.customer_name}</td>
+          <td class="text-on-surface ${riskClass}">${a.blended_risk}</td>
+          <td class="text-on-surface">${a.current_stage}</td>
+          <td class="text-on-surface">${a.assigned_to}</td>
+        </tr>
+      `;
+    }).join('');
+
+  return `
+    <div class="page-container space-y-6">
+      <!-- Header -->
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-on-surface">Approvals (List)</h1>
+        <p class="text-sm text-on-surface-variant">Every quotation that needed, needs, or is going through discount approval</p>
+      </div>
+
+      <!-- Status Badges -->
+      <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+        <span class="badge" id="filter-pending" style="background-color: #e67e22; color: white; padding: 0.4rem 1rem; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+          ${pendingCount} Pending
+        </span>
+        <span class="badge" id="filter-returned" style="background-color: #e74c3c; color: white; padding: 0.4rem 1rem; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+          ${returnedCount} Returned
+        </span>
+        <span class="badge" id="filter-approved" style="background-color: #22c55e; color: white; padding: 0.4rem 1rem; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer;">
+          ${approvedCount} Approved
+        </span>
+      </div>
+
+      <!-- Approvals Table -->
+      <div class="card card-extruded" style="padding: 0; overflow: hidden;">
+        <div class="clay-table-wrapper">
+          <table class="clay-table" style="font-size: 14px;">
+            <thead>
+              <tr>
+                <th>Quotation</th>
+                <th>Customer</th>
+                <th>Blended Risk</th>
+                <th>Stage</th>
+                <th>Assigned To</th>
+              </tr>
+            </thead>
+            <tbody id="approvals-tbody">
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Hint -->
+      <div class="card card-extruded" style="background: var(--color-surface-container-low); border: 1px solid var(--color-surface-container-high); padding: 1rem;">
+        <p class="text-sm text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">info</span>
+          Click any row to open its full approval detail, risk breakdown, and audit trail.
+        </p>
+      </div>
+
+      <!-- Filter Button -->
+      <div>
+        <button id="btn-filter-pending" type="button" class="btn btn-secondary" style="padding: 0.5rem 1.2rem; font-size: 13px;">
+          Filter: Pending Only
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 export function setupApprovalsEvents() {
-  document.querySelectorAll('.approve-deal-btn').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const dealId = btn.getAttribute('data-id');
-      try {
-        await api.put(`/quotations/${dealId}`, { status: 'Approved' });
-        alert(`Deal #${dealId} has been successfully approved.`);
-        window.location.reload();
-      } catch (err) {
-        alert(err.message || 'Approval failed');
-      }
+  // Row click -> navigate to approval detail
+  document.querySelectorAll('.approval-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const quotationId = row.getAttribute('data-quotation-id');
+      window.location.hash = `#/approval-detail/${quotationId}`;
     });
   });
 
-  document.querySelectorAll('.reject-approval-btn').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const dealId = btn.getAttribute('data-id');
-      if (confirm(`Reject quotation #${dealId}?`)) {
-        try {
-          await api.put(`/quotations/${dealId}`, { status: 'Rejected' });
-          alert(`Deal #${dealId} has been rejected.`);
-          window.location.reload();
-        } catch (err) {
-          alert(err.message || 'Action failed');
+  // Filter: Pending Only toggle
+  const filterBtn = document.getElementById('btn-filter-pending');
+  if (filterBtn) {
+    let showPendingOnly = false;
+    filterBtn.addEventListener('click', () => {
+      showPendingOnly = !showPendingOnly;
+      filterBtn.textContent = showPendingOnly ? 'Show All' : 'Filter: Pending Only';
+
+      const rows = document.querySelectorAll('.approval-row');
+      rows.forEach(row => {
+        const stageCell = row.children[3];
+        const stage = stageCell ? stageCell.textContent.trim() : '';
+        if (showPendingOnly) {
+          const isPending = stage.includes('Sales') || stage.includes('Finance') || stage === 'Pending';
+          row.style.display = isPending ? '' : 'none';
+        } else {
+          row.style.display = '';
         }
+      });
+    });
+  }
+
+  // Badge filter clicks
+  const filterPending = document.getElementById('filter-pending');
+  const filterReturned = document.getElementById('filter-returned');
+  const filterApproved = document.getElementById('filter-approved');
+
+  function filterByStatus(statusFilter) {
+    const rows = document.querySelectorAll('.approval-row');
+    rows.forEach(row => {
+      const stageCell = row.children[3];
+      const stage = stageCell ? stageCell.textContent.trim() : '';
+      if (statusFilter === 'pending') {
+        const isPending = stage.includes('Sales') || stage.includes('Finance') || stage === 'Pending';
+        row.style.display = isPending ? '' : 'none';
+      } else if (statusFilter === 'returned') {
+        row.style.display = stage === 'Returned' ? '' : 'none';
+      } else if (statusFilter === 'approved') {
+        row.style.display = stage === 'Approved' || stage === 'Auto-Approved' ? '' : 'none';
       }
     });
-  });
+  }
+
+  if (filterPending) filterPending.addEventListener('click', () => filterByStatus('pending'));
+  if (filterReturned) filterReturned.addEventListener('click', () => filterByStatus('returned'));
+  if (filterApproved) filterApproved.addEventListener('click', () => filterByStatus('approved'));
 }

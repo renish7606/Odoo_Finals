@@ -3,7 +3,7 @@
  * Centralized fetch client for backend communication with auth token injection.
  */
 
-const BASE_URL = '/api/v1';
+const BASE_URL = import.meta.env?.VITE_API_BASE_URL || '/api/v1';
 
 export class ApiError extends Error {
   constructor(message, status, data) {
@@ -103,7 +103,30 @@ export const api = {
     return this.request(endpoint, { method: 'PUT', body });
   },
 
+  patch(endpoint, body) {
+    return this.request(endpoint, { method: 'PATCH', body });
+  },
+
   delete(endpoint) {
     return this.request(endpoint, { method: 'DELETE' });
+  },
+
+  async downloadFile(endpoint, filename) {
+    const url = `${BASE_URL}${endpoint}`;
+    const token = this.getToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      throw new Error(`Download failed with status ${res.status}`);
+    }
+    const blob = await res.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename || 'document.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(blobUrl);
   },
 };
