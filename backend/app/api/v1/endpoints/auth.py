@@ -12,7 +12,7 @@ from app.api.deps import get_current_user, get_optional_current_user, require_po
 from app.core.config import settings
 from app.core.security import create_access_token, decode_token, hash_password, verify_password
 from app.db.session import get_db
-from app.models.customer import Customer
+from app.models.customer import Customer, CustomerTier
 from app.models.role import Role
 from app.models.user import User
 
@@ -21,12 +21,13 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 class SignupRequest(BaseModel):
-    """Accept the minimum data for an internal user account."""
+    """Accept the minimum data for a user account."""
 
     email: EmailStr
     password: str = Field(min_length=8)
     full_name: str = Field(min_length=1, max_length=255)
-    role: Role = Role.SALES_REP
+    role: Role = Role.CUSTOMER
+    company: str | None = None
 
 
 class LoginRequest(BaseModel):
@@ -57,16 +58,34 @@ def user_profile(user: User) -> dict:
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup(payload: SignupRequest, db: Session = Depends(get_db), requester: User | None = Depends(get_optional_current_user)) -> dict:
-    """Create an internal account; only an Admin can create another Admin."""
+    """Create an account; only an Admin can create another Admin."""
     if payload.role is Role.ADMIN and (requester is None or requester.role is not Role.ADMIN):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only an Admin can create an Admin user")
     if db.scalar(select(User).where(User.email == payload.email)) is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email is already registered")
-    user = User(email=payload.email, full_name=payload.full_name, role=payload.role, hashed_password=hash_password(payload.password))
+
+    hashed_pwd = hash_password(payload.password)
+    user = User(email=payload.email, full_name=payload.full_name, role=payload.role, hashed_password=hashed_pwd)
     db.add(user)
+
+    if payload.role is Role.CUSTOMER:
+        cust = db.scalar(select(Customer).where(Customer.email == payload.email))
+        if cust is None:
+            cust = Customer(
+                name=payload.company or payload.full_name,
+                email=payload.email,
+                tier=CustomerTier.BRONZE,
+                portal_password_hash=hashed_pwd,
+            )
+            db.add(cust)
+
     db.commit()
     db.refresh(user)
-    return user_profile(user)
+    return {
+        "access_token": create_access_token(str(user.id)),
+        "token_type": "bearer",
+        "user": user_profile(user),
+    }
 
 
 @router.post("/login")
@@ -87,7 +106,11 @@ async def login(request: Request, db: Session = Depends(get_db)) -> dict:
     user = db.scalar(select(User).where(User.email == payload.email))
     if user is None or not user.is_active or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
-    return {"access_token": create_access_token(str(user.id)), "token_type": "bearer"}
+    return {
+        "access_token": create_access_token(str(user.id)),
+        "token_type": "bearer",
+        "user": user_profile(user),
+    }
 
 
 @router.get("/me")
