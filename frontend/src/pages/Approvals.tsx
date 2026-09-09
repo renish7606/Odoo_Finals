@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckSquare, Check, X, AlertTriangle, ShieldAlert, ArrowLeft, Clock, FileText } from 'lucide-react';
+import { CheckSquare, Check, X, AlertTriangle, ShieldAlert, ArrowLeft, Clock, FileText, Percent } from 'lucide-react';
 import { AppLayout } from '../components/layout/AppLayout';
 import { Button, Card, CardHeader, CardBody, Modal } from '../components/ui';
 import { StatusBadge } from '../components/ui/Badge';
@@ -53,6 +53,17 @@ export function Approvals() {
     <AppLayout
       title="Discount & Deal Approvals"
       breadcrumb={[{ label: 'Dashboard', path: '/dashboard' }, { label: 'Approvals' }]}
+      actions={
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => navigate('/discount-tiers')}
+          className="shadow-xs"
+        >
+          <Percent className="w-4 h-4 mr-1.5 text-teal-600" />
+          Discount Tiers & Chains
+        </Button>
+      }
     >
       <div className="space-y-6">
         {/* Header Summary */}

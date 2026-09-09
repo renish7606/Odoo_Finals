@@ -20,6 +20,7 @@ import { Reports } from './pages/Reports';
 import { CustomerPortal } from './pages/CustomerPortal';
 import { Messages } from './pages/Messages';
 import { Profile } from './pages/Profile';
+import { DiscountTiers } from './pages/DiscountTiers';
 
 // Admin Pages
 import { AdminProducts } from './pages/admin/AdminProducts';
@@ -98,6 +99,14 @@ export function App() {
                 element={
                   <ProtectedRoute feature="approvals" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Approvals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/discount-tiers"
+                element={
+                  <ProtectedRoute feature="discount_tier" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                    <DiscountTiers />
                   </ProtectedRoute>
                 }
               />

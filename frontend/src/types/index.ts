@@ -298,7 +298,8 @@ export type FeatureKey =
   | 'invoice'
   | 'deal_health'
   | 'report'
-  | 'product';
+  | 'product'
+  | 'discount_tier';
 
 export type AccessLevel = 'none' | 'read' | 'edit';
 
@@ -368,5 +369,28 @@ export const DEFAULT_RBAC_MATRIX: RBACMatrix = {
     FINANCE_OPS: 'read',
     CUSTOMER: 'none',
   },
+  discount_tier: {
+    ADMIN: 'edit',
+    SALES_REP: 'read',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
 };
+
+export interface DiscountTierConfig {
+  tierCeilings: {
+    tier: string;
+    maxDiscount: number;
+  }[];
+  categoryCeilings: {
+    category: string;
+    maxDiscount: number;
+  }[];
+  approvalRouting: {
+    range: string;
+    approver: string;
+  }[];
+}
+
 

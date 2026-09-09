@@ -14,6 +14,7 @@ import {
   Activity,
   BarChart3,
   Box,
+  Percent,
   Info,
 } from 'lucide-react';
 import { AppLayout } from '../../components/layout/AppLayout';
@@ -85,6 +86,12 @@ const FEATURES: FeatureConfig[] = [
     label: 'Product',
     description: 'Product catalog, unit pricing, margins, and warehouse inventory',
     icon: Box,
+  },
+  {
+    key: 'discount_tier',
+    label: 'Discount Tier',
+    description: 'Tier ceilings, category limits, and multi-level approval routing chains',
+    icon: Percent,
   },
 ];
 
