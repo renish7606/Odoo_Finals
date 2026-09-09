@@ -105,6 +105,9 @@ def seed_all() -> None:
             ("Pinnacle Media Networks", "purchasing@pinnaclemedia.com", CustomerTier.BRONZE),
             ("Aegis Security Solutions", "contact@aegissec.com", CustomerTier.BRONZE),
             ("Echo Telecom Corp.", "finance@echotelecom.net", CustomerTier.BRONZE),
+            ("Bronze Buyer", "bronze@dealflow360.com", CustomerTier.BRONZE),
+            ("Silver Buyer", "silver@dealflow360.com", CustomerTier.SILVER),
+            ("Gold Buyer", "gold@dealflow360.com", CustomerTier.GOLD),
             ("Portal Demo Customer", "customer@dealflow360.com", CustomerTier.GOLD),
         ]
         customers = []
