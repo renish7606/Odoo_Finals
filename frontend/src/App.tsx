@@ -32,10 +32,10 @@ import { AdminSettings } from './pages/admin/AdminSettings';
 
 function RootRedirect() {
   const { user } = useAuth();
-  if (user?.role === 'CUSTOMER') {
-    return <Navigate to="/portal" replace />;
+  if (user?.role === 'ADMIN') {
+    return <Navigate to="/dashboard" replace />;
   }
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/portal" replace />;
 }
 
 export function App() {
@@ -72,7 +72,7 @@ export function App() {
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="dashboard" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Dashboard />
                   </ProtectedRoute>
                 }
@@ -80,7 +80,7 @@ export function App() {
               <Route
                 path="/quotations"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="quotation" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Quotations />
                   </ProtectedRoute>
                 }
@@ -88,7 +88,7 @@ export function App() {
               <Route
                 path="/quotations/:id"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="quotation" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <QuotationDetail />
                   </ProtectedRoute>
                 }
@@ -96,7 +96,7 @@ export function App() {
               <Route
                 path="/approvals"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="approvals" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Approvals />
                   </ProtectedRoute>
                 }
@@ -104,7 +104,7 @@ export function App() {
               <Route
                 path="/subscriptions"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="subscriptions" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Subscriptions />
                   </ProtectedRoute>
                 }
@@ -112,7 +112,7 @@ export function App() {
               <Route
                 path="/billing"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="invoice" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Billing />
                   </ProtectedRoute>
                 }
@@ -120,7 +120,7 @@ export function App() {
               <Route
                 path="/deal-health"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_MANAGER']}>
+                  <ProtectedRoute feature="deal_health" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <DealHealth />
                   </ProtectedRoute>
                 }
@@ -128,7 +128,7 @@ export function App() {
               <Route
                 path="/reports"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="report" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Reports />
                   </ProtectedRoute>
                 }
@@ -136,7 +136,7 @@ export function App() {
               <Route
                 path="/admin/products"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="product" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <AdminProducts />
                   </ProtectedRoute>
                 }
@@ -162,7 +162,7 @@ export function App() {
               <Route
                 path="/fulfillment"
                 element={
-                  <ProtectedRoute allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
+                  <ProtectedRoute feature="fulfillment" allowedRoles={['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS']}>
                     <Fulfillment />
                   </ProtectedRoute>
                 }

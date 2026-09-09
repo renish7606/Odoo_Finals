@@ -24,32 +24,33 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { Avatar } from '../ui';
 import { cn } from '../../utils/format';
-import type { UserRole } from '../../types';
+import type { UserRole, FeatureKey } from '../../types';
 import { type LucideIcon } from 'lucide-react';
 
 interface NavItem {
   label: string;
   path: string;
   icon: LucideIcon;
-  roles: UserRole[];
+  roles?: UserRole[];
+  feature?: FeatureKey;
   badge?: number;
 }
 
 const mainNav: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS'] },
-  { label: 'Quotations', path: '/quotations', icon: FileText, roles: ['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS'] },
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, feature: 'dashboard' },
+  { label: 'Quotations', path: '/quotations', icon: FileText, feature: 'quotation' },
   { label: 'Pipeline', path: '/pipeline', icon: KanbanSquare, roles: ['ADMIN', 'SALES_REP', 'SALES_MANAGER'] },
   { label: 'Customers', path: '/customers', icon: Users, roles: ['ADMIN', 'SALES_REP', 'SALES_MANAGER'] },
-  { label: 'Approvals', path: '/approvals', icon: CheckSquare, roles: ['SALES_MANAGER', 'FINANCE_OPS', 'ADMIN'] },
-  { label: 'Fulfillment', path: '/fulfillment', icon: Package, roles: ['ADMIN', 'SALES_REP', 'SALES_MANAGER', 'FINANCE_OPS'] },
-  { label: 'Subscriptions', path: '/subscriptions', icon: CreditCard, roles: ['ADMIN', 'FINANCE_OPS'] },
-  { label: 'Billing', path: '/billing', icon: Receipt, roles: ['ADMIN', 'FINANCE_OPS'] },
-  { label: 'Deal Health', path: '/deal-health', icon: Activity, roles: ['ADMIN', 'SALES_MANAGER'] },
-  { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['ADMIN', 'SALES_MANAGER', 'FINANCE_OPS'] },
+  { label: 'Approvals', path: '/approvals', icon: CheckSquare, feature: 'approvals' },
+  { label: 'Fulfillment', path: '/fulfillment', icon: Package, feature: 'fulfillment' },
+  { label: 'Subscriptions', path: '/subscriptions', icon: CreditCard, feature: 'subscriptions' },
+  { label: 'Billing', path: '/billing', icon: Receipt, feature: 'invoice' },
+  { label: 'Deal Health', path: '/deal-health', icon: Activity, feature: 'deal_health' },
+  { label: 'Reports', path: '/reports', icon: BarChart3, feature: 'report' },
 ];
 
 const adminNav: NavItem[] = [
-  { label: 'Products', path: '/admin/products', icon: Box, roles: ['ADMIN'] },
+  { label: 'Products', path: '/admin/products', icon: Box, feature: 'product' },
   { label: 'Price Lists', path: '/admin/price-lists', icon: Tags, roles: ['ADMIN'] },
   { label: 'Discount Rules', path: '/admin/discount-rules', icon: Percent, roles: ['ADMIN'] },
   { label: 'Warehouses', path: '/admin/warehouses', icon: WarehouseIcon, roles: ['ADMIN'] },
@@ -64,13 +65,24 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, canAccessFeature } = useAuth();
   const navigate = useNavigate();
 
   if (!user) return null;
 
-  const visibleMain = mainNav.filter((item) => item.roles.includes(user.role));
-  const visibleAdmin = adminNav.filter((item) => item.roles.includes(user.role));
+  const isItemVisible = (item: NavItem) => {
+    if (user.role === 'ADMIN') return true;
+    if (item.feature) {
+      return canAccessFeature(item.feature, 'read');
+    }
+    if (item.roles) {
+      return item.roles.includes(user.role);
+    }
+    return true;
+  };
+
+  const visibleMain = mainNav.filter(isItemVisible);
+  const visibleAdmin = adminNav.filter(isItemVisible);
 
   const handleLogout = () => {
     logout();

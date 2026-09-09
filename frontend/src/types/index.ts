@@ -288,3 +288,85 @@ export interface Notification {
   timestamp: string;
   link?: string;
 }
+
+export type FeatureKey =
+  | 'dashboard'
+  | 'quotation'
+  | 'approvals'
+  | 'fulfillment'
+  | 'subscriptions'
+  | 'invoice'
+  | 'deal_health'
+  | 'report'
+  | 'product';
+
+export type AccessLevel = 'none' | 'read' | 'edit';
+
+export type RBACMatrix = Record<FeatureKey, Record<UserRole, AccessLevel>>;
+
+export const DEFAULT_RBAC_MATRIX: RBACMatrix = {
+  dashboard: {
+    ADMIN: 'edit',
+    SALES_REP: 'edit',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  quotation: {
+    ADMIN: 'edit',
+    SALES_REP: 'edit',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  approvals: {
+    ADMIN: 'edit',
+    SALES_REP: 'none',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  fulfillment: {
+    ADMIN: 'edit',
+    SALES_REP: 'edit',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  subscriptions: {
+    ADMIN: 'edit',
+    SALES_REP: 'none',
+    SALES_MANAGER: 'read',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  invoice: {
+    ADMIN: 'edit',
+    SALES_REP: 'none',
+    SALES_MANAGER: 'read',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  deal_health: {
+    ADMIN: 'edit',
+    SALES_REP: 'none',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'none',
+    CUSTOMER: 'none',
+  },
+  report: {
+    ADMIN: 'edit',
+    SALES_REP: 'none',
+    SALES_MANAGER: 'edit',
+    FINANCE_OPS: 'edit',
+    CUSTOMER: 'none',
+  },
+  product: {
+    ADMIN: 'edit',
+    SALES_REP: 'read',
+    SALES_MANAGER: 'read',
+    FINANCE_OPS: 'read',
+    CUSTOMER: 'none',
+  },
+};
+

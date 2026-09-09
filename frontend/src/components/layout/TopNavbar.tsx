@@ -36,10 +36,12 @@ export function TopNavbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
   const roleRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
 
   const userNotifications = user ? notifications.filter((n) => n.userId === user.id) : [];
   const unreadCount = userNotifications.filter((n) => !n.read).length;
@@ -53,6 +55,42 @@ export function TopNavbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const delta = currentScrollY - lastScrollY.current;
+
+          // Always stay visible at or near the top of the page (<= 30px)
+          if (currentScrollY <= 30) {
+            setIsVisible(true);
+          } else if (delta > 5) {
+            // Scrolling down past threshold -> hide-fade-up and close open menus
+            setIsVisible(false);
+            setNotifOpen(false);
+            setUserMenuOpen(false);
+            setRoleMenuOpen(false);
+            setMobileNavOpen(false);
+          } else if (delta < -5) {
+            // Scrolling up -> bring back navigation bar
+            setIsVisible(true);
+          }
+
+          lastScrollY.current = Math.max(0, currentScrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
 
   const handleLogout = () => {
     logout();
@@ -88,7 +126,7 @@ export function TopNavbar() {
     { label: 'Profile', path: '/profile', icon: UserIcon },
   ];
 
-  const currentLinks = user?.role === 'CUSTOMER' ? customerLinks : staffLinks;
+  const currentLinks = user?.role === 'ADMIN' ? staffLinks : customerLinks;
 
   const roleOptions: { role: UserRole; label: string }[] = [
     { role: 'ADMIN', label: 'Admin User' },
@@ -99,7 +137,14 @@ export function TopNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full px-3 sm:px-6 pt-3 pb-1">
+    <header
+      className={cn(
+        'sticky top-0 z-40 w-full px-3 sm:px-6 pt-3 pb-1 transition-all duration-300 ease-in-out transform',
+        isVisible
+          ? 'translate-y-0 opacity-100 pointer-events-auto'
+          : '-translate-y-full opacity-0 pointer-events-none'
+      )}
+    >
       {/* Glassmorphic Rounded Floating Navbar */}
       <div className="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl border border-white/80 rounded-2xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.06),0_1px_4px_0_rgba(0,0,0,0.04)] px-4 py-2 flex items-center justify-between gap-4 transition-all">
         {/* Left: Brand Logo */}
