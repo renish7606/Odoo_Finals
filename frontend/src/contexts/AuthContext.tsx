@@ -217,13 +217,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getFeatureAccess = (feature: FeatureKey, role?: UserRole): AccessLevel => {
     const targetRole = role || user?.role || 'CUSTOMER';
     if (targetRole === 'ADMIN') return 'edit';
+    if (feature === 'discount_tier') {
+      const approvalAccess = rbacMatrix['approvals']?.[targetRole] || 'none';
+      if (approvalAccess === 'none') {
+        return rbacMatrix['discount_tier']?.[targetRole] || 'none';
+      }
+      if (targetRole === 'SALES_REP') return 'read';
+      return rbacMatrix['discount_tier']?.[targetRole] || approvalAccess;
+    }
     return rbacMatrix[feature]?.[targetRole] || 'none';
   };
 
   const canAccessFeature = (feature: FeatureKey, requiredLevel: 'read' | 'edit' = 'read'): boolean => {
     if (!user) return false;
     if (user.role === 'ADMIN') return true;
-    const access = rbacMatrix[feature]?.[user.role] || 'none';
+    const access = getFeatureAccess(feature, user.role);
     if (access === 'none') return false;
     if (requiredLevel === 'read') return access === 'read' || access === 'edit';
     if (requiredLevel === 'edit') return access === 'edit';

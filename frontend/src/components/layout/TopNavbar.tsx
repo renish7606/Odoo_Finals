@@ -10,6 +10,7 @@ import {
   Activity,
   BarChart3,
   Box,
+  Package,
   MessageSquare,
   User as UserIcon,
   Bell,
@@ -24,10 +25,10 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useAppData } from '../../contexts/AppDataContext';
 import { Avatar } from '../ui';
 import { cn, formatDateTime } from '../../utils/format';
-import type { UserRole } from '../../types';
+import type { UserRole, FeatureKey } from '../../types';
 
 export function TopNavbar() {
-  const { user, logout, loginAsRole } = useAuth();
+  const { user, logout, loginAsRole, canAccessFeature } = useAuth();
   const { notifications, markNotificationRead } = useAppData();
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,26 +108,42 @@ export function TopNavbar() {
     }
   };
 
-  // Staff nav links (Dashboard, Quotation, Approval, Subscription, Invoice, Deal Health, Report, Product)
-  const staffLinks = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Quotation', path: '/quotations', icon: FileText },
-    { label: 'Approval', path: '/approvals', icon: CheckSquare },
-    { label: 'Subscription', path: '/subscriptions', icon: CreditCard },
-    { label: 'Invoice', path: '/billing', icon: Receipt },
-    { label: 'Deal Health', path: '/deal-health', icon: Activity },
-    { label: 'Report', path: '/reports', icon: BarChart3 },
-    { label: 'Product', path: '/admin/products', icon: Box },
+  interface NavLinkItem {
+    label: string;
+    path: string;
+    icon: React.ComponentType<{ className?: string }>;
+    feature?: FeatureKey;
+  }
+
+  // Staff nav links with RBAC feature keys
+  const staffLinks: NavLinkItem[] = [
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, feature: 'dashboard' },
+    { label: 'Quotation', path: '/quotations', icon: FileText, feature: 'quotation' },
+    { label: 'Approval', path: '/approvals', icon: CheckSquare, feature: 'approvals' },
+    { label: 'Fulfillment', path: '/fulfillment', icon: Package, feature: 'fulfillment' },
+    { label: 'Subscription', path: '/subscriptions', icon: CreditCard, feature: 'subscriptions' },
+    { label: 'Invoice', path: '/billing', icon: Receipt, feature: 'invoice' },
+    { label: 'Deal Health', path: '/deal-health', icon: Activity, feature: 'deal_health' },
+    { label: 'Report', path: '/reports', icon: BarChart3, feature: 'report' },
+    { label: 'Product', path: '/admin/products', icon: Box, feature: 'product' },
   ];
 
   // Customer nav links (My Quotation, Messages, Profile)
-  const customerLinks = [
+  const customerLinks: NavLinkItem[] = [
     { label: 'My Quotation', path: '/portal', icon: FileText },
     { label: 'Messages', path: '/messages', icon: MessageSquare },
     { label: 'Profile', path: '/profile', icon: UserIcon },
   ];
 
-  const currentLinks = user?.role === 'ADMIN' ? staffLinks : customerLinks;
+  const isInternal = user && user.role !== 'CUSTOMER';
+
+  const visibleStaffLinks = staffLinks.filter((item) => {
+    if (!item.feature) return true;
+    if (user?.role === 'ADMIN') return true;
+    return canAccessFeature(item.feature, 'read');
+  });
+
+  const currentLinks = isInternal ? visibleStaffLinks : customerLinks;
 
   const roleOptions: { role: UserRole; label: string }[] = [
     { role: 'ADMIN', label: 'Admin User' },
@@ -165,43 +182,22 @@ export function TopNavbar() {
           </div>
         </div>
 
-        {/* Center: Navigation Bar Links */}
-        <nav className="hidden xl:flex items-center gap-1">
+        {/* Center: Navigation Bar Links (Scrollable & Responsive) */}
+        <nav className="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar max-w-[550px] lg:max-w-[720px] xl:max-w-[850px] py-1">
           {currentLinks.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150',
+                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-150 flex-shrink-0',
                   isActive
                     ? 'bg-teal-700 text-white shadow-sm shadow-teal-700/20'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
                 )
               }
             >
-              <item.icon className="w-3.5 h-3.5" />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Medium screens scrollable nav */}
-        <nav className="hidden md:flex xl:hidden items-center gap-1 overflow-x-auto no-scrollbar max-w-[500px]">
-          {currentLinks.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all',
-                  isActive
-                    ? 'bg-teal-700 text-white shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
-                )
-              }
-            >
-              <item.icon className="w-3.5 h-3.5" />
+              <item.icon className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{item.label}</span>
             </NavLink>
           ))}
